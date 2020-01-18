@@ -1,0 +1,28 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="rezaei.mohammad.plds.views.main.MainActivity">
+    <item
+        android:id="@+id/action_login_info"
+        android:orderInCategory="100"
+        android:title="Last login info"
+        app:showAsAction="never" />
+
+    <!--<item
+        android:id="@+id/action_change_password"
+        android:orderInCategory="100"
+        android:title="Change password"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_support"
+        android:orderInCategory="100"
+        android:title="Support"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sign_out"
+        android:orderInCategory="100"
+        android:title="Sign out"
+        app:showAsAction="never" />-->
+</menu>
