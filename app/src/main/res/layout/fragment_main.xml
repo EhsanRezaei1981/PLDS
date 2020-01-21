@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".views.main.MainActivityFragment"
-    tools:showIn="@layout/activity_main">
+    tools:context=".views.main.MainFragment">
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnUpdateDocProgress"

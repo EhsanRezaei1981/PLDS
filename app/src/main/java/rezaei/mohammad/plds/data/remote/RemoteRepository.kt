@@ -5,8 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.PLDSRepository
 import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
 import rezaei.mohammad.plds.data.model.request.LoginRequest
 import rezaei.mohammad.plds.data.model.response.BaseResponse
+import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
@@ -15,20 +17,22 @@ class RemoteRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : PLDSRepository {
 
-    private val responseError = ErrorHandling(
-        errorMessage = "Bad response",
-        errorMustBeSeenByUser = true
-    )
-
     override suspend fun login(userName: String, password: String): Result<LoginResponse> =
         withContext(ioDispatcher) {
             return@withContext parseResult(
                 apiInterface.login(
-                    LoginRequest(
+                    loginRequest = LoginRequest(
                         username = userName,
                         password = password
                     )
                 )
+            )
+        }
+
+    override suspend fun retrieveDocumentStatus(documentRefNo: String?): Result<DocumentStatusResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.retrieveDocumentStatus(DocumentStatusRequest(documentRefNo))
             )
         }
 

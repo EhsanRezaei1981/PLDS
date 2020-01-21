@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/mainActivityFragment">
+
+    <fragment
+        android:id="@+id/getDocReferenceFragment"
+        android:name="rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragment"
+        android:label="get_doc_reference_fragment"
+        tools:layout="@layout/get_doc_reference_fragment">
+        <action
+            android:id="@+id/action_getDocReferenceFragment_to_docProgressFragment"
+            app:destination="@id/docProgressFragment" />
+        <action
+            android:id="@+id/action_getDocReferenceFragment_to_qrReaderFragment"
+            app:destination="@id/qrReaderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/docProgressFragment"
+        android:name="rezaei.mohammad.plds.views.docProgress.DocProgressFragment"
+        android:label="doc_progress_fragment"
+        tools:layout="@layout/doc_progress_fragment">
+        <argument
+            android:name="documentStatus"
+            app:argType="rezaei.mohammad.plds.data.model.response.DocumentStatusResponse$Data" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainActivityFragment"
+        android:name="rezaei.mohammad.plds.views.main.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main">
+        <action
+            android:id="@+id/action_mainActivityFragment_to_getDocReferenceFragment"
+            app:destination="@id/getDocReferenceFragment" />
+        <action
+            android:id="@+id/action_mainActivityFragment_to_reportIssueFragment"
+            app:destination="@id/reportIssueFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reportIssueFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment"
+        android:label="report_issue_fragment"
+        tools:layout="@layout/report_issue_fragment">
+        <action
+            android:id="@+id/action_reportIssueFragment_to_qrReaderFragment"
+            app:destination="@id/qrReaderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/qrReaderFragment"
+        android:name="rezaei.mohammad.plds.views.qrReader.QrReaderFragment"
+        android:label="fragment_qr_reader"
+        tools:layout="@layout/fragment_qr_reader">
+        <action
+            android:id="@+id/action_qrReaderFragment_to_getDocReferenceFragment"
+            app:destination="@id/getDocReferenceFragment" />
+        <action
+            android:id="@+id/action_qrReaderFragment_to_reportIssueFragment"
+            app:destination="@id/reportIssueFragment" />
+    </fragment>
+</navigation>

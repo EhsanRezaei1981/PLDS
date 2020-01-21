@@ -32,6 +32,18 @@ class LoginViewModel(
     private val _loginResultEvent = MutableLiveData<Event<Result<LoginResponse>>>()
     val loginResultEvent: LiveData<Event<Result<LoginResponse>>> = _loginResultEvent
 
+    init {
+        _isLoading.value = false
+
+        username.value = preferenceManager.username
+        password.value = preferenceManager.password
+
+        //login automatically after first one
+        if (username.value != null)
+            login()
+
+    }
+
 
     fun login() {
         validateInputs()

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btnAdd"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:minWidth="0dp"
+        android:text="Add"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/inputDocRefrence" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/inputDocRefrence"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toStartOf="@+id/btnAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Document reference NO" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnSelectFromList"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Select from list"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
+        app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnReadQR"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:minWidth="48dp"
+        app:icon="@drawable/ic_qr_code"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:iconSize="36dp"
+        app:layout_constraintStart_toEndOf="@+id/btnSelectFromList"
+        app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+
+    <CheckBox
+        android:id="@+id/chkAutoAdd"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Add automatically"
+        app:layout_constraintBottom_toBottomOf="@+id/btnReadQR"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnReadQR"
+        app:layout_constraintTop_toTopOf="@+id/btnReadQR" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/listDocs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/inputDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnReadQR" />
+
+    <Button
+        android:id="@+id/btnMoveListToDocumentIssue"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Move list to document issue"
+        android:textAllCaps="false"
+        app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
+        app:layout_constraintTop_toBottomOf="@+id/listDocs" />
+
+    <Button
+        android:id="@+id/btnClearList"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Clear list"
+        android:textAllCaps="false"
+        app:layout_constraintEnd_toEndOf="@+id/btnAdd"
+        app:layout_constraintTop_toBottomOf="@+id/listDocs" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

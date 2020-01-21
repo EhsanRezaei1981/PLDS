@@ -1,64 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".views.getDocReference.GetDocReferenceFragment">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputDocRefrence"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toStartOf="@id/btnReadQR"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <data>
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".views.getDocReference.GetDocReferenceFragment">
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputDocRefrence"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:hint="Document reference NO" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:errorEnabled="@{(viewModel.docRefNoErr != 0) ? true : false}"
+            app:errorText="@{viewModel.docRefNoErr}"
+            app:layout_constraintEnd_toStartOf="@id/btnReadQR"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnReadQR"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:minWidth="48dp"
-        app:icon="@drawable/ic_qr_code"
-        app:iconGravity="textStart"
-        app:iconPadding="0dp"
-        app:iconSize="36dp"
-        app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/inputDocRefrence"
-        tools:src="@mipmap/ic_launcher" />
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Document reference NO"
+                android:inputType="textCapCharacters"
+                android:text="@={viewModel.docRefNo}" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <CheckBox
-        android:id="@+id/chkAutoAdd"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Automatic check document after QR code detected"
-        app:layout_constraintEnd_toEndOf="@+id/btnReadQR"
-        app:layout_constraintStart_toStartOf="@id/inputDocRefrence"
-        app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnReadQR"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:minWidth="48dp"
+            app:icon="@drawable/ic_qr_code"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:iconSize="36dp"
+            app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/inputDocRefrence"
+            tools:src="@mipmap/ic_launcher" />
 
-    <Button
-        android:id="@+id/btnCheckProgress"
-        style="@style/Widget.MaterialComponents.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Check progress"
-        android:textAllCaps="false"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
-        app:layout_constraintTop_toBottomOf="@+id/chkAutoAdd" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <CheckBox
+            android:id="@+id/chkAutoAdd"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:checked="@={viewModel.autoCheckAfterCodeDetect}"
+            android:text="Automatic check document after QR code detected"
+            app:layout_constraintEnd_toEndOf="@+id/btnReadQR"
+            app:layout_constraintStart_toStartOf="@id/inputDocRefrence"
+            app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+
+        <Button
+            android:id="@+id/btnCheckProgress"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:onClick="@{() -> viewModel.checkDocumentStatus()}"
+            android:text="Check progress"
+            android:textAllCaps="false"
+            android:textSize="14sp"
+            android:visibility="@{viewModel.dataLoading ? View.GONE : View.VISIBLE}"
+            app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
+            app:layout_constraintTop_toBottomOf="@+id/chkAutoAdd" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{viewModel.dataLoading ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="@+id/btnCheckProgress"
+            app:layout_constraintTop_toTopOf="@+id/btnCheckProgress" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

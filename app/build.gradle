@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: "androidx.navigation.safeargs.kotlin"
 
 android {
     compileSdkVersion 29
@@ -25,6 +26,23 @@ android {
         enabled = true
         enabledForTests = true
     }
+    flavorDimensions 'webService'
+    productFlavors {
+        fake {
+            dimension = 'webService'
+            buildConfigField "String", "LoginUrl", "\"https://JarvisUAT.Prosource.co.za/WebCore/Account/Authenticate\""
+            buildConfigField "String", "BaseUrl", "\"https://ApiUAT.plds.co.za/\""
+        }
+        real {
+            dimension = 'webService'
+            buildConfigField "String", "LoginUrl", "\"purchased\""
+            buildConfigField "String", "BaseUrl", "\"purchased\""
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
 }
 
 dependencies {
@@ -50,6 +68,10 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-ext:$koin_version"
     implementation "androidx.preference:preference-ktx:1.1.0"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation 'me.dm7.barcodescanner:zbar:1.9.13'
+
 
     /*testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
