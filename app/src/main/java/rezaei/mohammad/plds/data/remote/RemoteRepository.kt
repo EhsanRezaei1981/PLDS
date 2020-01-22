@@ -3,7 +3,7 @@ package rezaei.mohammad.plds.data.remote
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import rezaei.mohammad.plds.data.PLDSRepository
+import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
 import rezaei.mohammad.plds.data.model.request.LoginRequest
@@ -15,7 +15,7 @@ import rezaei.mohammad.plds.data.model.response.LoginResponse
 class RemoteRepository(
     private val apiInterface: ApiInterface,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : PLDSRepository {
+) : RemoteRepository {
 
     override suspend fun login(userName: String, password: String): Result<LoginResponse> =
         withContext(ioDispatcher) {

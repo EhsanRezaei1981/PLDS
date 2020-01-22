@@ -15,4 +15,5 @@ fun View.snack(message: String?, actionText: String? = null, action: (() -> Unit
             snack.dismiss()
         }
     }
+    snack.show()
 }

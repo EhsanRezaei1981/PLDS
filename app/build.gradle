@@ -70,6 +70,9 @@ dependencies {
     implementation "androidx.preference:preference-ktx:1.1.0"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
+    implementation "androidx.room:room-runtime:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
     implementation 'me.dm7.barcodescanner:zbar:1.9.13'
 
 

@@ -9,7 +9,7 @@ import rezaei.mohammad.plds.di.Module
 class PLDSapp : Application() {
 
     companion object {
-        var currentUser: LoginResponse.Data? = null
+        var currentUser: LoginResponse.User? = null
     }
 
     override fun onCreate() {

@@ -9,10 +9,13 @@ import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import rezaei.mohammad.plds.BuildConfig
+import rezaei.mohammad.plds.data.local.LocalRepository
+import rezaei.mohammad.plds.data.local.PLDSDatabase
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.data.remote.ApiInterface
 import rezaei.mohammad.plds.data.remote.AuthInterceptor
 import rezaei.mohammad.plds.data.remote.RemoteRepository
+import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
@@ -49,14 +52,25 @@ object Module {
         //pref manager
         single { PreferenceManager(androidContext()) }
 
+        //database dao
+        single { PLDSDatabase(androidContext()).PLDSDao() }
+
+        //local repository
+        single { LocalRepository(get()) }
+
         viewModel { LoginViewModel(get(), get()) }
 
         viewModel { GlobalViewModel() }
 
         viewModel { (docRefNo: MutableLiveData<String>) ->
-            GetDocReferenceViewModel(get(), docRefNo)
+            GetDocReferenceViewModel(
+                get(),
+                docRefNo
+            )
         }
 
         viewModel { DocProgressViewModel(get()) }
+
+        viewModel { AddMultiDocViewModel(get()) }
     }
 }

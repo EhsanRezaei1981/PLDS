@@ -1,9 +1,12 @@
 package rezaei.mohammad.plds.data.model.response
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-class LoginResponse : BaseResponse<LoginResponse.Data>() {
-    data class Data(
+class LoginResponse : BaseResponse<LoginResponse.User>() {
+    @Entity(tableName = "user")
+    data class User(
 
         @field:SerializedName("LastEventLoginPlatformCode")
         val lastEventLoginPlatformCode: String? = null,
@@ -11,6 +14,7 @@ class LoginResponse : BaseResponse<LoginResponse.Data>() {
         @field:SerializedName("LastEventLoginIpAddress")
         val lastEventLoginIpAddress: String? = null,
 
+        @PrimaryKey
         @field:SerializedName("UserId")
         val userId: Int? = null,
 

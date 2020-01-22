@@ -59,4 +59,12 @@
             android:id="@+id/action_qrReaderFragment_to_reportIssueFragment"
             app:destination="@id/reportIssueFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/addMultiDocFragment"
+        android:name="rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment"
+        android:label="AddMultiDocFragment">
+        <action
+            android:id="@+id/action_addMultiDocFragment_to_qrReaderFragment"
+            app:destination="@id/qrReaderFragment" />
+    </fragment>
 </navigation>
