@@ -13,44 +13,50 @@ class LocalRepository(
 ) : LocalRepository {
 
     override suspend fun saveUser(user: LoginResponse.User) {
-        return withContext(ioDispatcher) {
-            return@withContext pldsDao.saveUser(user)
+        withContext(ioDispatcher) {
+            pldsDao.saveUser(user)
         }
     }
 
     override suspend fun getUser(): LoginResponse.User {
         return withContext(ioDispatcher) {
-            return@withContext getUser()
+            return@withContext pldsDao.getUser()
         }
     }
 
     override suspend fun deleteUser(user: LoginResponse.User) {
-        return withContext(ioDispatcher) {
-            return@withContext deleteUser(user)
+        withContext(ioDispatcher) {
+            pldsDao.deleteUser(user)
         }
     }
 
-    override suspend fun insertDocument(document: Document) {
+    override suspend fun insertDocument(document: Document): Boolean {
         return withContext(ioDispatcher) {
-            return@withContext insertDocument(document)
+            try {
+                pldsDao.insertDocument(document)
+                return@withContext true
+            } catch (e: Exception) {
+                e.printStackTrace()
+                return@withContext false
+            }
         }
     }
 
     override suspend fun getAllDocument(): List<Document> {
         return withContext(ioDispatcher) {
-            return@withContext getAllDocument()
+            return@withContext pldsDao.getAllDocument()
         }
     }
 
     override suspend fun deleteDocument(document: Document) {
-        return withContext(ioDispatcher) {
-            return@withContext deleteDocument(document)
+        withContext(ioDispatcher) {
+            pldsDao.deleteDocument(document)
         }
     }
 
-    override suspend fun deleteAllDocs(vararg document: Document) {
-        return withContext(ioDispatcher) {
-            return@withContext deleteAllDocs(*document)
+    override suspend fun deleteAllDocs(documents: List<Document>) {
+        withContext(ioDispatcher) {
+            pldsDao.deleteAllDocs(documents)
         }
     }
 }

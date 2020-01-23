@@ -6,15 +6,26 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
+import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.views.docProgress.DocProgressFragmentDirections
+import rezaei.mohammad.plds.views.main.GlobalViewModel
+import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
+import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
 
 class AddMultiDocFragment : Fragment() {
 
-    private val viewModel: AddMultiDocViewModel by viewModel()
+    private val globalViewModel: GlobalViewModel by sharedViewModel()
+    private val viewModel: AddMultiDocViewModel by viewModel { parametersOf(globalViewModel.docRefNo) }
     private lateinit var viewDataBinding: AddMultiDocFragmentBinding
+    private lateinit var documentAdapter: DocumentAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +44,59 @@ class AddMultiDocFragment : Fragment() {
         btnReadQR.setOnClickListener {
             navigateToQrScanner()
         }
+        setupRecyclerView()
+        setupItemRemover()
+        duplicateItemMessage()
     }
 
     private fun navigateToQrScanner() {
         val action =
-            AddMultiDocFragmentDirections.actionAddMultiDocFragmentToQrReaderFragment()
+            if (parentFragment is ReportIssueFragment)
+                ReportIssueFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
+            else
+                DocProgressFragmentDirections.actionDocProgressFragmentToQrReaderFragment()
         findNavController().navigate(action)
+    }
+
+    private fun setupRecyclerView() {
+        val viewModel = viewDataBinding.viewmodel
+        if (viewModel != null) {
+            viewDataBinding.listDocs.addItemDecoration(
+                DividerItemDecoration(
+                    requireContext(),
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+            documentAdapter = DocumentAdapter(viewModel)
+            viewDataBinding.listDocs.adapter = documentAdapter
+        }
+    }
+
+    private fun setupItemRemover() {
+        viewModel.documentRemoveEvent.observe(this, EventObserver {
+            listDocs.snack(
+                message = "Item removed.",
+                actionText = "UNDO",
+                action = { viewModel.loadDocumentList() },
+                onDismissAction = { viewModel.removeItem(it) },
+                duration = 5000
+            )
+        })
+        viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
+            listDocs.snack(
+                "All items deleted.",
+                "UNDO",
+                { viewModel.loadDocumentList() },
+                { viewModel.clearList() },
+                5000
+            )
+        })
+    }
+
+    private fun duplicateItemMessage() {
+        viewModel.duplicateDocumentEvent.observe(this, EventObserver {
+            viewDataBinding.listDocs.snack("Document is already exist.")
+        })
     }
 
 }

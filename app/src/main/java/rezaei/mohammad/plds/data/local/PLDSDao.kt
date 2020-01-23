@@ -26,6 +26,6 @@ interface PLDSDao {
     suspend fun deleteDocument(document: Document)
 
     @Delete
-    suspend fun deleteAllDocs(vararg document: Document)
+    suspend fun deleteAllDocs(documents: List<Document>)
 
 }

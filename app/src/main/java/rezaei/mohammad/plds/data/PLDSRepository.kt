@@ -17,12 +17,12 @@ interface LocalRepository {
 
     suspend fun deleteUser(user: LoginResponse.User)
 
-    suspend fun insertDocument(document: Document)
+    suspend fun insertDocument(document: Document): Boolean
 
     suspend fun getAllDocument(): List<Document>
 
     suspend fun deleteDocument(document: Document)
 
-    suspend fun deleteAllDocs(vararg document: Document)
+    suspend fun deleteAllDocs(documents: List<Document>)
 
 }

@@ -23,11 +23,6 @@ import androidx.room.RoomDatabase
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
-/**
- * The Room Database that contains the Task table.
- *
- * Note that exportSchema should be true in production databases.
- */
 @Database(entities = [LoginResponse.User::class, Document::class], version = 1, exportSchema = true)
 abstract class PLDSDatabase : RoomDatabase() {
 

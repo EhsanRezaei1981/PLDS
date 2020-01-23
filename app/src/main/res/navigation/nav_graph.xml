@@ -25,6 +25,9 @@
         <argument
             android:name="documentStatus"
             app:argType="rezaei.mohammad.plds.data.model.response.DocumentStatusResponse$Data" />
+        <action
+            android:id="@+id/action_docProgressFragment_to_qrReaderFragment"
+            app:destination="@id/qrReaderFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainActivityFragment"
@@ -51,20 +54,9 @@
         android:id="@+id/qrReaderFragment"
         android:name="rezaei.mohammad.plds.views.qrReader.QrReaderFragment"
         android:label="fragment_qr_reader"
-        tools:layout="@layout/fragment_qr_reader">
-        <action
-            android:id="@+id/action_qrReaderFragment_to_getDocReferenceFragment"
-            app:destination="@id/getDocReferenceFragment" />
-        <action
-            android:id="@+id/action_qrReaderFragment_to_reportIssueFragment"
-            app:destination="@id/reportIssueFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_qr_reader" />
     <fragment
         android:id="@+id/addMultiDocFragment"
         android:name="rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment"
-        android:label="AddMultiDocFragment">
-        <action
-            android:id="@+id/action_addMultiDocFragment_to_qrReaderFragment"
-            app:destination="@id/qrReaderFragment" />
-    </fragment>
+        android:label="AddMultiDocFragment" />
 </navigation>

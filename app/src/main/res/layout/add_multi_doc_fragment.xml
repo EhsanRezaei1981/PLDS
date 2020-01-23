@@ -83,7 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:checked="@={viewmodel.autoCheckAfterCodeDetect"
+            android:checked="@={viewmodel.autoCheckAfterCodeDetect}"
             android:text="Add automatically"
             app:layout_constraintBottom_toBottomOf="@+id/btnReadQR"
             app:layout_constraintStart_toEndOf="@+id/btnReadQR"
@@ -94,8 +94,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toTopOf="@+id/inputDate"
+            app:items="@{viewmodel.documentsList}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
+            tools:listitem="@layout/document_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnReadQR" />
@@ -105,12 +107,13 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:onClick="@{() -> viewmodel.clearList()}"
+            android:layout_marginBottom="8dp"
+            android:onClick="@{() -> viewmodel.fakeClearList()}"
             android:text="Clear list"
+            android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
             android:textAllCaps="false"
-            app:layout_constraintEnd_toEndOf="@+id/btnAdd"
-            app:layout_constraintTop_toBottomOf="@+id/listDocs" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnAdd" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

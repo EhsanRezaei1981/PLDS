@@ -71,6 +71,6 @@ object Module {
 
         viewModel { DocProgressViewModel(get()) }
 
-        viewModel { AddMultiDocViewModel(get()) }
+        viewModel { (docRefNo: MutableLiveData<String>) -> AddMultiDocViewModel(get(), docRefNo) }
     }
 }
