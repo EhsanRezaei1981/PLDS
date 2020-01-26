@@ -25,7 +25,7 @@ class GetDocReferenceViewModel(
     val autoCheckAfterCodeDetect = MutableLiveData<Boolean>()
 
     private val _documentStatusEvent = MutableLiveData<Event<Result<DocumentStatusResponse>>>()
-    val documentStatusEvent: MutableLiveData<Event<Result<DocumentStatusResponse>>> =
+    val documentStatusEvent: LiveData<Event<Result<DocumentStatusResponse>>> =
         _documentStatusEvent
 
     init {
@@ -33,14 +33,15 @@ class GetDocReferenceViewModel(
         setupAutoCheck()
     }
 
-    fun checkDocumentStatus() {
-        validateDocRefNo()
+    fun checkDocumentStatus(docRefNo: String?) {
+        validateDocRefNo(docRefNo)
         if (_docRefNoErr.value == 0) {
             _dataLoading.value = true
             viewModelScope.launch {
-                val result = remoteRepository.retrieveDocumentStatus(docRefNo.value)
+                val result = remoteRepository.retrieveDocumentStatus(docRefNo)
                 _documentStatusEvent.value = Event(result)
                 _dataLoading.value = false
+                this@GetDocReferenceViewModel.docRefNo.value = null
             }
         }
     }
@@ -48,12 +49,12 @@ class GetDocReferenceViewModel(
     private fun setupAutoCheck() {
         docRefNo.observeForever {
             if ((autoCheckAfterCodeDetect.value == true) && it != null)
-                checkDocumentStatus()
+                checkDocumentStatus(it)
         }
     }
 
-    private fun validateDocRefNo() {
-        val currentDocRefNo = docRefNo.value
+    private fun validateDocRefNo(docRefNo: String?) {
+        val currentDocRefNo = docRefNo
 
         if (currentDocRefNo == null || currentDocRefNo.isEmpty())
             _docRefNoErr.value = R.string.doc_ref_no_validate_err

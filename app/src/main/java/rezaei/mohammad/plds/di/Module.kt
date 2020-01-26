@@ -14,12 +14,14 @@ import rezaei.mohammad.plds.data.local.PLDSDatabase
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.data.remote.ApiInterface
 import rezaei.mohammad.plds.data.remote.AuthInterceptor
+import rezaei.mohammad.plds.data.remote.RefreshTokenInterceptor
 import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
 import rezaei.mohammad.plds.views.main.GlobalViewModel
+import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 
 object Module {
     val pldsModule = module {
@@ -31,6 +33,11 @@ object Module {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
                 addInterceptor(AuthInterceptor(get()))
+                addInterceptor(
+                    RefreshTokenInterceptor(
+                        lazy { get<PreferenceManager>() },
+                        lazy { get<RemoteRepository>() })
+                )
             }.build()
         }
 
@@ -72,5 +79,7 @@ object Module {
         viewModel { DocProgressViewModel(get()) }
 
         viewModel { (docRefNo: MutableLiveData<String>) -> AddMultiDocViewModel(get(), docRefNo) }
+
+        viewModel { SubmitFormViewModel(get(), get()) }
     }
 }

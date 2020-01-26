@@ -43,15 +43,16 @@ class AddMultiDocViewModel(
         }
     }
 
-    fun addToList() {
-        validateDocRefNo()
+    fun addToList(docRefNo: String?) {
+        validateDocRefNo(docRefNo)
         if (_docRefNoErr.value == 0)
             viewModelScope.launch {
-                val status = localRepository.insertDocument(Document(docRefNo.value!!))
+                val status = localRepository.insertDocument(Document(docRefNo!!))
                 if (status)
                     loadDocumentList()
                 else
                     _duplicateDocumentEvent.value = Event(Unit)
+                this@AddMultiDocViewModel.docRefNo.value = null
             }
     }
 
@@ -84,8 +85,8 @@ class AddMultiDocViewModel(
     }
 
 
-    private fun validateDocRefNo() {
-        val currentDocRefNo = docRefNo.value
+    private fun validateDocRefNo(docRefNo: String?) {
+        val currentDocRefNo = docRefNo
 
         if (currentDocRefNo == null || currentDocRefNo.isEmpty())
             _docRefNoErr.value = R.string.doc_ref_no_validate_err
@@ -96,7 +97,7 @@ class AddMultiDocViewModel(
     private fun setupAutoCheck() {
         docRefNo.observeForever {
             if ((autoCheckAfterCodeDetect.value == true) && it != null)
-                addToList()
+                addToList(it)
         }
     }
 }

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/txtLabel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:textColor="?android:textColorPrimary"
+        android:textSize="16sp"
+        tools:text="Document" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBrowseFile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:minWidth="0dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:text="Browse file ..."
+            android:textAllCaps="false"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp" />
+
+        <TextView
+            android:id="@+id/txtFileExtensions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="14sp"
+            tools:text="jpg,png" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/txtError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="#F44336"
+        android:textSize="14sp"
+        tools:text="error" />
+</LinearLayout>

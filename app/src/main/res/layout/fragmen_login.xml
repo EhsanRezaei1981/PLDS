@@ -8,8 +8,6 @@
 
         <import type="androidx.core.content.ContextCompat" />
 
-        <import type="rezaei.mohammad.plds.R" />
-
         <variable
             name="viewmodel"
             type="rezaei.mohammad.plds.views.login.LoginViewModel" />

@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_docProgressFragment_to_qrReaderFragment"
             app:destination="@id/qrReaderFragment" />
+        <action
+            android:id="@+id/action_docProgressFragment_to_submitFormFragment"
+            app:destination="@id/submitFormFragment" />
     </fragment>
     <fragment
         android:id="@+id/mainActivityFragment"
@@ -56,7 +59,24 @@
         android:label="fragment_qr_reader"
         tools:layout="@layout/fragment_qr_reader" />
     <fragment
-        android:id="@+id/addMultiDocFragment"
-        android:name="rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment"
-        android:label="AddMultiDocFragment" />
+        android:id="@+id/submitFormFragment"
+        android:name="rezaei.mohammad.plds.views.submitForm.SubmitFormFragment"
+        android:label="SubmitFormFragment">
+        <argument
+            android:name="successful"
+            app:argType="rezaei.mohammad.plds.data.model.response.FormResponse"
+            app:nullable="true" />
+        <argument
+            android:name="unsuccessful"
+            app:argType="rezaei.mohammad.plds.data.model.response.FormResponse"
+            app:nullable="true" />
+        <argument
+            android:name="isMultipleDocument"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="docRefNo"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
 </navigation>

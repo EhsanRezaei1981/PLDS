@@ -74,6 +74,10 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     implementation "androidx.room:room-ktx:$roomVersion"
     implementation 'me.dm7.barcodescanner:zbar:1.9.13'
+    implementation 'com.afollestad.material-dialogs:core:3.1.1'
+    implementation 'com.afollestad.material-dialogs:files:3.1.1'
+    implementation 'com.github.tiper:MaterialSpinner:1.4.1'
+    implementation 'com.yayandroid:LocationManager:2.0.4'
 
 
     /*testImplementation 'junit:junit:4.12'

@@ -18,6 +18,17 @@
         android:orientation="vertical"
         tools:context=".views.addMultiDoc.AddMultiDocFragment">
 
+        <TextView
+            android:id="@+id/txtMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:text="You can add more documents"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <Button
             android:id="@+id/btnAdd"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
@@ -25,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:minWidth="0dp"
-            android:onClick="@{() -> viewmodel.addToList()}"
+            android:onClick="@{(view) -> viewmodel.addToList(inputDocRefrence.getEditText().getText().toString())}"
             android:text="Add"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
@@ -44,13 +55,13 @@
             app:errorText="@{viewmodel.docRefNoErr}"
             app:layout_constraintEnd_toStartOf="@+id/btnAdd"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toBottomOf="@id/txtMessage">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Document reference NO"
-                android:text="@={viewmodel.docRefNo}" />
+                android:text="@{viewmodel.docRefNo}" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
@@ -92,28 +103,48 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listDocs"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             app:items="@{viewmodel.documentsList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
-            tools:listitem="@layout/document_item"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnReadQR" />
+            app:layout_constraintTop_toBottomOf="@id/btnReadQR"
+            tools:itemCount="3"
+            tools:listitem="@layout/document_item" />
+
+        <TextView
+            android:id="@+id/noDocPlaceHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="There is no document yet in the list."
+            android:visibility="@{viewmodel.documentsList.empty ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/listDocs" />
+
 
         <Button
             android:id="@+id/btnClearList"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:onClick="@{() -> viewmodel.fakeClearList()}"
             android:text="Clear list"
-            android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
             android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnAdd" />
+            android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
+            app:layout_constraintEnd_toEndOf="@+id/btnAdd"
+            app:layout_constraintTop_toBottomOf="@+id/listDocs" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="16dp"
+            android:background="@color/cardview_shadow_end_color"
+            app:layout_constraintTop_toBottomOf="@id/btnClearList" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

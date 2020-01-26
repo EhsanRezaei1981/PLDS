@@ -6,11 +6,10 @@ import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
+import rezaei.mohammad.plds.data.model.request.FormResult
+import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
 import rezaei.mohammad.plds.data.model.request.LoginRequest
-import rezaei.mohammad.plds.data.model.response.BaseResponse
-import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
-import rezaei.mohammad.plds.data.model.response.ErrorHandling
-import rezaei.mohammad.plds.data.model.response.LoginResponse
+import rezaei.mohammad.plds.data.model.response.*
 
 class RemoteRepository(
     private val apiInterface: ApiInterface,
@@ -33,6 +32,41 @@ class RemoteRepository(
         withContext(ioDispatcher) {
             return@withContext parseResult(
                 apiInterface.retrieveDocumentStatus(DocumentStatusRequest(documentRefNo))
+            )
+        }
+
+    override suspend fun getDynamicFieldsUnsuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.getDynamicFieldsUnsuccessful(getDynamicFieldsRequest)
+            )
+        }
+
+    override suspend fun getDynamicFieldsSuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.getDynamicFieldsSuccessful(getDynamicFieldsRequest)
+            )
+        }
+
+    override suspend fun sendDynamicFieldResponse(formResult: FormResult): Result<BaseResponse<Unit>> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.sendDynamicFieldResponse(formResult)
+            )
+        }
+
+    override suspend fun getCourts(unit: Unit): Result<CourtResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.getCourts(unit)
+            )
+        }
+
+    override suspend fun getSheriffs(unit: Unit): Result<SheriffResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.getSheriffs(unit)
             )
         }
 

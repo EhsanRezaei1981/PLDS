@@ -5,9 +5,10 @@ import retrofit2.http.POST
 import retrofit2.http.Url
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
+import rezaei.mohammad.plds.data.model.request.FormResult
+import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
 import rezaei.mohammad.plds.data.model.request.LoginRequest
-import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
-import rezaei.mohammad.plds.data.model.response.LoginResponse
+import rezaei.mohammad.plds.data.model.response.*
 
 interface ApiInterface {
     @POST
@@ -18,4 +19,20 @@ interface ApiInterface {
 
     @POST("Tracking/RetrieveDocumentStatus")
     suspend fun retrieveDocumentStatus(@Body documentStatusRequest: DocumentStatusRequest): DocumentStatusResponse?
+
+    @POST("Tracking/GetStatusQueries")
+    suspend fun getDynamicFieldsUnsuccessful(@Body getDynamicFieldsRequest: GetDynamicFieldsRequest): FormResponse?
+
+    @POST("Tracking/GetStatusSuccesses")
+    suspend fun getDynamicFieldsSuccessful(@Body getDynamicFieldsRequest: GetDynamicFieldsRequest): FormResponse?
+
+    @POST("Tracking/DocumentStatusCreateResponse")
+    suspend fun sendDynamicFieldResponse(@Body formResult: FormResult): BaseResponse<Unit>?
+
+    @POST("Tracking/GetCourts")
+    suspend fun getCourts(@Body unit: Unit): CourtResponse?
+
+    @POST("Tracking/GetSheriffOffices")
+    suspend fun getSheriffs(@Body unit: Unit): SheriffResponse?
+
 }
