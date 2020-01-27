@@ -38,8 +38,11 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         @field:SerializedName("CommentIsNeeded")
         val commentIsNeeded: Int? = null,
 
-        @field:SerializedName("StatusQueryIssueId")
-        val statusQueryIssueId: Int? = null,
+        @field:SerializedName(
+            "StatusQueryIssueId",
+            alternate = ["CommonIssueId", "StatusSuccessId"]
+        )
+        val listId: Int? = null,
 
         @field:SerializedName("GPSIsNeeded")
         val gPSIsNeeded: Int? = null,

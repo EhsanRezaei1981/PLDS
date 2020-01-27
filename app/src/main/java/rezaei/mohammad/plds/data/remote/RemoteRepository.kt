@@ -5,10 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.Result
-import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
-import rezaei.mohammad.plds.data.model.request.FormResult
-import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
-import rezaei.mohammad.plds.data.model.request.LoginRequest
+import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.*
 
 class RemoteRepository(
@@ -67,6 +64,13 @@ class RemoteRepository(
         withContext(ioDispatcher) {
             return@withContext parseResult(
                 apiInterface.getSheriffs(unit)
+            )
+        }
+
+    override suspend fun getCommonIssues(documentList: List<DocumentsInfoItem>): Result<CommonIssuesResponse> =
+        withContext(ioDispatcher) {
+            return@withContext parseResult(
+                apiInterface.getCommonIssues(CommonIssueRequest(documentList))
             )
         }
 

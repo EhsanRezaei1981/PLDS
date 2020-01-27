@@ -15,7 +15,6 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         tools:context=".views.addMultiDoc.AddMultiDocFragment">
 
         <TextView
@@ -72,6 +71,7 @@
             android:layout_marginTop="8dp"
             android:text="Select from list"
             android:textAllCaps="false"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="@+id/btnAdd"
             app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
 
@@ -102,15 +102,16 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listDocs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:maxHeight="220dp"
             app:items="@{viewmodel.documentsList}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btnReadQR"
-            tools:itemCount="3"
             tools:listitem="@layout/document_item" />
 
         <TextView
@@ -132,19 +133,13 @@
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:onClick="@{() -> viewmodel.fakeClearList()}"
             android:text="Clear list"
             android:textAllCaps="false"
             android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
-            app:layout_constraintEnd_toEndOf="@+id/btnAdd"
-            app:layout_constraintTop_toBottomOf="@+id/listDocs" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="16dp"
-            android:background="@color/cardview_shadow_end_color"
-            app:layout_constraintTop_toBottomOf="@id/btnClearList" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/btnAdd" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

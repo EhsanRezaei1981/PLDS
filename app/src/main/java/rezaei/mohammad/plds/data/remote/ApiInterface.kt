@@ -4,10 +4,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url
 import rezaei.mohammad.plds.BuildConfig
-import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
-import rezaei.mohammad.plds.data.model.request.FormResult
-import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
-import rezaei.mohammad.plds.data.model.request.LoginRequest
+import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.*
 
 interface ApiInterface {
@@ -34,5 +31,8 @@ interface ApiInterface {
 
     @POST("Tracking/GetSheriffOffices")
     suspend fun getSheriffs(@Body unit: Unit): SheriffResponse?
+
+    @POST("Tracking/RetrieveCommonIssues")
+    suspend fun getCommonIssues(@Body commonIssueRequest: CommonIssueRequest): CommonIssuesResponse?
 
 }

@@ -27,6 +27,19 @@ sealed class ElementResult {
         val reply: String? = null
     ) : ElementResult()
 
+    data class IssueResult(
+        @field:SerializedName("Comment")
+        val comment: String? = null,
+        @field:SerializedName("Date")
+        var date: String? = null,
+        @field:SerializedName("CommonIssueId")
+        val cmmonIssueId: Int? = null,
+        @field:SerializedName("SelectedIssueDescription")
+        val selectedIssueDescription: String? = null,
+        @field:SerializedName("CustomAction")
+        val customAction: CustomAction? = null
+    ) : ElementResult()
+
 
 }
 

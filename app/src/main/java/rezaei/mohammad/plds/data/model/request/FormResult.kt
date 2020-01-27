@@ -13,6 +13,9 @@ data class FormResult(
     @field:SerializedName("Successful")
     var successful: Result? = null,
 
+    @field:SerializedName("ReportIssue")
+    var reportIssue: ElementResult? = null,
+
     @field:SerializedName("GPS")
     var gPS: Gps? = null,
 

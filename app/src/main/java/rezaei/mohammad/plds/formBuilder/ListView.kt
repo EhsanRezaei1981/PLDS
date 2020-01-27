@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference
 open class ListView(
     context: Fragment,
     private val structure: FormResponse.DataItem,
-    private val onListItemSelectedCallback: OnListItemSelectedCallback
+    private val onListItemSelectedCallback: OnListItemSelectedCallback?
 ) : LinearLayout(context.requireContext()), FormView {
 
     private val fragment = WeakReference(context)
@@ -56,7 +56,7 @@ open class ListView(
                 id: Long
             ) {
                 selectedItem = structure.list?.get(position)
-                onListItemSelectedCallback.onItemSelected(selectedItem?.ignoredStatusQueryJson?.map { it.statusQueryId })
+                onListItemSelectedCallback?.onItemSelected(selectedItem?.ignoredStatusQueryJson?.map { it.statusQueryId })
                 initViewForSelectedItem()
             }
 
@@ -87,11 +87,11 @@ open class ListView(
             initGps()
         }
         if (selectedItem?.customActionCode?.contains("WrongCourt") == true) {
-            onListItemSelectedCallback.courtListNeeded(courtList)
+            onListItemSelectedCallback?.courtListNeeded(courtList)
             initCourtList()
         }
         if (selectedItem?.customActionCode?.contains("WrongSheriff") == true) {
-            onListItemSelectedCallback.sheriffListNeeded(sheriffList)
+            onListItemSelectedCallback?.sheriffListNeeded(sheriffList)
             initSheriffList()
         }
 
@@ -272,28 +272,40 @@ open class ListView(
     override val elementId: Int = structure.statusQueryId ?: 0
 
     override val result: ElementResult?
-        get() = ElementResult.ListResult(
-            elementId,
-            ListItem(
-                id = selectedItem?.statusQueryIssueId,
-                text = selectedItem?.description,
-                comment = inputComment.editText?.text.toString(),
-                customAction = if (selectedCourt != null || selectedSheriff != null)
-                    CustomAction(
-                        Data(
-                            courtId = selectedCourt?.courtId,
-                            courtName = selectedCourt?.courtName,
-                            sheriffAreaName = selectedSheriff?.sheriffAreaName,
-                            sheriffOfficeId = selectedSheriff?.sheriffOfficeId
-                        )
-                    ) else null
-            ),
-            if (selectedGps != null)
-                Gps(
-                    selectedGps?.first,
-                    selectedGps?.second
-                ) else null
-        )
+        get() {
+            var result: ElementResult = if (selectedItem?.customActionCode != "Issue")
+                ElementResult.ListResult(
+                    elementId,
+                    ListItem(
+                        id = selectedItem?.listId,
+                        text = selectedItem?.description,
+                        comment = inputComment.editText?.text.toString(),
+                        customAction = if (selectedCourt != null || selectedSheriff != null)
+                            CustomAction(
+                                Data(
+                                    courtId = selectedCourt?.courtId,
+                                    courtName = selectedCourt?.courtName,
+                                    sheriffAreaName = selectedSheriff?.sheriffAreaName,
+                                    sheriffOfficeId = selectedSheriff?.sheriffOfficeId
+                                )
+                            ) else null
+                    ),
+                    if (selectedGps != null)
+                        Gps(
+                            selectedGps?.first,
+                            selectedGps?.second
+                        ) else null
+                )
+            else
+                ElementResult.IssueResult(
+                    inputComment.editText?.text.toString(),
+                    null,
+                    selectedItem?.listId,
+                    selectedItem?.description,
+                    null
+                )
+            return result
+        }
 
 }
 

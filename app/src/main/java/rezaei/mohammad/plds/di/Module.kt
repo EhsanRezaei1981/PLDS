@@ -21,6 +21,7 @@ import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
 import rezaei.mohammad.plds.views.main.GlobalViewModel
+import rezaei.mohammad.plds.views.reportIssue.ReportIssueViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 
 object Module {
@@ -81,5 +82,7 @@ object Module {
         viewModel { (docRefNo: MutableLiveData<String>) -> AddMultiDocViewModel(get(), docRefNo) }
 
         viewModel { SubmitFormViewModel(get(), get()) }
+
+        viewModel { ReportIssueViewModel(get(), get()) }
     }
 }

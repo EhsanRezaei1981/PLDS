@@ -51,7 +51,9 @@
         tools:layout="@layout/report_issue_fragment">
         <action
             android:id="@+id/action_reportIssueFragment_to_qrReaderFragment"
-            app:destination="@id/qrReaderFragment" />
+            app:destination="@id/qrReaderFragment"
+            app:launchSingleTop="false"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/qrReaderFragment"

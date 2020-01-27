@@ -21,7 +21,7 @@ class ElementParser(
     private val fragment: Fragment,
     elementList: List<FormResponse.DataItem>?,
     private val containerView: ViewGroup,
-    private val elementsActivityRequestCallback: ElementsActivityRequestCallback
+    private val elementsActivityRequestCallback: ElementsActivityRequestCallback?
 ) {
 
 
@@ -70,10 +70,19 @@ class ElementParser(
                     }
                 }
         }
-        if (formResult.responseType == "Unsuccessful") {
-            formResult.unsuccessful = Result(result)
-        } else {
-            formResult.successful = Result(result)
+        when (formResult.responseType) {
+            "Unsuccessful" -> {
+                formResult.unsuccessful = Result(result)
+            }
+            "Successful" -> {
+                formResult.successful = Result(result)
+            }
+            else -> {
+                formResult.reportIssue = result[1].also {
+                    (it as ElementResult.IssueResult).date =
+                        (result[0] as ElementResult.StringResult).reply
+                }
+            }
         }
         return formResult
     }
@@ -120,11 +129,11 @@ class ElementParser(
             }
 
             override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
-                elementsActivityRequestCallback.courtListNeeded(courtList)
+                elementsActivityRequestCallback?.courtListNeeded(courtList)
             }
 
             override fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>) {
-                elementsActivityRequestCallback.sheriffListNeeded(sheriffList)
+                elementsActivityRequestCallback?.sheriffListNeeded(sheriffList)
             }
         })
 
@@ -149,11 +158,11 @@ class ElementParser(
         )
         val component = FileView(fragment, structure, object : FileRequestsCallback {
             override fun requestPermission(permission: String) {
-                elementsActivityRequestCallback.requestPermission(permission)
+                elementsActivityRequestCallback?.requestPermission(permission)
             }
 
             override fun onPhotoTaken(result: MutableLiveData<Intent>) {
-                elementsActivityRequestCallback.onPhotoTaken(result)
+                elementsActivityRequestCallback?.onPhotoTaken(result)
             }
         })
         component.layoutParams = param
