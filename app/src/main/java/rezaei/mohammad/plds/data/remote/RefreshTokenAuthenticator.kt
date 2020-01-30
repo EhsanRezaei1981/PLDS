@@ -1,34 +1,32 @@
 package rezaei.mohammad.plds.data.remote
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import okhttp3.Interceptor
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import okhttp3.Authenticator
+import okhttp3.Request
 import okhttp3.Response
+import okhttp3.Route
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 
-class RefreshTokenInterceptor(
+class RefreshTokenAuthenticator(
     private val prefs: Lazy<PreferenceManager>,
     private val remoteRepository: Lazy<RemoteRepository>
-) : Interceptor {
-    private var isRefreshing = false
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val response = chain.proceed(chain.request())
-        val isAuthorize = response.code != 401
-        if (!isAuthorize && !isRefreshing) {
-            isRefreshing = true
-            return if (login())
-                chain.proceed(chain.request())
-            else
-                response
-
+) : Authenticator {
+    override fun authenticate(route: Route?, response: Response): Request? {
+        return runBlocking {
+            login()
+            return@runBlocking response.request.newBuilder()
+                .header("Authorization", "Bearer ${prefs.value.authToken}")
+                .build()
         }
-        return response
+
     }
 
-    private fun login(): Boolean {
+    private suspend fun login(): Boolean {
         var result = false
-        GlobalScope.launch {
+        return withContext(Dispatchers.IO) {
             val response = remoteRepository.value.login(
                 prefs.value.username ?: "",
                 prefs.value.password ?: ""
@@ -39,8 +37,8 @@ class RefreshTokenInterceptor(
                     result = true
                 }
             }
+            return@withContext result
         }
-        return result
     }
 
 }

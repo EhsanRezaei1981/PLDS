@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.local.LocalRepository
@@ -33,6 +34,7 @@ class AddMultiDocViewModel(
     val autoCheckAfterCodeDetect = MutableLiveData<Boolean>()
 
     init {
+        autoCheckAfterCodeDetect.value = true
         setupAutoCheck()
         loadDocumentList()
     }
@@ -71,14 +73,14 @@ class AddMultiDocViewModel(
     }
 
     fun clearList() {
-        viewModelScope.launch {
+        GlobalScope.launch {
             localRepository.deleteAllDocs(localRepository.getAllDocument())
             loadDocumentList()
         }
     }
 
     fun removeItem(document: Document) {
-        viewModelScope.launch {
+        GlobalScope.launch {
             localRepository.deleteDocument(document)
             loadDocumentList()
         }

@@ -1,5 +1,6 @@
 package rezaei.mohammad.plds.formBuilder
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
@@ -16,6 +17,7 @@ class DatePicker(context: Context?, structure: FormResponse.DataItem) :
         disableEditable()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun initDatePicker() {
         val date = Calendar.getInstance()
         inputText.editText?.setOnClickListener {
@@ -26,6 +28,11 @@ class DatePicker(context: Context?, structure: FormResponse.DataItem) :
                 date.get(Calendar.DAY_OF_MONTH)
             ).show()
         }
+        inputText.editText?.setText(
+            "${date.get(Calendar.YEAR)}/" +
+                    "${date.get(Calendar.MONTH).plus(1)}/" +
+                    "${date.get(Calendar.DAY_OF_MONTH)}"
+        )
     }
 
     private fun disableEditable() {
@@ -33,6 +40,7 @@ class DatePicker(context: Context?, structure: FormResponse.DataItem) :
         inputText.editText?.isClickable = true
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {
         inputText.editText?.setText("$year/${month.plus(1)}/$day")
     }

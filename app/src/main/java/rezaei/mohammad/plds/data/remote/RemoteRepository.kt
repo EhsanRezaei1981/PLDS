@@ -13,65 +13,105 @@ class RemoteRepository(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : RemoteRepository {
 
+    private val networkError = Result.Error(
+        ErrorHandling(
+            errorMessage = "Network or server error",
+            errorMustBeSeenByUser = true,
+            isSuccessful = false
+        )
+    )
+
     override suspend fun login(userName: String, password: String): Result<LoginResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.login(
-                    loginRequest = LoginRequest(
-                        username = userName,
-                        password = password
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.login(
+                        loginRequest = LoginRequest(
+                            username = userName,
+                            password = password
+                        )
                     )
                 )
-            )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun retrieveDocumentStatus(documentRefNo: String?): Result<DocumentStatusResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.retrieveDocumentStatus(DocumentStatusRequest(documentRefNo))
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.retrieveDocumentStatus(DocumentStatusRequest(documentRefNo))
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun getDynamicFieldsUnsuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.getDynamicFieldsUnsuccessful(getDynamicFieldsRequest)
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getDynamicFieldsUnsuccessful(getDynamicFieldsRequest)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun getDynamicFieldsSuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.getDynamicFieldsSuccessful(getDynamicFieldsRequest)
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getDynamicFieldsSuccessful(getDynamicFieldsRequest)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun sendDynamicFieldResponse(formResult: FormResult): Result<BaseResponse<Unit>> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.sendDynamicFieldResponse(formResult)
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.sendDynamicFieldResponse(formResult)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun getCourts(unit: Unit): Result<CourtResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.getCourts(unit)
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getCourts(unit)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     override suspend fun getSheriffs(unit: Unit): Result<SheriffResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.getSheriffs(unit)
-            )
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getSheriffs(unit)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
-    override suspend fun getCommonIssues(documentList: List<DocumentsInfoItem>): Result<CommonIssuesResponse> =
-        withContext(ioDispatcher) {
-            return@withContext parseResult(
-                apiInterface.getCommonIssues(CommonIssueRequest(documentList))
-            )
+    override suspend fun getCommonIssues(document: DocumentsInfoItem): Result<CommonIssuesResponse> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getCommonIssues(document)
+                )
+            }
+        } catch (e: Exception) {
+            networkError
         }
 
     private fun <T : BaseResponse<*>> parseResult(result: T?): Result<T> {

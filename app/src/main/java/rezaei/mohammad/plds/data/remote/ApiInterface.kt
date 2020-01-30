@@ -33,6 +33,6 @@ interface ApiInterface {
     suspend fun getSheriffs(@Body unit: Unit): SheriffResponse?
 
     @POST("Tracking/RetrieveCommonIssues")
-    suspend fun getCommonIssues(@Body commonIssueRequest: CommonIssueRequest): CommonIssuesResponse?
+    suspend fun getCommonIssues(@Body commonIssueRequest: DocumentsInfoItem): CommonIssuesResponse?
 
 }

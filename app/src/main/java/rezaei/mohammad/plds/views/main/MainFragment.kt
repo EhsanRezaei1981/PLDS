@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.util.setActivityTitle
 
 class MainFragment : Fragment() {
 
@@ -20,7 +21,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setActivityTitle("PLDS")
         btnUpdateDocProgress.setOnClickListener {
             navigateToGetDocRef()
         }
@@ -39,4 +40,6 @@ class MainFragment : Fragment() {
         val action = MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
         findNavController().navigate(action)
     }
+
+
 }

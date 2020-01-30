@@ -16,6 +16,8 @@ import me.dm7.barcodescanner.zbar.ZBarScannerView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.local.QRResponse
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 
@@ -35,6 +37,7 @@ class QrReaderFragment : Fragment(), ZBarScannerView.ResultHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setActivityTitle("Scan document QR code")
         checkPermission()
     }
 
@@ -90,7 +93,7 @@ class QrReaderFragment : Fragment(), ZBarScannerView.ResultHandler {
             globalViewModel.docRefNo.value = docRefNo
             findNavController().popBackStack()
         } else {
-            view?.snack("Document reference No not detected.")
+            view?.snack(ErrorHandling(errorMessage = "Document reference No not detected."))
         }
     }
 

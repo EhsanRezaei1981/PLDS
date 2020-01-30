@@ -15,6 +15,7 @@ import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
 import rezaei.mohammad.plds.databinding.GetDocReferenceFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 
@@ -38,7 +39,7 @@ class GetDocReferenceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        setActivityTitle("Check document status")
         btnReadQR.setOnClickListener {
             navigateToQrScanner()
         }
@@ -58,7 +59,7 @@ class GetDocReferenceFragment : Fragment() {
     private fun setupForDocumentStatusResponse() {
         viewModel.documentStatusEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { navigateToDocProgress(it.response.data!!) }
-            (it as? Result.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling) }
         })
     }
 

@@ -1,5 +1,8 @@
 package rezaei.mohammad.plds.util
 
+import android.graphics.Bitmap
+import android.view.View
+import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
@@ -14,6 +17,20 @@ fun TextInputLayout.setErrorMessage(errorMessage: Int) {
 }
 
 @BindingAdapter("app:items")
-fun setItems(listView: RecyclerView, items: MutableList<Document>?) {
-    (listView.adapter as DocumentAdapter).submitList(items)
+fun RecyclerView.setItems(items: MutableList<Document>?) {
+    (adapter as DocumentAdapter).submitList(items)
+}
+
+@BindingAdapter("app:setBitmap")
+fun ImageView.setBitmap(birmap: Bitmap?) {
+    this.setImageBitmap(birmap)
+}
+
+@BindingAdapter("app:endIconClick")
+fun TextInputLayout.onEndIconClick(onClick: onClick) {
+    this.setEndIconOnClickListener { onClick.onClick(this) }
+}
+
+interface onClick {
+    fun onClick(view: View)
 }

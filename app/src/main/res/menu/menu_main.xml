@@ -18,11 +18,11 @@
         android:id="@+id/action_support"
         android:orderInCategory="100"
         android:title="Support"
-        app:showAsAction="never" />
+        app:showAsAction="never" />-->
 
     <item
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
         android:title="Sign out"
-        app:showAsAction="never" />-->
+        app:showAsAction="never" />
 </menu>

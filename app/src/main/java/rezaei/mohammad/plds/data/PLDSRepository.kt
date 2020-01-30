@@ -14,7 +14,8 @@ interface RemoteRepository {
     suspend fun sendDynamicFieldResponse(formResult: FormResult): Result<BaseResponse<Unit>>
     suspend fun getCourts(unit: Unit): Result<CourtResponse>
     suspend fun getSheriffs(unit: Unit): Result<SheriffResponse>
-    suspend fun getCommonIssues(documentList: List<DocumentsInfoItem>): Result<CommonIssuesResponse>
+    suspend fun getCommonIssues(document: DocumentsInfoItem): Result<CommonIssuesResponse>
+
 }
 
 interface LocalRepository {

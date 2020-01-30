@@ -227,46 +227,48 @@ open class ListView(
     }
 
     override fun validate(): Boolean {
-        return if (structure.isMandatory == 0) {
-            true
+        val errors = mutableListOf<Boolean>()
+        if (structure.isMandatory == 0) {
+            errors.add(true)
         } else {
             if (selectedItem == null) {
                 spnItems.error = "This field is mandatory."
-                false
+                errors.add(false)
             } else {
                 if (selectedItem?.gPSIsNeeded == 1) {
-                    return if (selectedGps == null) {
+                    if (selectedGps == null) {
                         spnItems.error = "Gps data not available."
                         initGps()
-                        false
+                        errors.add(false)
                     } else {
                         spnItems.error = null
-                        true
+                        errors.add(true)
                     }
                 }
                 if (selectedItem?.commentIsNeeded == 1) {
-                    return if (inputComment.editText?.text.toString().isEmpty()) {
+                    if (inputComment.editText?.text.toString().isEmpty()) {
                         inputComment.error = "This field is mandatory."
-                        false
+                        errors.add(false)
                     } else {
                         inputComment.error = null
-                        true
+                        errors.add(true)
                     }
                 }
-                return if (spnCustomAction.visibility == View.VISIBLE) {
+                if (spnCustomAction.visibility == View.VISIBLE) {
                     if (selectedCourt == null || selectedSheriff == null) {
                         spnCustomAction.error = "This field is mandatory."
-                        false
+                        errors.add(false)
                     } else {
                         spnCustomAction.error = null
-                        true
+                        errors.add(true)
                     }
                 } else {
                     spnItems.error = null
-                    true
+                    errors.add(true)
                 }
             }
         }
+        return errors.all { it }
     }
 
     override val elementId: Int = structure.statusQueryId ?: 0

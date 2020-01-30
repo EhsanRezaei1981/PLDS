@@ -27,6 +27,7 @@ import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 
 class SubmitFormFragment : Fragment() {
@@ -54,6 +55,7 @@ class SubmitFormFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setActivityTitle("Submit result")
         args.successful?.let { drawForm(it) }
         args.unsuccessful?.let { drawForm(it) }
         setupCourtsSheriffsLoad()
@@ -90,11 +92,11 @@ class SubmitFormFragment : Fragment() {
     private fun setupCourtsSheriffsLoad() {
         viewModel.getCourtsEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { courtList.value = it.response.data }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
         viewModel.getSheriffsEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { sheriffList.value = it.response.data }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
@@ -127,12 +129,12 @@ class SubmitFormFragment : Fragment() {
     private fun setupSubmitFormEvent() {
         viewModel.submitFormEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { error ->
-                btnSubmit.snack(error.response.errorHandling?.errorMessage)
+                btnSubmit.snack(error.response.errorHandling)
                 viewModel.removeAllDocuments()
                 val action = findNavController().graph.startDestination
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 

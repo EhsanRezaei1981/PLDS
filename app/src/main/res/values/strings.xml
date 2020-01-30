@@ -1,12 +1,10 @@
 <resources>
     <string name="app_name">PLDS</string>
     <string name="title_activity_main">PLDS</string>
-    <string name="action_settings">Settings</string>
     <string name="validate_username_err">Enter your username please.</string>
     <string name="validate_pass_err">Enter your password please.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="doc_ref_no_validate_err">Enter document refrence NO</string>
 
 </resources>

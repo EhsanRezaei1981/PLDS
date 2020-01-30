@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
@@ -12,6 +13,8 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
@@ -26,6 +29,8 @@ class AddMultiDocFragment : Fragment() {
     private val viewModel: AddMultiDocViewModel by viewModel { parametersOf(globalViewModel.docRefNo) }
     private lateinit var viewDataBinding: AddMultiDocFragmentBinding
     private lateinit var documentAdapter: DocumentAdapter
+    // live data of document list for parent fragments access
+    lateinit var documentList: LiveData<MutableList<Document>>
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +41,7 @@ class AddMultiDocFragment : Fragment() {
             this.viewmodel = this@AddMultiDocFragment.viewModel
         }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
+        documentList = viewModel.documentsList
         return viewDataBinding.root
     }
 
@@ -75,7 +81,7 @@ class AddMultiDocFragment : Fragment() {
     private fun setupItemRemover() {
         viewModel.documentRemoveEvent.observe(this, EventObserver {
             listDocs.snack(
-                message = "Item removed.",
+                message = ErrorHandling(errorMessage = "Item removed."),
                 actionText = "UNDO",
                 action = { viewModel.loadDocumentList() },
                 onDismissAction = { viewModel.removeItem(it) },
@@ -84,7 +90,7 @@ class AddMultiDocFragment : Fragment() {
         })
         viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
             listDocs.snack(
-                "All items deleted.",
+                ErrorHandling(errorMessage = "All items deleted."),
                 "UNDO",
                 { viewModel.loadDocumentList() },
                 { viewModel.clearList() },
@@ -95,7 +101,7 @@ class AddMultiDocFragment : Fragment() {
 
     private fun duplicateItemMessage() {
         viewModel.duplicateDocumentEvent.observe(this, EventObserver {
-            viewDataBinding.listDocs.snack("Document is already exist.")
+            viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = "Document already exist."))
         })
     }
 

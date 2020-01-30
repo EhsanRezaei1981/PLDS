@@ -29,7 +29,7 @@ class GetDocReferenceViewModel(
         _documentStatusEvent
 
     init {
-        _dataLoading.value = false
+        autoCheckAfterCodeDetect.value = true
         setupAutoCheck()
     }
 

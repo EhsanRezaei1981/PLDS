@@ -1,8 +1,13 @@
 package rezaei.mohammad.plds.data.model.response
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Base64
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+
 
 class LoginResponse : BaseResponse<LoginResponse.User>() {
     @Entity(tableName = "user")
@@ -30,6 +35,9 @@ class LoginResponse : BaseResponse<LoginResponse.User>() {
         @field:SerializedName("JAToken")
         val jAToken: String? = null,
 
+        @field:SerializedName("UserImage")
+        val userImage: String? = null,
+
         @field:SerializedName("EventLoginId")
         val eventLoginId: Int? = null,
 
@@ -41,5 +49,20 @@ class LoginResponse : BaseResponse<LoginResponse.User>() {
 
         @field:SerializedName("SystemUrl")
         val systemUrl: String? = null
-    )
+    ) {
+        @Transient
+        @Ignore
+        var avatar: Bitmap? = null
+            get() {
+                val decodedString: ByteArray = Base64.decode(
+                    userImage?.substring(
+                        userImage.indexOf(",")
+                        , userImage.length
+                    ), Base64.DEFAULT
+                )
+                val decodedByte =
+                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                return decodedByte
+            }
+    }
 }

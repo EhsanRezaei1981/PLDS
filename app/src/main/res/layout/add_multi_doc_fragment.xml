@@ -12,134 +12,142 @@
         <import type="android.view.View" />
     </data>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context=".views.addMultiDoc.AddMultiDocFragment">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
 
-        <TextView
-            android:id="@+id/txtMessage"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="8dp"
-            android:text="You can add more documents"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            tools:context=".views.addMultiDoc.AddMultiDocFragment">
 
-        <Button
-            android:id="@+id/btnAdd"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:minWidth="0dp"
-            android:onClick="@{(view) -> viewmodel.addToList(inputDocRefrence.getEditText().getText().toString())}"
-            android:text="Add"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/inputDocRefrence" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/inputDocRefrence"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            app:errorEnabled="@{(viewmodel.docRefNoErr == 0) ? false : true}"
-            app:errorText="@{viewmodel.docRefNoErr}"
-            app:layout_constraintEnd_toStartOf="@+id/btnAdd"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/txtMessage">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtMessage"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:hint="Document reference NO"
-                android:text="@{viewmodel.docRefNo}" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/btnSelectFromList"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Select from list"
-            android:textAllCaps="false"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="@+id/btnAdd"
-            app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnReadQR"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:minWidth="48dp"
-            app:icon="@drawable/ic_qr_code"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:iconSize="36dp"
-            app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
-            app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
-
-        <CheckBox
-            android:id="@+id/chkAutoAdd"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:checked="@={viewmodel.autoCheckAfterCodeDetect}"
-            android:text="Add automatically"
-            app:layout_constraintBottom_toBottomOf="@+id/btnReadQR"
-            app:layout_constraintStart_toEndOf="@+id/btnReadQR"
-            app:layout_constraintTop_toTopOf="@+id/btnReadQR" />
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listDocs"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginTop="8dp"
-            android:maxHeight="220dp"
-            app:items="@{viewmodel.documentsList}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btnReadQR"
-            tools:listitem="@layout/document_item" />
-
-        <TextView
-            android:id="@+id/noDocPlaceHolder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="There is no document yet in the list."
-            android:visibility="@{viewmodel.documentsList.empty ? View.VISIBLE : View.GONE}"
-            app:layout_constraintBottom_toTopOf="@+id/btnClearList"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/listDocs" />
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="Add more documents"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-        <Button
-            android:id="@+id/btnClearList"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:onClick="@{() -> viewmodel.fakeClearList()}"
-            android:text="Clear list"
-            android:textAllCaps="false"
-            android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnAdd" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputDocRefrence"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:endIconClick="@{(view) -> viewmodel.addToList(inputDocRefrence.getEditText().getText().toString())}"
+                app:endIconDrawable="@drawable/ic_add_box"
+                app:endIconMode="custom"
+                app:endIconTint="@color/colorAccent"
+                app:errorEnabled="@{(viewmodel.docRefNoErr == 0) ? false : true}"
+                app:errorIconDrawable="@null"
+                app:errorText="@{viewmodel.docRefNoErr}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtMessage">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Document reference NO"
+                    android:text="@{viewmodel.docRefNo}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnSelectFromList"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Select from list"
+                android:textAllCaps="false"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReadQR"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:minWidth="48dp"
+                app:icon="@drawable/ic_qr_code"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="36dp"
+                app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
+                app:layout_constraintTop_toBottomOf="@+id/inputDocRefrence" />
+
+            <CheckBox
+                android:id="@+id/chkAutoAdd"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:checked="@={viewmodel.autoCheckAfterCodeDetect}"
+                android:text="Add automatically"
+                app:layout_constraintBottom_toBottomOf="@+id/btnReadQR"
+                app:layout_constraintStart_toEndOf="@+id/btnReadQR" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listDocs"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:items="@{viewmodel.documentsList}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnReadQR"
+                tools:itemCount="5"
+                tools:listitem="@layout/document_item" />
+
+            <TextView
+                android:id="@+id/noDocPlaceHolder"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="There is no document yet in the list."
+                android:visibility="@{viewmodel.documentsList.empty ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toTopOf="@+id/btnClearList"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/listDocs" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClearList"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="@{() -> viewmodel.fakeClearList()}"
+                android:text="Clear list"
+                android:textAllCaps="false"
+                android:visibility="@{viewmodel.documentsList.empty ? View.GONE : View.VISIBLE}"
+                app:icon="@drawable/ic_delete"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/listDocs" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </layout>

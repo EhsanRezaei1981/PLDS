@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragmen_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.databinding.FragmenLoginBinding
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.main.MainActivity
 
 class LoginFragment : Fragment() {
@@ -46,12 +46,8 @@ class LoginFragment : Fragment() {
     private fun setupForLoginResponse() {
         viewModel.loginResultEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { loginSuccess() }
-            (it as? Result.Error)?.let { error -> showSnackBar(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnLogin.snack(error.errorHandling) }
         })
-    }
-
-    private fun showSnackBar(message: String?) {
-        Snackbar.make(btnLogin, message ?: "Unknown error", Snackbar.LENGTH_LONG).show()
     }
 
     private fun loginSuccess() {

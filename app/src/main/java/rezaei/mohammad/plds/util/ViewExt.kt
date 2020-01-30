@@ -1,22 +1,35 @@
 package rezaei.mohammad.plds.util
 
+import android.app.Activity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.snackbar.Snackbar.Callback
+import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
+
 
 fun View.snack(
-    message: String?,
+    message: ErrorHandling?,
     actionText: String? = null,
     action: (() -> Unit)? = null,
     onDismissAction: (() -> Unit)? = null,
     duration: Int? = null
 ) {
+    hideKeyboard()
     val snack = Snackbar.make(
-        this, message ?: "",
+        this, message?.errorMessage ?: "Unknown error",
         duration ?: if (actionText == null) Snackbar.LENGTH_LONG else Snackbar.LENGTH_INDEFINITE
     )
 
+    if (message?.isSuccessful != null && message.isSuccessful == false)
+        snack.setTextColor(ContextCompat.getColor(context, R.color.colorNo))
+
     var isActionInvoke = false
+    var isDismissActionInvoke = false
 
     snack.setAction(actionText) {
         action?.let {
@@ -30,11 +43,36 @@ fun View.snack(
         snack.addCallback(object : Callback() {
             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                 super.onDismissed(transientBottomBar, event)
-                if (!isActionInvoke)
+                if (!isActionInvoke && !isDismissActionInvoke) {
                     onDismissAction.invoke()
+                    isDismissActionInvoke = true
+                }
             }
         })
     }
 
+    /*duration?.let {
+        Handler().postDelayed({
+            if (!isActionInvoke)
+                if (!isActionInvoke && !isDismissActionInvoke) {
+                    onDismissAction?.invoke()
+                    isDismissActionInvoke = true
+                }
+        },duration.toLong())
+    }*/
+
+
     snack.show()
+}
+
+fun Fragment.setActivityTitle(title: String?) {
+    title?.let {
+        (requireActivity() as AppCompatActivity).supportActionBar?.title = title
+    }
+}
+
+fun View.hideKeyboard() {
+    val imm: InputMethodManager =
+        context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(this.windowToken, 0)
 }

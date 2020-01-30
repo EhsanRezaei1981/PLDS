@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import rezaei.mohammad.plds.PLDSapp
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.data.remote.RemoteRepository
@@ -15,6 +15,7 @@ import rezaei.mohammad.plds.util.Event
 
 class LoginViewModel(
     private val remoteRepository: RemoteRepository,
+    private val localRepository: LocalRepository,
     private val preferenceManager: PreferenceManager
 ) : ViewModel() {
 
@@ -33,15 +34,9 @@ class LoginViewModel(
     val loginResultEvent: LiveData<Event<Result<LoginResponse>>> = _loginResultEvent
 
     init {
-        _isLoading.value = false
-
-        username.value = preferenceManager.username
-        password.value = preferenceManager.password
-
         //login automatically after first one
-        if (username.value != null)
-            login()
-
+        if (preferenceManager.authToken != null)
+            _loginResultEvent.value = Event(Result.Success(LoginResponse()))
     }
 
 
@@ -77,7 +72,8 @@ class LoginViewModel(
         preferenceManager.password = password.value
         preferenceManager.authToken = loginResponse.data?.jAToken
 
-        //set login info to application class for use in hole app
-        PLDSapp.currentUser = loginResponse.data
+        viewModelScope.launch {
+            localRepository.saveUser(loginResponse.data!!)
+        }
     }
 }

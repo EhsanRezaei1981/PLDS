@@ -71,8 +71,8 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         @field:SerializedName("CameraIsNeeded")
         val cameraIsNeeded: Boolean? = null,
 
-        @field:SerializedName("Exnetions")
-        val exnetions: String? = null,
+        @field:SerializedName("Extensions")
+        val extensions: String? = null,
 
         @field:SerializedName("MaxSize")
         val maxSize: String? = null

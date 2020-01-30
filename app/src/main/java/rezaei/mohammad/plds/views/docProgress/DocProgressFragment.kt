@@ -14,6 +14,7 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.databinding.DocProgressFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 
@@ -38,6 +39,7 @@ class DocProgressFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setActivityTitle("Document reference NO: ${args.documentStatus.documentReferenceNo}")
         setupButtonsCallback()
         setupMultiAddDocView()
     }
@@ -57,7 +59,7 @@ class DocProgressFragment : Fragment() {
                     )
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })
         viewModel.onNoPressEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let {
@@ -70,7 +72,7 @@ class DocProgressFragment : Fragment() {
                     )
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })
     }
 

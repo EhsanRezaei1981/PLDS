@@ -11,14 +11,18 @@ import kotlinx.android.synthetic.main.report_issue_fragment.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.databinding.ReportIssueFragmentBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 
 class ReportIssueFragment : Fragment() {
 
@@ -40,41 +44,49 @@ class ReportIssueFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setActivityTitle("Report issue")
         setupCommonIssueList()
         setupSubmitEvent()
         setupSubmitFormEvent()
+        setupDocumentListObserver()
     }
 
     private fun setupCommonIssueList() {
         viewModel.commonIssues.observe(this, Observer {
             (it as? Result.Success)?.let { result ->
-                elementParser = ElementParser(
-                    this,
-                    listOf(
-                        //create date picker
-                        FormResponse.DataItem(
-                            1,
-                            "Date",
-                            "Date"
-                            //create reason spinner
-                        ), FormResponse.DataItem(
-                            1,
-                            "Reason",
-                            "List",
-                            result.response.data?.map {
-                                FormResponse.ListItem(
-                                    it.description,
-                                    "Issue",
-                                    it.commentIsNeeded,
-                                    it.listId,
-                                    it.gPSIsNeeded
-                                )
-                            })
-                    ),
-                    viewDataBinding.layoutContainer,
-                    null
-                )
+                viewDataBinding.layoutContainer.removeAllViews()
+                if (result.response.data?.isNotEmpty() == true) {
+                    elementParser = ElementParser(
+                        this,
+                        listOf(
+                            //create date picker
+                            FormResponse.DataItem(
+                                1,
+                                "Date",
+                                "Date"
+                                //create reason spinner
+                            ), FormResponse.DataItem(
+                                1,
+                                "Reason",
+                                "List",
+                                result.response.data.map {
+                                    FormResponse.ListItem(
+                                        it.description,
+                                        "Issue",
+                                        it.commentIsNeeded,
+                                        it.listId,
+                                        it.gPSIsNeeded
+                                    )
+                                })
+                        ),
+                        viewDataBinding.layoutContainer,
+                        null
+                    )
+                } else {
+                    btnSubmit.snack(ErrorHandling(errorMessage = "There is no data for these documents."))
+                }
             }
+            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
@@ -102,12 +114,21 @@ class ReportIssueFragment : Fragment() {
     private fun setupSubmitFormEvent() {
         viewModel.submitFormEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { error ->
-                btnSubmit.snack(error.response.errorHandling?.errorMessage)
+                btnSubmit.snack(error.response.errorHandling)
                 viewModel.removeAllDocuments()
                 val action = findNavController().graph.startDestination
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling?.errorMessage) }
+            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+        })
+    }
+
+    private fun setupDocumentListObserver() {
+        (childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)
+            .documentList.observe(this, Observer {
+            //if common issue list was empty, load it again on document changes
+            if (viewDataBinding.layoutContainer.childCount == 0)
+                viewModel.getCommonIssues()
         })
     }
 }

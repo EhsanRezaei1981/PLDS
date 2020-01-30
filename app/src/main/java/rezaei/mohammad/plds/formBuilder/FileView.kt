@@ -43,7 +43,7 @@ class FileView(
 
     private fun setStructure() {
         txtLabel.text = structure.label
-        txtFileExtensions.text = structure.dataTypeSetting?.file?.exnetions
+        txtFileExtensions.text = structure.dataTypeSetting?.file?.extensions
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
             btnBrowseFile.text = ""
@@ -102,7 +102,7 @@ class FileView(
                 setError("This field is mandatory.")
                 false
             } else {
-                val acceptableExtensions = structure.dataTypeSetting?.file?.exnetions
+                val acceptableExtensions = structure.dataTypeSetting?.file?.extensions
                     ?.split(",")?.apply { forEach { it.trim() } }
                 val maxFileSize = structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
                 val minFileSize = structure.dataTypeSetting?.file?.minSize?.toLong() ?: 0

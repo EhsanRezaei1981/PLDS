@@ -22,6 +22,9 @@ class ReportIssueViewModel(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
+    private val _dataExist = MutableLiveData<Boolean>()
+    val dataExist: LiveData<Boolean> = _dataExist
+
     private val _submitEvent = MutableLiveData<Event<Unit>>()
     val submitEvent: LiveData<Event<Unit>> = _submitEvent
 
@@ -32,18 +35,20 @@ class ReportIssueViewModel(
     val commonIssues: LiveData<Result<CommonIssuesResponse>> = _commonIssues
 
     init {
-        getCommonIssues()
+        setupDataExist()
     }
 
     fun getCommonIssues() {
         viewModelScope.launch {
-            _dataLoading.value = true
-            val result = remoteRepository.getCommonIssues(
-                localRepository.getAllDocument()
-                    .map { DocumentsInfoItem(it.docRefNo) }
-            )
-            _commonIssues.value = result
-            _dataLoading.value = false
+            if (localRepository.getAllDocument().isNotEmpty()) {
+                _dataLoading.value = true
+                val result = remoteRepository.getCommonIssues(
+                    DocumentsInfoItem(localRepository.getAllDocument().first().docRefNo)
+                )
+                _commonIssues.value = result
+                _dataLoading.value = false
+            }
+
         }
     }
 
@@ -66,6 +71,12 @@ class ReportIssueViewModel(
             val result = remoteRepository.sendDynamicFieldResponse(formResult)
             _submitFormEvent.value = Event(result)
             _dataLoading.value = false
+        }
+    }
+
+    private fun setupDataExist() {
+        _commonIssues.observeForever {
+            _dataExist.value = (it as? Result.Success)?.response?.data?.isNotEmpty() == true
         }
     }
 }
