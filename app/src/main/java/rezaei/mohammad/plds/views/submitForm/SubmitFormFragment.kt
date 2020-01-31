@@ -129,10 +129,11 @@ class SubmitFormFragment : Fragment() {
     private fun setupSubmitFormEvent() {
         viewModel.submitFormEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { error ->
-                btnSubmit.snack(error.response.errorHandling)
+                btnSubmit.snack(error.response.errorHandling, onDismissAction = {
+                    val action = findNavController().graph.startDestination
+                    findNavController().navigate(action)
+                })
                 viewModel.removeAllDocuments()
-                val action = findNavController().graph.startDestination
-                findNavController().navigate(action)
             }
             (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })

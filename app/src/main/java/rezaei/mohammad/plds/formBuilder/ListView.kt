@@ -236,7 +236,7 @@ open class ListView(
                 errors.add(false)
             } else {
                 if (selectedItem?.gPSIsNeeded == 1) {
-                    if (selectedGps == null) {
+                    if (selectedGps == null || selectedGps?.first == 0.0) {
                         spnItems.error = "Gps data not available."
                         initGps()
                         errors.add(false)
@@ -304,7 +304,12 @@ open class ListView(
                     null,
                     selectedItem?.listId,
                     selectedItem?.description,
-                    null
+                    null,
+                    if (selectedGps != null)
+                        Gps(
+                            selectedGps?.first,
+                            selectedGps?.second
+                        ) else null
                 )
             return result
         }

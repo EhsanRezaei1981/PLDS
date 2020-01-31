@@ -9,15 +9,21 @@ import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.util.Event
+import java.util.*
 
 class AddMultiDocViewModel(
     private val localRepository: LocalRepository,
-    val docRefNo: MutableLiveData<String>
+    val docRefNo: MutableLiveData<String>,
+    private val docType: DocumentType
 ) : ViewModel() {
 
     private val _documentsList = MutableLiveData<MutableList<Document>>()
     val documentsList: LiveData<MutableList<Document>> = _documentsList
+
+    private val _removeDocumentsList = MutableLiveData<MutableList<Document>>()
+    val removeDocumentsList: LiveData<MutableList<Document>> = _removeDocumentsList
 
     private val _docRefNoErr = MutableLiveData<Int>()
     val docRefNoErr: MutableLiveData<Int> = _docRefNoErr
@@ -34,6 +40,7 @@ class AddMultiDocViewModel(
     val autoCheckAfterCodeDetect = MutableLiveData<Boolean>()
 
     init {
+        _removeDocumentsList.value = mutableListOf()
         autoCheckAfterCodeDetect.value = true
         setupAutoCheck()
         loadDocumentList()
@@ -41,7 +48,7 @@ class AddMultiDocViewModel(
 
     fun loadDocumentList() {
         viewModelScope.launch {
-            _documentsList.value = localRepository.getAllDocument().toMutableList()
+            _documentsList.value = localRepository.getAllDocument(docType).toMutableList()
         }
     }
 
@@ -49,7 +56,13 @@ class AddMultiDocViewModel(
         validateDocRefNo(docRefNo)
         if (_docRefNoErr.value == 0)
             viewModelScope.launch {
-                val status = localRepository.insertDocument(Document(docRefNo!!))
+                val status = localRepository.insertDocument(
+                    Document(
+                        docRefNo = docRefNo!!.toUpperCase(
+                            Locale.US
+                        ), documentType = docType
+                    )
+                )
                 if (status)
                     loadDocumentList()
                 else
@@ -65,16 +78,17 @@ class AddMultiDocViewModel(
 
     fun fakeRemoveItem(document: Document) {
         // TODO: BUG: recycle view doesn't update with one time remove item
+        _removeDocumentsList.value?.add(document)
         val newList = _documentsList.value
-            ?.dropWhile { it == document }?.toMutableList()
+            ?.dropWhile { _removeDocumentsList.value!!.contains(it) }?.toMutableList()
+        _documentsList.value?.removeAll(_removeDocumentsList.value!!)
         _documentsList.value = newList
-        _documentsList.value?.remove(document)
         _documentRemoveEvent.value = Event(document)
     }
 
     fun clearList() {
         GlobalScope.launch {
-            localRepository.deleteAllDocs(localRepository.getAllDocument())
+            localRepository.deleteAllDocs(localRepository.getAllDocument(docType))
             loadDocumentList()
         }
     }
@@ -82,6 +96,7 @@ class AddMultiDocViewModel(
     fun removeItem(document: Document) {
         GlobalScope.launch {
             localRepository.deleteDocument(document)
+            _removeDocumentsList.value!!.remove(document)
             loadDocumentList()
         }
     }

@@ -68,6 +68,10 @@ class ElementParser(
                         if (it.gps != null)
                             formResult.gPS = it.gps
                     }
+                    (element.result as? ElementResult.IssueResult)?.let {
+                        if (it.gps != null)
+                            formResult.gPS = it.gps
+                    }
                 }
         }
         when (formResult.responseType) {

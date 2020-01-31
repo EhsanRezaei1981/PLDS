@@ -114,10 +114,10 @@ class ReportIssueFragment : Fragment() {
     private fun setupSubmitFormEvent() {
         viewModel.submitFormEvent.observe(this, EventObserver {
             (it as? Result.Success)?.let { error ->
-                btnSubmit.snack(error.response.errorHandling)
+                btnSubmit.snack(
+                    error.response.errorHandling,
+                    onDismissAction = { findNavController().popBackStack() })
                 viewModel.removeAllDocuments()
-                val action = findNavController().graph.startDestination
-                findNavController().navigate(action)
             }
             (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
@@ -127,8 +127,12 @@ class ReportIssueFragment : Fragment() {
         (childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)
             .documentList.observe(this, Observer {
             //if common issue list was empty, load it again on document changes
-            if (viewDataBinding.layoutContainer.childCount == 0)
+            if (viewDataBinding.layoutContainer.childCount == 0 && it.isNotEmpty())
                 viewModel.getCommonIssues()
+            else if (it.isEmpty()) {
+                viewDataBinding.layoutContainer.removeAllViews()
+                viewModel.dataExist.value = false
+            }
         })
     }
 }

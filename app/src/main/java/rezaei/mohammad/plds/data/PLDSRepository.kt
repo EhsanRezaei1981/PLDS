@@ -1,6 +1,7 @@
 package rezaei.mohammad.plds.data
 
 import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
@@ -28,7 +29,7 @@ interface LocalRepository {
 
     suspend fun insertDocument(document: Document): Boolean
 
-    suspend fun getAllDocument(): List<Document>
+    suspend fun getAllDocument(documentType: DocumentType): List<Document>
 
     suspend fun deleteDocument(document: Document)
 

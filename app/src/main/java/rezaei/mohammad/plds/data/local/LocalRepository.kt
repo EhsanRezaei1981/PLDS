@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.LocalRepository
 import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
 class LocalRepository(
@@ -42,9 +43,9 @@ class LocalRepository(
         }
     }
 
-    override suspend fun getAllDocument(): List<Document> {
+    override suspend fun getAllDocument(documentType: DocumentType): List<Document> {
         return withContext(ioDispatcher) {
-            return@withContext pldsDao.getAllDocument()
+            return@withContext pldsDao.getAllDocument(documentType)
         }
     }
 

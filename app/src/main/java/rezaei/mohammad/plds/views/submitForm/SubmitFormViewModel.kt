@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.local.LocalRepository
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.response.BaseResponse
 import rezaei.mohammad.plds.data.model.response.CourtResponse
@@ -54,7 +55,7 @@ class SubmitFormViewModel(
     }
 
     suspend fun getDocumentList() =
-        localRepository.getAllDocument()
+        localRepository.getAllDocument(DocumentType.CheckProgress)
 
     fun submitForm(formResult: FormResult) {
         viewModelScope.launch {
@@ -67,7 +68,7 @@ class SubmitFormViewModel(
 
     fun removeAllDocuments() {
         viewModelScope.launch {
-            localRepository.deleteAllDocs(localRepository.getAllDocument())
+            localRepository.deleteAllDocs(getDocumentList())
         }
     }
 

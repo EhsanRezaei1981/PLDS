@@ -12,6 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.local.PLDSDatabase
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.data.remote.ApiInterface
 import rezaei.mohammad.plds.data.remote.AuthInterceptor
@@ -87,7 +88,13 @@ object Module {
 
         viewModel { DocProgressViewModel(get()) }
 
-        viewModel { (docRefNo: MutableLiveData<String>) -> AddMultiDocViewModel(get(), docRefNo) }
+        viewModel { (docRefNo: MutableLiveData<String>, docType: DocumentType) ->
+            AddMultiDocViewModel(
+                get(),
+                docRefNo,
+                docType
+            )
+        }
 
         viewModel { SubmitFormViewModel(get(), get()) }
 

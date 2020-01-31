@@ -9,11 +9,12 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
@@ -25,8 +26,19 @@ import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
 
 class AddMultiDocFragment : Fragment() {
 
+    private val docType: Lazy<DocumentType> = lazy {
+        if (parentFragment is ReportIssueFragment)
+            DocumentType.ReportIssue
+        else
+            DocumentType.CheckProgress
+    }
     private val globalViewModel: GlobalViewModel by sharedViewModel()
-    private val viewModel: AddMultiDocViewModel by viewModel { parametersOf(globalViewModel.docRefNo) }
+    private val viewModel: AddMultiDocViewModel by inject {
+        parametersOf(
+            globalViewModel.docRefNo,
+            docType.value
+        )
+    }
     private lateinit var viewDataBinding: AddMultiDocFragmentBinding
     private lateinit var documentAdapter: DocumentAdapter
     // live data of document list for parent fragments access
@@ -85,7 +97,7 @@ class AddMultiDocFragment : Fragment() {
                 actionText = "UNDO",
                 action = { viewModel.loadDocumentList() },
                 onDismissAction = { viewModel.removeItem(it) },
-                duration = 5000
+                duration = 3000
             )
         })
         viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
@@ -94,7 +106,7 @@ class AddMultiDocFragment : Fragment() {
                 "UNDO",
                 { viewModel.loadDocumentList() },
                 { viewModel.clearList() },
-                5000
+                3000
             )
         })
     }

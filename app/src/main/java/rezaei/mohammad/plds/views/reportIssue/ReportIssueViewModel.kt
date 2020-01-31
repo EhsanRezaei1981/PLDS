@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.local.LocalRepository
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.response.BaseResponse
@@ -22,11 +23,11 @@ class ReportIssueViewModel(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
-    private val _dataExist = MutableLiveData<Boolean>()
-    val dataExist: LiveData<Boolean> = _dataExist
+
+    val dataExist = MutableLiveData<Boolean>()
 
     private val _submitEvent = MutableLiveData<Event<Unit>>()
-    val submitEvent: LiveData<Event<Unit>> = _submitEvent
+    val submitEvent: MutableLiveData<Event<Unit>> = _submitEvent
 
     private val _submitFormEvent = MutableLiveData<Event<Result<BaseResponse<Unit>>>>()
     val submitFormEvent: LiveData<Event<Result<BaseResponse<Unit>>>> = _submitFormEvent
@@ -40,10 +41,10 @@ class ReportIssueViewModel(
 
     fun getCommonIssues() {
         viewModelScope.launch {
-            if (localRepository.getAllDocument().isNotEmpty()) {
+            if (localRepository.getAllDocument(DocumentType.ReportIssue).isNotEmpty()) {
                 _dataLoading.value = true
                 val result = remoteRepository.getCommonIssues(
-                    DocumentsInfoItem(localRepository.getAllDocument().first().docRefNo)
+                    DocumentsInfoItem(getDocumentList().first().docRefNo)
                 )
                 _commonIssues.value = result
                 _dataLoading.value = false
@@ -53,11 +54,11 @@ class ReportIssueViewModel(
     }
 
     suspend fun getDocumentList() =
-        localRepository.getAllDocument()
+        localRepository.getAllDocument(DocumentType.ReportIssue)
 
     fun removeAllDocuments() {
         viewModelScope.launch {
-            localRepository.deleteAllDocs(localRepository.getAllDocument())
+            localRepository.deleteAllDocs(getDocumentList())
         }
     }
 
@@ -76,7 +77,7 @@ class ReportIssueViewModel(
 
     private fun setupDataExist() {
         _commonIssues.observeForever {
-            _dataExist.value = (it as? Result.Success)?.response?.data?.isNotEmpty() == true
+            dataExist.value = ((it as? Result.Success)?.response?.data?.isNotEmpty() == true)
         }
     }
 }

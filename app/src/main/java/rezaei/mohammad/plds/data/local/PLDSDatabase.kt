@@ -20,10 +20,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
 @Database(entities = [LoginResponse.User::class, Document::class], version = 1, exportSchema = true)
+@TypeConverters(Converters::class)
 abstract class PLDSDatabase : RoomDatabase() {
 
     abstract fun PLDSDao(): PLDSDao

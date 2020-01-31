@@ -51,16 +51,14 @@ fun View.snack(
         })
     }
 
-    /*duration?.let {
-        Handler().postDelayed({
-            if (!isActionInvoke)
-                if (!isActionInvoke && !isDismissActionInvoke) {
-                    onDismissAction?.invoke()
-                    isDismissActionInvoke = true
-                }
-        },duration.toLong())
-    }*/
+    this.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+        override fun onViewDetachedFromWindow(p0: View?) {
+            snack.dismiss()
+        }
 
+        override fun onViewAttachedToWindow(p0: View?) {
+        }
+    })
 
     snack.show()
 }

@@ -24,11 +24,11 @@
             android:name=".views.main.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize|adjustPan" />
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".views.login.LoginActivity"
-            android:windowSoftInputMode="adjustResize|adjustPan">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -27,7 +27,7 @@ sealed class ElementResult {
         val reply: String? = null
     ) : ElementResult()
 
-    data class IssueResult(
+    class IssueResult(
         @field:SerializedName("Comment")
         val comment: String? = null,
         @field:SerializedName("Date")
@@ -37,7 +37,9 @@ sealed class ElementResult {
         @field:SerializedName("SelectedIssueDescription")
         val selectedIssueDescription: String? = null,
         @field:SerializedName("CustomAction")
-        val customAction: CustomAction? = null
+        val customAction: CustomAction? = null,
+        @Transient
+        val gps: Gps? = null
     ) : ElementResult()
 
 

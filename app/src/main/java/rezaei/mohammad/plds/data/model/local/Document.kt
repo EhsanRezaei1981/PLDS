@@ -1,14 +1,17 @@
 package rezaei.mohammad.plds.data.model.local
 
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 
-@Entity(tableName = "document")
+@Entity(tableName = "document", indices = [Index("docRefNo", unique = true)])
 data class Document(
-    @PrimaryKey
-    var docRefNo: String
+    @PrimaryKey(autoGenerate = true)
+    var id: Int? = null,
+    @ColumnInfo(name = "docRefNo")
+    var docRefNo: String,
+    var documentType: DocumentType
 ) {
     @Ignore
     var positionInList: String? = null
 }
+
+enum class DocumentType { ReportIssue, CheckProgress }

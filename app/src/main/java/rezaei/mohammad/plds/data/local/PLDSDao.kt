@@ -2,6 +2,7 @@ package rezaei.mohammad.plds.data.local
 
 import androidx.room.*
 import rezaei.mohammad.plds.data.model.local.Document
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
 @Dao
@@ -19,8 +20,8 @@ interface PLDSDao {
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertDocument(document: Document)
 
-    @Query("SELECT * FROM document")
-    suspend fun getAllDocument(): List<Document>
+    @Query("SELECT * FROM document WHERE documentType = :documentType ORDER BY id Desc")
+    suspend fun getAllDocument(documentType: DocumentType): List<Document>
 
     @Delete
     suspend fun deleteDocument(document: Document)
