@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "497834442007",
+    "firebase_url": "https://plds-78b83.firebaseio.com",
+    "project_id": "plds-78b83",
+    "storage_bucket": "plds-78b83.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497834442007:android:f9e728f420e00ba1df4b52",
+        "android_client_info": {
+          "package_name": "rezaei.mohammad.plds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "497834442007-69bpvhln3q5dqhcnpnufd15jvv966c9f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "rezaei.mohammad.plds",
+            "certificate_hash": "8654c44e6669eafe1b2da3bbffea8167a2984333"
+          }
+        },
+        {
+          "client_id": "497834442007-q3jleths23mnibk6ld440k57ti2jc9m9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPq6sLqEX62X1H36XoQWuX8AAqBKq105I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "497834442007-q3jleths23mnibk6ld440k57ti2jc9m9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
