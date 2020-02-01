@@ -6,14 +6,18 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
+// Load keystore
+def keystorePropertiesFile = rootProject.file("local.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
         visro {
-            storeFile file('C:\\Users\\Neo\\AndroidStudioProjects\\KeyStore\\Visroapp.com_KeyStore.jks')
-            storePassword 'Mr9377352013$'
-            keyPassword 'Mr9377352013$'
-            keyAlias = 'Visroapp.com'
+            storeFile file(keystoreProperties['file'])
+            storePassword keystoreProperties['storepass']
+            keyPassword keystoreProperties['keypass']
+            keyAlias = keystoreProperties['alias']
         }
     }
     compileSdkVersion 29
