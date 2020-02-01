@@ -11,6 +11,7 @@
     <com.tiper.MaterialSpinner
         android:id="@+id/spnItems"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        app:errorIconDrawable="@null"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

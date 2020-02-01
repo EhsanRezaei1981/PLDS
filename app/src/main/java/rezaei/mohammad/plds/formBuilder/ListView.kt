@@ -263,7 +263,7 @@ open class ListView(
                         errors.add(true)
                     }
                 } else {
-                    spnItems.error = null
+                    spnCustomAction.error = null
                     errors.add(true)
                 }
             }

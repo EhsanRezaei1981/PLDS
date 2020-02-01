@@ -1,11 +1,11 @@
 package rezaei.mohammad.plds
 
-import android.app.Application
+import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import rezaei.mohammad.plds.di.Module
 
-class PLDSapp : Application() {
+class PLDSapp : MultiDexApplication() {
 
     override fun onCreate() {
         super.onCreate()
