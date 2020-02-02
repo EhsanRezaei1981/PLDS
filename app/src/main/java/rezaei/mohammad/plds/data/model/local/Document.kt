@@ -2,7 +2,7 @@ package rezaei.mohammad.plds.data.model.local
 
 import androidx.room.*
 
-@Entity(tableName = "document", indices = [Index("docRefNo", unique = true)])
+@Entity(tableName = "document", indices = [Index("docRefNo", "documentType", unique = true)])
 data class Document(
     @PrimaryKey(autoGenerate = true)
     var id: Int? = null,

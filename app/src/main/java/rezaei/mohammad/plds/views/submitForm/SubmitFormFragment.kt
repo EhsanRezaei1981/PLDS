@@ -106,11 +106,8 @@ class SubmitFormFragment : Fragment() {
                 MainScope().launch {
                     val formResult = FormResult().apply {
                         val documents = mutableListOf<DocumentsInfoItem>()
-                        documents.add(DocumentsInfoItem(args.docRefNo))
-                        if (args.isMultipleDocument) {
-                            viewModel.getDocumentList().forEach {
-                                documents.add(DocumentsInfoItem(it.docRefNo))
-                            }
+                        viewModel.getDocumentList().forEach {
+                            documents.add(DocumentsInfoItem(it.docRefNo))
                         }
                         this.documentsInfo = documents
                         //set type

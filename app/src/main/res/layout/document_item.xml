@@ -26,6 +26,7 @@
             android:minWidth="30dp"
             android:text="@{document.positionInList}"
             android:textSize="14sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/txtDocRefNo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txtDocRefNo" />

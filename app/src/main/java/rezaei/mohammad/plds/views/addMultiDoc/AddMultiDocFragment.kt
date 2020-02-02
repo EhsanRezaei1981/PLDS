@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
@@ -19,7 +20,7 @@ import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
-import rezaei.mohammad.plds.views.docProgress.DocProgressFragmentDirections
+import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
@@ -65,6 +66,7 @@ class AddMultiDocFragment : Fragment() {
         setupRecyclerView()
         setupItemRemover()
         duplicateItemMessage()
+        setupRecyclerScroll()
     }
 
     private fun navigateToQrScanner() {
@@ -72,7 +74,7 @@ class AddMultiDocFragment : Fragment() {
             if (parentFragment is ReportIssueFragment)
                 ReportIssueFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
             else
-                DocProgressFragmentDirections.actionDocProgressFragmentToQrReaderFragment()
+                GetDocReferenceFragmentDirections.actionGetDocReferenceFragmentToQrReaderFragment()
         findNavController().navigate(action)
     }
 
@@ -114,6 +116,14 @@ class AddMultiDocFragment : Fragment() {
     private fun duplicateItemMessage() {
         viewModel.duplicateDocumentEvent.observe(this, EventObserver {
             viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = "Document already exist."))
+        })
+    }
+
+    private fun setupRecyclerScroll() {
+        viewModel.documentsList.observe(this, Observer {
+            listDocs.post {
+                listDocs.smoothScrollToPosition(0)
+            }
         })
     }
 

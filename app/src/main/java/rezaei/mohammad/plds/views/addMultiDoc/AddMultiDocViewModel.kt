@@ -81,8 +81,8 @@ class AddMultiDocViewModel(
         _removeDocumentsList.value?.add(document)
         val newList = _documentsList.value
             ?.dropWhile { _removeDocumentsList.value!!.contains(it) }?.toMutableList()
-        _documentsList.value?.removeAll(_removeDocumentsList.value!!)
         _documentsList.value = newList
+        _documentsList.value?.removeAll(_removeDocumentsList.value!!)
         _documentRemoveEvent.value = Event(document)
     }
 

@@ -26,9 +26,6 @@
             android:name="documentStatus"
             app:argType="rezaei.mohammad.plds.data.model.response.DocumentStatusResponse$Data" />
         <action
-            android:id="@+id/action_docProgressFragment_to_qrReaderFragment"
-            app:destination="@id/qrReaderFragment" />
-        <action
             android:id="@+id/action_docProgressFragment_to_submitFormFragment"
             app:destination="@id/submitFormFragment" />
     </fragment>
@@ -54,6 +51,9 @@
             app:destination="@id/qrReaderFragment"
             app:launchSingleTop="false"
             app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_reportIssueFragment_to_qrReaderFragment2"
+            app:destination="@id/qrReaderFragment" />
     </fragment>
     <fragment
         android:id="@+id/qrReaderFragment"
@@ -71,14 +71,6 @@
         <argument
             android:name="unsuccessful"
             app:argType="rezaei.mohammad.plds.data.model.response.FormResponse"
-            app:nullable="true" />
-        <argument
-            android:name="isMultipleDocument"
-            android:defaultValue="false"
-            app:argType="boolean" />
-        <argument
-            android:name="docRefNo"
-            app:argType="string"
             app:nullable="true" />
     </fragment>
 </navigation>

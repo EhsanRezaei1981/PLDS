@@ -1,6 +1,7 @@
 package rezaei.mohammad.plds.util
 
 import android.app.Activity
+import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -74,3 +75,5 @@ fun View.hideKeyboard() {
         context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(this.windowToken, 0)
 }
+
+fun Context.dpToPx(dp: Float): Float = dp * resources.displayMetrics.density

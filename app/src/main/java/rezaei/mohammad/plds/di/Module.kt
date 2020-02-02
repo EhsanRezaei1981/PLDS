@@ -79,12 +79,7 @@ object Module {
 
         viewModel { GlobalViewModel(get(), get()) }
 
-        viewModel { (docRefNo: MutableLiveData<String>) ->
-            GetDocReferenceViewModel(
-                get(),
-                docRefNo
-            )
-        }
+        viewModel { GetDocReferenceViewModel(get(), get()) }
 
         viewModel { DocProgressViewModel(get()) }
 

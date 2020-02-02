@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.doc_progress_fragment.*
@@ -16,7 +15,6 @@ import rezaei.mohammad.plds.databinding.DocProgressFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
-import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 
 class DocProgressFragment : Fragment() {
 
@@ -41,7 +39,6 @@ class DocProgressFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setActivityTitle("Document reference NO: ${args.documentStatus.documentReferenceNo}")
         setupButtonsCallback()
-        setupMultiAddDocView()
     }
 
     private fun setupButtonsCallback() {
@@ -53,9 +50,7 @@ class DocProgressFragment : Fragment() {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         successful = it.response,
-                        unsuccessful = null,
-                        isMultipleDocument = args.documentStatus.isAbleToAcceptMultipleDocuments == 1,
-                        docRefNo = args.documentStatus.documentReferenceNo
+                        unsuccessful = null
                     )
                 findNavController().navigate(action)
             }
@@ -66,22 +61,11 @@ class DocProgressFragment : Fragment() {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         unsuccessful = it.response,
-                        successful = null,
-                        isMultipleDocument = args.documentStatus.isAbleToAcceptMultipleDocuments == 1,
-                        docRefNo = args.documentStatus.documentReferenceNo
+                        successful = null
                     )
                 findNavController().navigate(action)
             }
             (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling) }
-        })
-    }
-
-    private fun setupMultiAddDocView() {
-        viewModel.documentStatus.observe(this, Observer {
-            if (it.isAbleToAcceptMultipleDocuments == 1)
-                childFragmentManager.beginTransaction()
-                    .replace(viewDataBinding.multiAddDoc.id, AddMultiDocFragment())
-                    .commit()
         })
     }
 
