@@ -86,11 +86,11 @@ open class ListView(
         if (selectedItem?.gPSIsNeeded == 1) {
             initGps()
         }
-        if (selectedItem?.customActionCode?.contains("WrongCourt") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeCourt") == true) {
             onListItemSelectedCallback?.courtListNeeded(courtList)
             initCourtList()
         }
-        if (selectedItem?.customActionCode?.contains("WrongSheriff") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeSheriff") == true) {
             onListItemSelectedCallback?.sheriffListNeeded(sheriffList)
             initSheriffList()
         }
