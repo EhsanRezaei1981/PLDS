@@ -26,8 +26,11 @@ fun View.snack(
         duration ?: if (actionText == null) Snackbar.LENGTH_LONG else Snackbar.LENGTH_INDEFINITE
     )
 
+    snack.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
     if (message?.isSuccessful != null && message.isSuccessful == false)
-        snack.setTextColor(ContextCompat.getColor(context, R.color.colorNo))
+        snack.setBackgroundTint(ContextCompat.getColor(context, R.color.colorFail))
+    else if (message?.isSuccessful != null && message.isSuccessful == true)
+        snack.setBackgroundTint(ContextCompat.getColor(context, R.color.colorSuccessful))
 
     var isActionInvoke = false
     var isDismissActionInvoke = false

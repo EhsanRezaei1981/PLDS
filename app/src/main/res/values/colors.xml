@@ -7,4 +7,9 @@
     <color name="colorYes">#4CAF50</color>
     <color name="colorNo">#F44336</color>
 
+    <color name="colorSuccessful">#2E7D32</color>
+    <color name="colorFail">#C62828</color>
+
+    <color name="colorWhite">#FFFFFF</color>
+
 </resources>
