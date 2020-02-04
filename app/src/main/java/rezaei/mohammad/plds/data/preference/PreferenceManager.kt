@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
+import rezaei.mohammad.plds.BuildConfig
 
 
 class PreferenceManager(context: Context) {
@@ -31,6 +32,14 @@ class PreferenceManager(context: Context) {
         }
         set(value) {
             pref.edit { putString("AUTH_TOKEN", value) }
+        }
+
+    var baseURL: String
+        get() {
+            return pref.getString("BASE_URL", BuildConfig.BaseUrl)!!
+        }
+        set(value) {
+            pref.edit { putString("BASE_URL", value) }
         }
 
 }

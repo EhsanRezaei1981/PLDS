@@ -30,8 +30,8 @@ class DatePicker(context: Context?, structure: FormResponse.DataItem) :
         }
         inputText.editText?.setText(
             "${date.get(Calendar.YEAR)}/" +
-                    "${date.get(Calendar.MONTH).plus(1)}/" +
-                    "${date.get(Calendar.DAY_OF_MONTH)}"
+                    "${date.get(Calendar.MONTH).plus(1).to2Digit()}/" +
+                    date.get(Calendar.DAY_OF_MONTH).to2Digit()
         )
     }
 
@@ -42,6 +42,11 @@ class DatePicker(context: Context?, structure: FormResponse.DataItem) :
 
     @SuppressLint("SetTextI18n")
     override fun onDateSet(p0: DatePicker?, year: Int, month: Int, day: Int) {
-        inputText.editText?.setText("$year/${month.plus(1)}/$day")
+        inputText.editText?.setText("$year/${month.plus(1).to2Digit()}/${day.to2Digit()}")
     }
+}
+
+fun Int.to2Digit(): String {
+    return if (this >= 10) this.toString()
+    else "0$this"
 }

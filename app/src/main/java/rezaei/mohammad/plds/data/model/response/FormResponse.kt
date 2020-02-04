@@ -20,7 +20,7 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         @field:SerializedName("List")
         val list: List<ListItem>? = null,
 
-        @field:SerializedName("StatusQueryId")
+        @field:SerializedName("StatusQueryId", alternate = ["CommonIssueId", "StatusSuccessId"])
         val statusQueryId: Int? = null,
 
         @field:SerializedName("DataTypeSetting")

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -25,6 +26,8 @@ fun View.snack(
         this, message?.errorMessage ?: "Unknown error",
         duration ?: if (actionText == null) Snackbar.LENGTH_LONG else Snackbar.LENGTH_INDEFINITE
     )
+
+    snack.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 5
 
     snack.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
     if (message?.isSuccessful != null && message.isSuccessful == false)

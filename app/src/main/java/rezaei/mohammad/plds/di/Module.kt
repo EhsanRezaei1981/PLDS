@@ -54,7 +54,7 @@ object Module {
         //retrofit
         single {
             Retrofit.Builder()
-                .baseUrl(BuildConfig.BaseUrl)
+                .baseUrl(get<PreferenceManager>().baseURL)
                 .client(get())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()

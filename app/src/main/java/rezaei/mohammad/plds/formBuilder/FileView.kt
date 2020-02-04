@@ -171,7 +171,7 @@ interface FileRequestsCallback {
 }
 
 fun ByteArray.toBase64(): String? =
-    Base64.encodeToString(this, Base64.NO_WRAP)
+    Base64.encodeToString(this, Base64.DEFAULT)
 
 fun Bitmap.toByteArray(): ByteArray {
     val stream = ByteArrayOutputStream()

@@ -255,7 +255,7 @@ open class ListView(
                     }
                 }
                 if (spnCustomAction.visibility == View.VISIBLE) {
-                    if (selectedCourt == null || selectedSheriff == null) {
+                    if (selectedCourt == null && selectedSheriff == null) {
                         spnCustomAction.error = "This field is mandatory."
                         errors.add(false)
                     } else {
