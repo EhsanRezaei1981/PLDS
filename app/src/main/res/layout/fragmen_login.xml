@@ -35,7 +35,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Username"
+                android:hint="@string/username"
                 android:inputType="textPersonName"
                 android:text="@={viewmodel.username}" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -58,7 +58,7 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Password"
+                android:hint="@string/password"
                 android:inputType="textPassword"
                 android:text="@={viewmodel.password}" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -70,7 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:onClick="@{() -> viewmodel.login()}"
-            android:text="Sign in"
+            android:text="@string/sign_in"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}"
@@ -92,7 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Forgot password"
+            android:text="@string/forgot_password"
             android:textAllCaps="false"
             android:textSize="16sp"
             android:visibility="gone"

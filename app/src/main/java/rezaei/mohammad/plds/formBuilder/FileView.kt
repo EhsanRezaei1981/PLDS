@@ -1,14 +1,17 @@
 package rezaei.mohammad.plds.formBuilder
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
 import android.util.Base64
 import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -19,9 +22,12 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChoosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
-import java.io.ByteArrayOutputStream
+import rezaei.mohammad.plds.util.ImageCompressor
 import java.io.File
+import java.io.IOException
 import java.lang.ref.WeakReference
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class FileView(
@@ -34,7 +40,7 @@ class FileView(
 
     private val onActivityResult = MutableLiveData<Intent>()
     private var selectedFile: File? = null
-    private var takenPhoto: Bitmap? = null
+    private var takenPhoto: ByteArray? = null
 
     init {
         View.inflate(context.requireContext(), R.layout.file_view, this)
@@ -43,7 +49,6 @@ class FileView(
 
     private fun setStructure() {
         txtLabel.text = structure.label
-        txtFileExtensions.text = structure.dataTypeSetting?.file?.extensions
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
             btnBrowseFile.text = ""
@@ -51,6 +56,7 @@ class FileView(
             btnBrowseFile.setOnClickListener { takePictureClick.invoke() }
             setupOnActivityResult()
         } else {
+            txtFileExtensions.text = structure.dataTypeSetting?.file?.extensions
             btnBrowseFile.setOnClickListener { filePickerClick.invoke() }
         }
     }
@@ -82,14 +88,37 @@ class FileView(
         fileRequestsCallback.onPhotoTaken(onActivityResult)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.requireActivity().checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-                context.startActivityForResult(cameraIntent, cameraRequest)
+                openCamera()
             } else {
                 fileRequestsCallback.requestPermission(android.Manifest.permission.CAMERA)
             }
         } else {
-            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            context.startActivityForResult(cameraIntent, cameraRequest)
+            openCamera()
+        }
+    }
+
+    private fun openCamera() {
+        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+            // Ensure that there's a camera activity to handle the intent
+            takePictureIntent.resolveActivity(context.packageManager)?.also {
+                // Create the File where the photo should go
+                val photoFile: File? = try {
+                    createImageFile()
+                } catch (ex: IOException) {
+                    ex.printStackTrace()
+                    null
+                }
+                // Continue only if the File was successfully created
+                photoFile?.also {
+                    val photoURI: Uri = FileProvider.getUriForFile(
+                        context,
+                        "com.example.android.fileprovider",
+                        it
+                    )
+                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                    activity.get()?.startActivityForResult(takePictureIntent, cameraRequest)
+                }
+            }
         }
     }
 
@@ -141,8 +170,8 @@ class FileView(
                     )
                     takenPhoto != null -> ChoosenFile(
                         "jpg",
-                        takenPhoto?.toByteArray()?.toBase64(),
-                        takenPhoto?.toByteArray()?.size,
+                        takenPhoto?.toBase64(),
+                        takenPhoto?.size,
                         System.currentTimeMillis().toString()
                     )
                     else -> null
@@ -152,9 +181,29 @@ class FileView(
     private fun setupOnActivityResult() {
         activity.get()?.let { activity ->
             onActivityResult.observe(activity, Observer<Intent> {
-                takenPhoto = it?.extras?.get("data") as Bitmap
+                takenPhoto = ImageCompressor.compressImage(
+                    File(currentPhotoPath),
+                    structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
+                )
                 validate()
             })
+        }
+    }
+
+    lateinit var currentPhotoPath: String
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_",
+            ".jpg",
+            storageDir
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            currentPhotoPath = absolutePath
         }
     }
 
@@ -172,9 +221,3 @@ interface FileRequestsCallback {
 
 fun ByteArray.toBase64(): String? =
     Base64.encodeToString(this, Base64.DEFAULT)
-
-fun Bitmap.toByteArray(): ByteArray {
-    val stream = ByteArrayOutputStream()
-    this.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-    return stream.toByteArray()
-}

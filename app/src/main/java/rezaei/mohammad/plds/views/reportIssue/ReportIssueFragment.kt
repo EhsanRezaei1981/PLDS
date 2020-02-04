@@ -44,7 +44,7 @@ class ReportIssueFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setActivityTitle("Report issue")
+        setActivityTitle(getString(R.string.report_issue))
         setupCommonIssueList()
         setupSubmitEvent()
         setupSubmitFormEvent()
@@ -83,7 +83,7 @@ class ReportIssueFragment : Fragment() {
                         null
                     )
                 } else {
-                    btnSubmit.snack(ErrorHandling(errorMessage = "There is no data for these documents."))
+                    btnSubmit.snack(ErrorHandling(errorMessage = getString(R.string.no_data_for_docs)))
                 }
             }
             (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }

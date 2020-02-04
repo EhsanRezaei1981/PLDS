@@ -37,7 +37,7 @@ class DocProgressFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setActivityTitle("Document reference NO: ${args.documentStatus.documentReferenceNo}")
+        setActivityTitle("Document Reference NO: ${args.documentStatus.documentReferenceNo}")
         setupButtonsCallback()
     }
 

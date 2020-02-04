@@ -37,7 +37,7 @@ class QrReaderFragment : Fragment(), ZBarScannerView.ResultHandler {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setActivityTitle("Scan document QR code")
+        setActivityTitle(getString(R.string.scan_qr_code))
         checkPermission()
     }
 
@@ -93,7 +93,7 @@ class QrReaderFragment : Fragment(), ZBarScannerView.ResultHandler {
             globalViewModel.docRefNo.value = docRefNo
             findNavController().popBackStack()
         } else {
-            view?.snack(ErrorHandling(errorMessage = "Document reference No not detected."))
+            view?.snack(ErrorHandling(errorMessage = getString(R.string.doc_ref_no_not_detected)))
         }
     }
 

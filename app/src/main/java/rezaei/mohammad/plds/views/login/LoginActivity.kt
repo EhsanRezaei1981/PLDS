@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import org.koin.android.ext.android.inject
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.preference.PreferenceManager
+import kotlin.system.exitProcess
 
 class LoginActivity : AppCompatActivity() {
 
@@ -31,7 +32,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupChangeUrlDialog() {
         MaterialDialog(this).show {
-            title(text = "Change base url")
+            title(text = getString(R.string.change_base_url))
             input(
                 hint = "Base URL", allowEmpty = false, prefill = prefs.baseURL,
                 waitForPositiveButton = true
@@ -40,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
                     dialog.getInputField().error = "Not valid"
                 } else {
                     prefs.baseURL = text.toString()
-                    finish()
+                    exitProcess(0)
                 }
             }
             positiveButton(text = "Save and exit")

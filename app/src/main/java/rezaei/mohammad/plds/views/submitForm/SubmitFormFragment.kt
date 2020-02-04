@@ -30,6 +30,7 @@ import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 
+
 class SubmitFormFragment : Fragment() {
 
     private val viewModel: SubmitFormViewModel by viewModel()
@@ -138,8 +139,9 @@ class SubmitFormFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == FileView.cameraRequest)
+        if (resultCode == Activity.RESULT_OK && requestCode == FileView.cameraRequest) {
             cameraResult.value = data
+        }
     }
 
 }

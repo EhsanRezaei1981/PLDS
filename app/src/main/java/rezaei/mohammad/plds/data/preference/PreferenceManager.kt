@@ -39,7 +39,7 @@ class PreferenceManager(context: Context) {
             return pref.getString("BASE_URL", BuildConfig.BaseUrl)!!
         }
         set(value) {
-            pref.edit { putString("BASE_URL", value) }
+            pref.edit(commit = true) { putString("BASE_URL", value) }
         }
 
 }

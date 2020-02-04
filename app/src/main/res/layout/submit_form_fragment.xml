@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
-                    android:text="Result form"
+                    android:text="@string/result_form"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="16sp"
                     android:textStyle="bold"
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:onClick="@{() -> viewmodel.submitForm()}"
-                    android:text="Submit"
+                    android:text="@string/submit"
                     android:textAllCaps="false"
                     android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}" />
 

@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_login_info"
         android:orderInCategory="100"
-        android:title="Last login info"
+        android:title="@string/last_login_info"
         app:showAsAction="never" />
 
     <!--<item
@@ -23,6 +23,6 @@
     <item
         android:id="@+id/action_sign_out"
         android:orderInCategory="100"
-        android:title="Sign out"
+        android:title="@string/sign_out"
         app:showAsAction="never" />
 </menu>

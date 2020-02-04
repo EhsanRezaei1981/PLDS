@@ -1,10 +1,42 @@
 <resources>
     <string name="app_name">PLDS</string>
     <string name="title_activity_main">PLDS</string>
-    <string name="validate_username_err">Enter your username please.</string>
-    <string name="validate_pass_err">Enter your password please.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="doc_ref_no_validate_err">Enter document refrence NO</string>
+    <string name="validate_username_err">Enter Your Username Please.</string>
+    <string name="validate_pass_err">Enter Your Password Please.</string>
+    <string name="doc_ref_no_validate_err">Enter Document Reference NO</string>
+    <string name="change_base_url">Change Base Url</string>
+    <string name="clear_list">Clear List</string>
+    <string name="there_is_no_document_in_the_list_yet">There Is No Document In The List Yet.</string>
+    <string name="add_automatically_to_list_after_scan">Add To List Automatically After Scan</string>
+    <string name="select_from_list">Select From List</string>
+    <string name="documents_list">Documents List</string>
+    <string name="document_step">Document Step</string>
+    <string name="yes">Yes</string>
+    <string name="no">NO</string>
+    <string name="back">Back</string>
+    <string name="browse_file">Browse File…</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="update_document_progress">Update Document Progress</string>
+    <string name="prosource_technology">Prosource Technology</string>
+    <string name="check_document_reference_no">Check Document Reference NO</string>
+    <string name="check_progress">Check Progress</string>
+    <string name="comment">Comment</string>
+    <string name="close">Close</string>
+    <string name="report_issue">Report Issue</string>
+    <string name="submit">Submit</string>
+    <string name="result_form">Result Form</string>
+    <string name="item_removed">Item Removed.</string>
+    <string name="undo">UNDO</string>
+    <string name="all_items_deleted">All Items Deleted.</string>
+    <string name="doc_exist">Document Already Exist.</string>
+    <string name="check_document_status">Check Document Status</string>
+    <string name="scan_qr_code">Scan Document QR Code</string>
+    <string name="doc_ref_no_not_detected">Document Reference NO Not Detected.</string>
+    <string name="no_data_for_docs">There Is No Data For These Documents.</string>
+    <string name="last_login_info">Last Login Info</string>
+    <string name="sign_out">Sign Out</string>
 
 </resources>

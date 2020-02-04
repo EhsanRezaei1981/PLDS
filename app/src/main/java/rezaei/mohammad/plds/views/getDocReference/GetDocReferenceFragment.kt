@@ -39,7 +39,7 @@ class GetDocReferenceFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setActivityTitle("Check document status")
+        setActivityTitle(getString(R.string.check_document_status))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

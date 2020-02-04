@@ -4,8 +4,10 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.LocalRepository
+import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 
 class LocalRepository(
@@ -31,14 +33,14 @@ class LocalRepository(
         }
     }
 
-    override suspend fun insertDocument(document: Document): Boolean {
+    override suspend fun insertDocument(document: Document): Result<Unit> {
         return withContext(ioDispatcher) {
             try {
                 pldsDao.insertDocument(document)
-                return@withContext true
+                return@withContext Result.Success(Unit)
             } catch (e: Exception) {
                 e.printStackTrace()
-                return@withContext false
+                return@withContext Result.Error(ErrorHandling(errorMessage = e.message))
             }
         }
     }

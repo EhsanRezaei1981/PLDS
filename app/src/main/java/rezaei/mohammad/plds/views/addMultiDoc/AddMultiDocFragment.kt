@@ -14,6 +14,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
@@ -95,8 +96,8 @@ class AddMultiDocFragment : Fragment() {
     private fun setupItemRemover() {
         viewModel.documentRemoveEvent.observe(this, EventObserver {
             listDocs.snack(
-                message = ErrorHandling(errorMessage = "Item removed."),
-                actionText = "UNDO",
+                message = ErrorHandling(errorMessage = getString(R.string.item_removed)),
+                actionText = getString(R.string.undo),
                 action = { viewModel.loadDocumentList() },
                 onDismissAction = { viewModel.removeItem(it) },
                 duration = 3000
@@ -104,8 +105,8 @@ class AddMultiDocFragment : Fragment() {
         })
         viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
             listDocs.snack(
-                ErrorHandling(errorMessage = "All items deleted."),
-                "UNDO",
+                ErrorHandling(errorMessage = getString(R.string.all_items_deleted)),
+                getString(R.string.undo),
                 { viewModel.loadDocumentList() },
                 { viewModel.clearList() },
                 3000
@@ -115,7 +116,10 @@ class AddMultiDocFragment : Fragment() {
 
     private fun duplicateItemMessage() {
         viewModel.duplicateDocumentEvent.observe(this, EventObserver {
-            viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = "Document already exist."))
+            (it as? Result.Error)?.let {
+                viewDataBinding.listDocs.snack(it.errorHandling)
+            }
+//            viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = getString(R.string.doc_exist)))
         })
     }
 

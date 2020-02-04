@@ -30,7 +30,7 @@
             android:minWidth="0dp"
             android:paddingStart="16dp"
             android:paddingEnd="8dp"
-            android:text="Browse file ..."
+            android:text="@string/browse_file"
             android:textAllCaps="false"
             app:iconGravity="textStart"
             app:iconPadding="8dp" />

@@ -45,7 +45,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:padding="8dp"
-                android:text="Update document progress"
+                android:text="@string/update_document_progress"
                 android:textColor="@color/colorYes"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -94,7 +94,7 @@
                 android:gravity="center"
                 android:lines="2"
                 android:padding="8dp"
-                android:text="Report Issue"
+                android:text="@string/report_issue"
                 android:textColor="@color/colorNo"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -109,7 +109,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:text="Prosource Technology"
+        android:text="@string/prosource_technology"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

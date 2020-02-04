@@ -24,7 +24,8 @@ fun View.snack(
     hideKeyboard()
     val snack = Snackbar.make(
         this, message?.errorMessage ?: "Unknown error",
-        duration ?: if (actionText == null) Snackbar.LENGTH_LONG else Snackbar.LENGTH_INDEFINITE
+        duration
+            ?: if (actionText == null) estimateTimeForShowMessage(message?.errorMessage) else Snackbar.LENGTH_INDEFINITE
     )
 
     snack.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 5
@@ -68,6 +69,18 @@ fun View.snack(
     })
 
     snack.show()
+}
+
+fun estimateTimeForShowMessage(message: String?): Int {
+    return if (message.isNullOrEmpty())
+        0
+    else {
+        var time = 1000
+        repeat(message.split(" ").size) {
+            time += 220
+        }
+        time
+    }
 }
 
 fun Fragment.setActivityTitle(title: String?) {
