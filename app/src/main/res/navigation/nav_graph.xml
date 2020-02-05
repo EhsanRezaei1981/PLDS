@@ -74,5 +74,11 @@
             android:name="gpsNeeded"
             android:defaultValue="false"
             app:argType="boolean" />
+        <action
+            android:id="@+id/action_submitFormFragment_to_mainActivityFragment"
+            app:destination="@id/mainActivityFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/mainActivityFragment"
+            app:popUpToInclusive="true" />
     </fragment>
 </navigation>

@@ -23,9 +23,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/multiAddDoc"
-                android:name="rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

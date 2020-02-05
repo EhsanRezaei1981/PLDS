@@ -27,7 +27,7 @@ interface LocalRepository {
 
     suspend fun deleteUser(user: LoginResponse.User)
 
-    suspend fun insertDocument(document: Document): Result<Unit>
+    suspend fun insertDocument(document: Document): Boolean
 
     suspend fun getAllDocument(documentType: DocumentType): List<Document>
 

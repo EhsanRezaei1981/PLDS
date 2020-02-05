@@ -21,9 +21,8 @@
             android:layout_height="match_parent"
             tools:context=".views.reportIssue.ReportIssueFragment">
 
-            <fragment
+            <FrameLayout
                 android:id="@+id/multiAddDoc"
-                android:name="rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
