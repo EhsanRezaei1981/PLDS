@@ -22,7 +22,6 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChoosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
-import rezaei.mohammad.plds.util.ImageCompressor
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -128,7 +127,7 @@ class FileView(
             true
         } else {
             if (selectedFile == null && takenPhoto == null) {
-                setError("This field is mandatory.")
+                setError(context.getString(R.string.field_mandatory))
                 false
             } else {
                 val acceptableExtensions = structure.dataTypeSetting?.file?.extensions
@@ -136,11 +135,11 @@ class FileView(
                 val maxFileSize = structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
                 val minFileSize = structure.dataTypeSetting?.file?.minSize?.toLong() ?: 0
                 if (takenPhoto == null && acceptableExtensions?.contains(selectedFile!!.extension) == false) {
-                    setError("File extension is not acceptable.")
+                    setError(context.getString(R.string.file_ext_err))
                     return false
                 }
                 if (takenPhoto == null && ((selectedFile!!.totalSpace < minFileSize) && (selectedFile!!.totalSpace > maxFileSize))) {
-                    setError("File is too large or too small.")
+                    setError(context.getString(R.string.file_size_err))
                     return false
                 }
                 true
@@ -181,10 +180,11 @@ class FileView(
     private fun setupOnActivityResult() {
         activity.get()?.let { activity ->
             onActivityResult.observe(activity, Observer<Intent> {
-                takenPhoto = ImageCompressor.compressImage(
+                /*takenPhoto = ImageCompressor.compressImage(
                     File(currentPhotoPath),
                     structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
-                )
+                )*/
+                takenPhoto = File(currentPhotoPath).readBytes()
                 validate()
             })
         }

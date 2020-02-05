@@ -26,7 +26,7 @@ open class TextInputView(context: Context?, private val structure: FormResponse.
             true
         } else {
             if (inputText.editText?.text?.isEmpty() == true) {
-                inputText.error = "This field is mandatory."
+                inputText.error = context.getString(R.string.field_mandatory)
                 false
             } else {
                 inputText.error = null

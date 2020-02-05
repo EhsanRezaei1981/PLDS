@@ -36,7 +36,7 @@ class PreferenceManager(context: Context) {
 
     var baseURL: String
         get() {
-            return pref.getString("BASE_URL", BuildConfig.BaseUrl)!!
+            return pref.getString("BASE_URL", BuildConfig.BaseUrl) ?: BuildConfig.BaseUrl
         }
         set(value) {
             pref.edit(commit = true) { putString("BASE_URL", value) }

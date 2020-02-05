@@ -48,9 +48,7 @@
         tools:layout="@layout/report_issue_fragment">
         <action
             android:id="@+id/action_reportIssueFragment_to_qrReaderFragment"
-            app:destination="@id/qrReaderFragment"
-            app:launchSingleTop="false"
-            app:popUpToInclusive="false" />
+            app:destination="@id/qrReaderFragment" />
         <action
             android:id="@+id/action_reportIssueFragment_to_qrReaderFragment2"
             app:destination="@id/qrReaderFragment" />
@@ -72,5 +70,9 @@
             android:name="unsuccessful"
             app:argType="rezaei.mohammad.plds.data.model.response.FormResponse"
             app:nullable="true" />
+        <argument
+            android:name="gpsNeeded"
+            android:defaultValue="false"
+            app:argType="boolean" />
     </fragment>
 </navigation>

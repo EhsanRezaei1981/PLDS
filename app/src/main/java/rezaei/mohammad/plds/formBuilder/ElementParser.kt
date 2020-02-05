@@ -47,7 +47,7 @@ class ElementParser(
     }
 
     fun isItemsValid(): Boolean {
-        val listValidation = mutableListOf<Boolean>()
+        val listValidation = mutableListOf(true)
         for (x in 0..containerView.childCount) {
             val element = containerView.getChildAt(x)
             if (element is FormView)

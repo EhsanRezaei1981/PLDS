@@ -103,7 +103,7 @@ open class ListView(
             .keepTracking(false)
             .askForPermission(
                 PermissionConfiguration.Builder()
-                    .rationaleMessage("Please accept location permission.")
+                    .rationaleMessage(context.getString(R.string.accept_loc_permission))
                     .requiredPermissions(arrayOf(permission.ACCESS_FINE_LOCATION))
                     .build()
             )
@@ -160,7 +160,7 @@ open class ListView(
                 if (courts.isNotEmpty()) {
                     spnCustomAction.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
-                    spnCustomAction.hint = "Select right court"
+                    spnCustomAction.hint = context.getString(R.string.select_right_court)
 
                     val items = mutableListOf<String?>()
                     courts?.mapTo(items, {
@@ -197,7 +197,7 @@ open class ListView(
                 if (sheriffs.isNotEmpty()) {
                     spnCustomAction.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
-                    spnCustomAction.hint = "Select right sheriff"
+                    spnCustomAction.hint = context.getString(R.string.select_right_sherrif)
 
                     val items = mutableListOf<String?>()
                     sheriffs?.mapTo(items, {
@@ -232,12 +232,12 @@ open class ListView(
             errors.add(true)
         } else {
             if (selectedItem == null) {
-                spnItems.error = "This field is mandatory."
+                spnItems.error = context.getString(R.string.field_mandatory)
                 errors.add(false)
             } else {
                 if (selectedItem?.gPSIsNeeded == 1) {
                     if (selectedGps == null || selectedGps?.first == 0.0) {
-                        spnItems.error = "Gps data not available."
+                        spnItems.error = context.getString(R.string.gps_not_available)
                         initGps()
                         errors.add(false)
                     } else {
@@ -247,7 +247,7 @@ open class ListView(
                 }
                 if (selectedItem?.commentIsNeeded == 1) {
                     if (inputComment.editText?.text.toString().isEmpty()) {
-                        inputComment.error = "This field is mandatory."
+                        inputComment.error = context.getString(R.string.field_mandatory)
                         errors.add(false)
                     } else {
                         inputComment.error = null
@@ -256,7 +256,7 @@ open class ListView(
                 }
                 if (spnCustomAction.visibility == View.VISIBLE) {
                     if (selectedCourt == null && selectedSheriff == null) {
-                        spnCustomAction.error = "This field is mandatory."
+                        spnCustomAction.error = context.getString(R.string.field_mandatory)
                         errors.add(false)
                     } else {
                         spnCustomAction.error = null

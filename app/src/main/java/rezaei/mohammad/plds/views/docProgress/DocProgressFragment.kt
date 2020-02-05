@@ -50,7 +50,8 @@ class DocProgressFragment : Fragment() {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         successful = it.response,
-                        unsuccessful = null
+                        unsuccessful = null,
+                        gpsNeeded = args.documentStatus.gpsIsNeeded == 1
                     )
                 findNavController().navigate(action)
             }
@@ -61,7 +62,8 @@ class DocProgressFragment : Fragment() {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         unsuccessful = it.response,
-                        successful = null
+                        successful = null,
+                        gpsNeeded = args.documentStatus.gpsIsNeeded == 1
                     )
                 findNavController().navigate(action)
             }

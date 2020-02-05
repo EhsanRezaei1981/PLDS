@@ -38,5 +38,13 @@
     <string name="no_data_for_docs">There Is No Data For These Documents.</string>
     <string name="last_login_info">Last Login Info</string>
     <string name="sign_out">Sign Out</string>
+    <string name="field_mandatory">This Field Is Mandatory.</string>
+    <string name="gps_not_available">Gps Data Not Available.</string>
+    <string name="select_right_sherrif">Select Right Sheriff</string>
+    <string name="select_right_court">Select Right Court</string>
+    <string name="accept_loc_permission">Please Accept Location Permission.</string>
+    <string name="file_ext_err">File Extension Is Not Acceptable.</string>
+    <string name="file_size_err">File Is Too Large Or Too Small.</string>
+    <string name="title_frag_submit_form">Submit Result</string>
 
 </resources>

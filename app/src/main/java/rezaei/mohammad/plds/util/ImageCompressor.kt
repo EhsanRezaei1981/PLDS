@@ -11,7 +11,7 @@ import java.io.File
 
 object ImageCompressor {
     fun compressImage(imageFile: File, maxImageSize: Long): ByteArray {
-        if (maxImageSize > 10000 && imageFile.length() > maxImageSize) {
+        if (maxImageSize >= 10000 && imageFile.length() > maxImageSize) {
             return runBlocking(Dispatchers.Default) {
                 var streamLength = maxImageSize
                 var compressQuality = 105

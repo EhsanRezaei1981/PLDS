@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -22,10 +23,10 @@
             app:cardElevation="4dp"
             app:cardUseCompatPadding="true">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                tools:context=".views.submitForm.SubmitFormFragment">
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/txtCardTitle"
@@ -44,6 +45,10 @@
                     android:id="@+id/layoutContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtCardTitle"
                     android:orientation="vertical" />
 
                 <Button
@@ -51,10 +56,25 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
+                    android:layout_marginBottom="8dp"
                     android:onClick="@{() -> viewmodel.submitForm()}"
                     android:text="@string/submit"
                     android:textAllCaps="false"
-                    android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}" />
+                    android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/layoutContainer" />
+
+                <TextView
+                    android:id="@+id/txtFormError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:textColor="@color/colorFail"
+                    android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@+id/btnSubmit"
+                    app:layout_constraintStart_toEndOf="@+id/btnSubmit" />
 
                 <ProgressBar
                     android:id="@+id/progressBar3"
@@ -63,9 +83,15 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
-                    android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}" />
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/layoutContainer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/layoutContainer" />
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.cardview.widget.CardView>
 
