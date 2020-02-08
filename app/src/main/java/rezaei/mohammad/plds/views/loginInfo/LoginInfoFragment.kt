@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.login_info_fragment.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.databinding.LoginInfoFragmentBinding
 
 class LoginInfoFragment : DialogFragment() {
 
     private val viewModel: LoginInfoViewModel by viewModel()
+    private val prefs: PreferenceManager by inject()
     private lateinit var viewDataBinding: LoginInfoFragmentBinding
 
     override fun onStart() {
@@ -28,6 +31,7 @@ class LoginInfoFragment : DialogFragment() {
     ): View? {
         viewDataBinding = LoginInfoFragmentBinding.inflate(inflater, container, false).apply {
             this.viemodel = viewModel
+            this.txtUserName.text = "Username: ${prefs.username}"
         }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         return viewDataBinding.root

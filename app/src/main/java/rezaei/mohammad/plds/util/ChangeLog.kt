@@ -10,7 +10,11 @@ class ChangeLog(private val pref: PreferenceManager) {
 
     init {
         logs[3] =
-            listOf("Check document step on Check Document Progress page.", "Fix user image bug.")
+            listOf(
+                "Check document step on Check Document Progress page.",
+                "Fix user image bug.",
+                "Add Username to user info dialog."
+            )
     }
 
     fun getLogFor(versionCode: Int): List<String>? {
