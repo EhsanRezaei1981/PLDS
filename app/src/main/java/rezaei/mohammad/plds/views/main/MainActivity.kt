@@ -7,8 +7,11 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
 
@@ -20,6 +23,19 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
+        showChangeLog()
+    }
+
+    private fun showChangeLog() {
+        val changeLog: ChangeLog by inject()
+        val logs = changeLog.getLogFor(BuildConfig.VERSION_CODE)
+        logs?.let {
+            MaterialDialog(this).show {
+                title(text = "Changes Of Version ${BuildConfig.VERSION_NAME}")
+                message(text = it.joinToString("\n\n"))
+                positiveButton(text = "Close")
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

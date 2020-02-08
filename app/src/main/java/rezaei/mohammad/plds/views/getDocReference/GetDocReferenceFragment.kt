@@ -14,6 +14,7 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.GetDocReferenceFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
@@ -62,7 +63,18 @@ class GetDocReferenceFragment : Fragment() {
 
     private fun setupForDocumentStatusResponse() {
         viewModel.documentStatusEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { navigateToDocProgress(it.response.data!!) }
+            (it as? Result.Success)?.let {
+                if (it.response.data?.stage.isNullOrEmpty())
+                    navigateToDocProgress(it.response.data!!)
+                else
+                    btnCheckProgress.snack(
+                        ErrorHandling(
+                            errorMessage = it.response.data?.title,
+                            errorMustBeSeenByUser = true,
+                            isSuccessful = true
+                        )
+                    )
+            }
             (it as? Result.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling) }
         })
     }

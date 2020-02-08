@@ -18,6 +18,7 @@ import rezaei.mohammad.plds.data.remote.ApiInterface
 import rezaei.mohammad.plds.data.remote.AuthInterceptor
 import rezaei.mohammad.plds.data.remote.RefreshTokenAuthenticator
 import rezaei.mohammad.plds.data.remote.RemoteRepository
+import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
@@ -74,6 +75,8 @@ object Module {
 
         //local repository
         single { LocalRepository(get()) }
+
+        single { ChangeLog(get()) }
 
         viewModel { LoginViewModel(get(), get(), get()) }
 
