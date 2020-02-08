@@ -52,7 +52,10 @@ class GetDocReferenceFragment : Fragment() {
     private fun addMoreDocFragment() {
         if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
             childFragmentManager.beginTransaction()
-                .replace(multiAddDoc.id, AddMultiDocFragment(DocumentType.CheckProgress))
+                .replace(
+                    multiAddDoc.id,
+                    AddMultiDocFragment.newInstance(DocumentType.CheckProgress)
+                )
                 .runOnCommit { documentListChangeListener() }
                 .commit()
     }

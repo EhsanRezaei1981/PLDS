@@ -34,10 +34,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_sign_out -> {
                 MaterialDialog(this).show {
-                    title(text = "Sign out")
-                    message(text = "Are you sure to sign out?")
-                    positiveButton(text = "No")
-                    negativeButton(text = "Yes") {
+                    title(R.string.sign_out)
+                    message(R.string.sign_out_question)
+                    positiveButton(R.string.no)
+                    negativeButton(R.string.yes) {
                         viewModel.signOut()
                         startActivity(Intent(this@MainActivity, LoginActivity::class.java))
                         finish()

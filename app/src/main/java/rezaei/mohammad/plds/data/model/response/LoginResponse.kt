@@ -54,15 +54,18 @@ class LoginResponse : BaseResponse<LoginResponse.User>() {
         @Ignore
         var avatar: Bitmap? = null
             get() {
-                val decodedString: ByteArray = Base64.decode(
+                val decodedString: ByteArray? = Base64.decode(
                     userImage?.substring(
                         userImage.indexOf(",")
                         , userImage.length
                     ), Base64.DEFAULT
                 )
-                val decodedByte =
-                    BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
-                return decodedByte
+                decodedString?.let {
+                    val decodedByte =
+                        BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
+                    return decodedByte
+                }
+                return null
             }
     }
 }
