@@ -29,7 +29,7 @@ class GetDocReferenceViewModel(
         _dataLoading.value = true
         viewModelScope.launch {
             val result = remoteRepository.retrieveDocumentStatus(
-                localRepository.getAllDocument(DocumentType.CheckProgress).first().docRefNo
+                localRepository.getAllDocument(DocumentType.CheckProgress).firstOrNull()?.docRefNo
             )
             _documentStatusEvent.value = Event(result)
             _dataLoading.value = false

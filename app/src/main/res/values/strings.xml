@@ -46,5 +46,6 @@
     <string name="file_ext_err">File Extension Is Not Acceptable.</string>
     <string name="file_size_err">File Is Too Large Or Too Small.</string>
     <string name="title_frag_submit_form">Submit Result</string>
+    <string name="sign_out_question">Are You Sure To Sign Out?</string>
 
 </resources>

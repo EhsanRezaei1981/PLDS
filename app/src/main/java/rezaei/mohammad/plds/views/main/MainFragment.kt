@@ -21,7 +21,7 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setActivityTitle("PLDS")
+        setActivityTitle(getString(R.string.app_name))
         btnUpdateDocProgress.setOnClickListener {
             navigateToGetDocRef()
         }

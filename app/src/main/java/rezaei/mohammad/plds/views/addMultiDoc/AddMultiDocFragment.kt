@@ -25,13 +25,22 @@ import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
 
-class AddMultiDocFragment(docType: DocumentType) : Fragment() {
+class AddMultiDocFragment private constructor() : Fragment() {
+
+    companion object {
+        const val DOC_TYPE = "DOC_TYPE"
+        fun newInstance(docType: DocumentType) = AddMultiDocFragment().apply {
+            arguments = Bundle().apply {
+                putString(DOC_TYPE, docType.name)
+            }
+        }
+    }
 
     private val globalViewModel: GlobalViewModel by sharedViewModel()
     private val viewModel: AddMultiDocViewModel by viewModel {
         parametersOf(
             globalViewModel.docRefNo,
-            docType
+            DocumentType.valueOf(arguments?.getString(DOC_TYPE)!!)
         )
     }
     private lateinit var viewDataBinding: AddMultiDocFragmentBinding
