@@ -10,11 +10,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
@@ -26,19 +25,22 @@ import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
 
-class AddMultiDocFragment : Fragment() {
+class AddMultiDocFragment private constructor() : Fragment() {
 
-    private val docType: Lazy<DocumentType> = lazy {
-        if (parentFragment is ReportIssueFragment)
-            DocumentType.ReportIssue
-        else
-            DocumentType.CheckProgress
+    companion object {
+        const val DOC_TYPE = "DOC_TYPE"
+        fun newInstance(docType: DocumentType) = AddMultiDocFragment().apply {
+            arguments = Bundle().apply {
+                putString(DOC_TYPE, docType.name)
+            }
+        }
     }
+
     private val globalViewModel: GlobalViewModel by sharedViewModel()
-    private val viewModel: AddMultiDocViewModel by inject {
+    private val viewModel: AddMultiDocViewModel by viewModel {
         parametersOf(
             globalViewModel.docRefNo,
-            docType.value
+            DocumentType.valueOf(arguments?.getString(DOC_TYPE)!!)
         )
     }
     private lateinit var viewDataBinding: AddMultiDocFragmentBinding
@@ -116,10 +118,7 @@ class AddMultiDocFragment : Fragment() {
 
     private fun duplicateItemMessage() {
         viewModel.duplicateDocumentEvent.observe(this, EventObserver {
-            (it as? Result.Error)?.let {
-                viewDataBinding.listDocs.snack(it.errorHandling)
-            }
-//            viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = getString(R.string.doc_exist)))
+            viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = getString(R.string.doc_exist)))
         })
     }
 

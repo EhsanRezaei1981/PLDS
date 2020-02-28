@@ -44,7 +44,7 @@ class ReportIssueViewModel(
             if (localRepository.getAllDocument(DocumentType.ReportIssue).isNotEmpty()) {
                 _dataLoading.value = true
                 val result = remoteRepository.getCommonIssues(
-                    DocumentsInfoItem(getDocumentList().first().docRefNo)
+                    DocumentsInfoItem(getDocumentList().firstOrNull()?.docRefNo)
                 )
                 _commonIssues.value = result
                 _dataLoading.value = false

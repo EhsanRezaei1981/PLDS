@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
@@ -35,8 +34,8 @@ class AddMultiDocViewModel(
     private val _allDocumentsRemoveEvent = MutableLiveData<Event<Unit>>()
     val allDocumentsRemoveEvent: LiveData<Event<Unit>> = _allDocumentsRemoveEvent
 
-    private val _duplicateDocumentEvent = MutableLiveData<Event<Result<Unit>>>()
-    val duplicateDocumentEvent: LiveData<Event<Result<Unit>>> = _duplicateDocumentEvent
+    private val _duplicateDocumentEvent = MutableLiveData<Event<Unit>>()
+    val duplicateDocumentEvent: LiveData<Event<Unit>> = _duplicateDocumentEvent
 
     val autoCheckAfterCodeDetect = MutableLiveData<Boolean>()
 
@@ -57,15 +56,17 @@ class AddMultiDocViewModel(
         validateDocRefNo(docRefNo)
         if (_docRefNoErr.value == 0)
             viewModelScope.launch {
-                val result = localRepository.insertDocument(
+                val status = localRepository.insertDocument(
                     Document(
                         docRefNo = docRefNo!!.toUpperCase(
                             Locale.US
                         ), documentType = docType
                     )
                 )
-                (result as? Result.Success)?.let { loadDocumentList() }
-                (result as? Result.Error)?.let { _duplicateDocumentEvent.value = Event(it) }
+                if (status)
+                    loadDocumentList()
+                else
+                    _duplicateDocumentEvent.value = Event(Unit)
                 this@AddMultiDocViewModel.docRefNo.value = null
             }
     }

@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
@@ -42,13 +43,27 @@ class ReportIssueFragment : Fragment() {
         return viewDataBinding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setActivityTitle(getString(R.string.report_issue))
+        addMoreDocFragment()
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        setActivityTitle(getString(R.string.report_issue))
         setupCommonIssueList()
         setupSubmitEvent()
         setupSubmitFormEvent()
-        setupDocumentListObserver()
+    }
+
+    private fun addMoreDocFragment() {
+        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
+            childFragmentManager.beginTransaction()
+                .replace(multiAddDoc.id, AddMultiDocFragment.newInstance(DocumentType.ReportIssue))
+                .runOnCommit {
+                    setupDocumentListObserver()
+                }
+                .commit()
     }
 
     private fun setupCommonIssueList() {

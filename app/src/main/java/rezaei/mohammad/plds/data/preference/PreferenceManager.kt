@@ -42,4 +42,12 @@ class PreferenceManager(context: Context) {
             pref.edit(commit = true) { putString("BASE_URL", value) }
         }
 
+    var lastVersionChangeLog: Int
+        get() {
+            return pref.getInt("LAST_VERSION_LOG", 0)
+        }
+        set(value) {
+            pref.edit { putInt("LAST_VERSION_LOG", value) }
+        }
+
 }

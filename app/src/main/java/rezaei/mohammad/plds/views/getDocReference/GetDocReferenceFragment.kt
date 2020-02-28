@@ -12,7 +12,9 @@ import kotlinx.android.synthetic.main.get_doc_reference_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.GetDocReferenceFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
@@ -40,17 +42,39 @@ class GetDocReferenceFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActivityTitle(getString(R.string.check_document_status))
+        addMoreDocFragment()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupForDocumentStatusResponse()
-        documentListChangeListener()
+    }
+
+    private fun addMoreDocFragment() {
+        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
+            childFragmentManager.beginTransaction()
+                .replace(
+                    multiAddDoc.id,
+                    AddMultiDocFragment.newInstance(DocumentType.CheckProgress)
+                )
+                .runOnCommit { documentListChangeListener() }
+                .commit()
     }
 
     private fun setupForDocumentStatusResponse() {
         viewModel.documentStatusEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { navigateToDocProgress(it.response.data!!) }
+            (it as? Result.Success)?.let {
+                if (it.response.data?.stage.isNullOrEmpty())
+                    navigateToDocProgress(it.response.data!!)
+                else
+                    btnCheckProgress.snack(
+                        ErrorHandling(
+                            errorMessage = it.response.data?.title,
+                            errorMustBeSeenByUser = true,
+                            isSuccessful = true
+                        )
+                    )
+            }
             (it as? Result.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling) }
         })
     }
