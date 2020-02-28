@@ -1,7 +1,6 @@
 package rezaei.mohammad.plds.views.main
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -42,10 +41,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-
-        when(prefs.nighMode){
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        when (prefs.nighMode) {
             AppCompatDelegate.MODE_NIGHT_NO -> {
                 menu?.findItem(R.id.theme_day)?.isChecked = true
             }
@@ -56,6 +53,11 @@ class MainActivity : AppCompatActivity() {
                 menu?.findItem(R.id.theme_default)?.isChecked = true
             }
         }
+        return super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

@@ -25,7 +25,7 @@ import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
 import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
 
-class AddMultiDocFragment private constructor() : Fragment() {
+class AddMultiDocFragment : Fragment() {
 
     companion object {
         const val DOC_TYPE = "DOC_TYPE"
