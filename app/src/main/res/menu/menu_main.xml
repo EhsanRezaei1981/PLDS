@@ -29,12 +29,14 @@
     <item
         android:id="@+id/action_theme"
         android:title="Theme"
+        android:orderInCategory="100"
         app:showAsAction="never">
         <menu>
             <group android:checkableBehavior="single">
                 <item
                     android:id="@+id/theme_default"
                     android:title="System Default"
+                    android:checked="true"
                     app:showAsAction="never" />
                 <item
                     android:id="@+id/theme_day"

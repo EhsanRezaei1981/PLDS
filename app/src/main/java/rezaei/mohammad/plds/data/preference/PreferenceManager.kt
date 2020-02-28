@@ -2,6 +2,7 @@ package rezaei.mohammad.plds.data.preference
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import rezaei.mohammad.plds.BuildConfig
@@ -48,6 +49,14 @@ class PreferenceManager(context: Context) {
         }
         set(value) {
             pref.edit { putInt("LAST_VERSION_LOG", value) }
+        }
+
+    var nighMode: Int
+        get() {
+            return pref.getInt("NIGHT_MODE",AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+        }
+        set(value) {
+            pref.edit { putInt("NIGHT_MODE",value) }
         }
 
 }
