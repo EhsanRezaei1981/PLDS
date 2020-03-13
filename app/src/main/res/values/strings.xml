@@ -47,5 +47,6 @@
     <string name="file_size_err">File Is Too Large Or Too Small.</string>
     <string name="title_frag_submit_form">Submit Result</string>
     <string name="sign_out_question">Are You Sure To Sign Out?</string>
+    <string name="multi_doc_note">Note: Below information will be applied for all documents.</string>
 
 </resources>

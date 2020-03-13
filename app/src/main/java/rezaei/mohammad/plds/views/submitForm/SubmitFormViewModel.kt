@@ -35,6 +35,12 @@ class SubmitFormViewModel(
     private val _submitFormEvent = MutableLiveData<Event<Result<BaseResponse<Unit>>>>()
     val submitFormEvent: LiveData<Event<Result<BaseResponse<Unit>>>> = _submitFormEvent
 
+    private val _isMultiDoc = MutableLiveData<Boolean>()
+    val isMultiDoc: LiveData<Boolean> = _isMultiDoc
+
+    init {
+        isMultiDoc()
+    }
 
     fun submitForm() {
         _submitEvent.value = Event(Unit)
@@ -69,6 +75,12 @@ class SubmitFormViewModel(
     fun removeAllDocuments() {
         viewModelScope.launch {
             localRepository.deleteAllDocs(getDocumentList())
+        }
+    }
+
+    private fun isMultiDoc() {
+        viewModelScope.launch {
+            _isMultiDoc.value = getDocumentList().size > 1
         }
     }
 

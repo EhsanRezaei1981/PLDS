@@ -2,8 +2,10 @@ package rezaei.mohammad.plds.views.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
@@ -92,6 +94,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun showNote() {
+        TransitionManager.beginDelayedTransition(appBar)
+        txtNote.visibility = View.VISIBLE
+    }
+
+    fun hideNote() {
+        TransitionManager.beginDelayedTransition(appBar)
+        txtNote.visibility = View.GONE
     }
 
 }

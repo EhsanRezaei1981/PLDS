@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.yayandroid.locationmanager.LocationManager
@@ -38,6 +39,7 @@ import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.views.main.MainActivity
 
 
 class SubmitFormFragment : Fragment() {
@@ -72,6 +74,7 @@ class SubmitFormFragment : Fragment() {
         setupCourtsSheriffsLoad()
         setupSubmitEvent()
         setupSubmitFormEvent()
+        setupNoteView()
     }
 
     private fun drawForm(formResponse: FormResponse) {
@@ -221,6 +224,16 @@ class SubmitFormFragment : Fragment() {
                 }
             })
             .build().get()
+    }
+
+    private fun setupNoteView() {
+        viewModel.isMultiDoc.observe(this, Observer {
+            with((requireActivity() as MainActivity)) {
+                if (it) showNote() else hideNote()
+            }
+
+
+        })
     }
 
 }

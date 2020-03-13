@@ -51,7 +51,6 @@ class GetDocReferenceFragment : Fragment() {
     }
 
     private fun addMoreDocFragment() {
-        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
             childFragmentManager.beginTransaction()
                 .replace(
                     multiAddDoc.id,

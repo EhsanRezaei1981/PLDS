@@ -24,6 +24,7 @@ import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
+import rezaei.mohammad.plds.views.main.MainActivity
 
 class ReportIssueFragment : Fragment() {
 
@@ -57,7 +58,6 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun addMoreDocFragment() {
-        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
             childFragmentManager.beginTransaction()
                 .replace(multiAddDoc.id, AddMultiDocFragment.newInstance(DocumentType.ReportIssue))
                 .runOnCommit {
@@ -147,6 +147,13 @@ class ReportIssueFragment : Fragment() {
             else if (it.isEmpty()) {
                 viewDataBinding.layoutContainer.removeAllViews()
                 viewModel.dataExist.value = false
+            }
+            //show note if there is multiple doc in list
+            with((requireActivity() as MainActivity)) {
+                if (it.size > 1)
+                    showNote()
+                else
+                    hideNote()
             }
         })
     }
