@@ -30,11 +30,14 @@ fun View.snack(
 
     snack.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 5
 
-    snack.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
-    if (message?.isSuccessful != null && message.isSuccessful == false)
+    if (message?.isSuccessful != null && message.isSuccessful == false) {
         snack.setBackgroundTint(ContextCompat.getColor(context, R.color.colorFail))
-    else if (message?.isSuccessful != null && message.isSuccessful == true)
+        snack.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+    }
+    else if (message?.isSuccessful != null && message.isSuccessful == true) {
         snack.setBackgroundTint(ContextCompat.getColor(context, R.color.colorSuccessful))
+        snack.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+    }
 
     var isActionInvoke = false
     var isDismissActionInvoke = false

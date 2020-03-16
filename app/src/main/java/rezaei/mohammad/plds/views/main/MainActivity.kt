@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.afollestad.materialdialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
@@ -18,6 +20,7 @@ import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
 class MainActivity : AppCompatActivity() {
 
     private val viewModel: GlobalViewModel by viewModel()
+    private val prefs: PreferenceManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,6 +39,21 @@ class MainActivity : AppCompatActivity() {
                 positiveButton(text = "Close")
             }
         }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        when (prefs.nighMode) {
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                menu?.findItem(R.id.theme_day)?.isChecked = true
+            }
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                menu?.findItem(R.id.theme_night)?.isChecked = true
+            }
+            else -> {
+                menu?.findItem(R.id.theme_default)?.isChecked = true
+            }
+        }
+        return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -59,6 +77,18 @@ class MainActivity : AppCompatActivity() {
                         finish()
                     }
                 }
+            }
+            R.id.theme_default -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                prefs.nighMode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+            }
+            R.id.theme_day -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                prefs.nighMode = AppCompatDelegate.MODE_NIGHT_NO
+            }
+            R.id.theme_night -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                prefs.nighMode = AppCompatDelegate.MODE_NIGHT_YES
             }
         }
         return super.onOptionsItemSelected(item)
