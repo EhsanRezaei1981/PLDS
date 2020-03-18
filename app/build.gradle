@@ -25,8 +25,8 @@ android {
         applicationId "rezaei.mohammad.plds"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 4
-        versionName "1.1.0"
+        versionCode 6
+        versionName "1.1.2"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
@@ -110,7 +110,7 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:3.1.1'
     implementation 'com.afollestad.material-dialogs:files:3.1.1'
     implementation 'com.afollestad.material-dialogs:input:3.1.1'
-    implementation 'com.github.tiper:MaterialSpinner:1.4.1'
+    implementation 'com.github.MohammadRezaei92:MaterialSpinner:search'
     implementation 'com.yayandroid:LocationManager:2.0.4'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'

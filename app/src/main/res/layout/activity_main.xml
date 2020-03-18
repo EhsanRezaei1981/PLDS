@@ -23,7 +23,7 @@
             android:id="@+id/txtNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorFail"
             android:padding="8dp"
             android:text="@string/multi_doc_note"
             android:textColor="?android:textColorPrimary"

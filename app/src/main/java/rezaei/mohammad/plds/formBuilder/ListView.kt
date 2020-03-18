@@ -162,12 +162,12 @@ open class ListView(
                     progressBar.visibility = View.GONE
                     spnCustomAction.hint = context.getString(R.string.select_right_court)
 
-                    val items = mutableListOf<String?>()
+                    val items = mutableListOf<String>()
                     courts?.mapTo(items, {
-                        it.courtName
+                        it.courtName ?: ""
                     })
 
-                    val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, items)
+                    val adapter = SearchAdapter(items.toList(), R.layout.spinner_item)
                     spnCustomAction.adapter = adapter
 
                     spnCustomAction.onItemSelectedListener =

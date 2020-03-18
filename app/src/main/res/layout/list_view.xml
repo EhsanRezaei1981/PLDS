@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        app:spinnerMode="bottomsheet" />
+        app:spinnerMode="dialog" />
 
     <com.tiper.MaterialSpinner
         android:id="@+id/spnCustomAction"
@@ -25,7 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:visibility="gone"
-        app:spinnerMode="bottomsheet" />
+        app:searchable="true"
+        app:spinnerMode="dialog" />
 
     <ProgressBar
         android:id="@+id/progressBar"
