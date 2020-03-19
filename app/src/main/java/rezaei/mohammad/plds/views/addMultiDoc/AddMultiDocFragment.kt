@@ -97,7 +97,7 @@ class AddMultiDocFragment : Fragment() {
 
     private fun setupItemRemover() {
         viewModel.documentRemoveEvent.observe(this, EventObserver {
-            listDocs.snack(
+            listDocs?.snack(
                 message = ErrorHandling(errorMessage = getString(R.string.item_removed)),
                 actionText = getString(R.string.undo),
                 action = { viewModel.loadDocumentList() },
@@ -106,7 +106,7 @@ class AddMultiDocFragment : Fragment() {
             )
         })
         viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
-            listDocs.snack(
+            listDocs?.snack(
                 ErrorHandling(errorMessage = getString(R.string.all_items_deleted)),
                 getString(R.string.undo),
                 { viewModel.loadDocumentList() },
@@ -124,8 +124,8 @@ class AddMultiDocFragment : Fragment() {
 
     private fun setupRecyclerScroll() {
         viewModel.documentsList.observe(this, Observer {
-            listDocs.post {
-                listDocs.smoothScrollToPosition(0)
+            listDocs?.post {
+                listDocs?.smoothScrollToPosition(0)
             }
         })
     }

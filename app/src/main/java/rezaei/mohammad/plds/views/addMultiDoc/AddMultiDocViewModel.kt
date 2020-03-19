@@ -67,7 +67,6 @@ class AddMultiDocViewModel(
                     loadDocumentList()
                 else
                     _duplicateDocumentEvent.value = Event(Unit)
-                this@AddMultiDocViewModel.docRefNo.value = null
             }
     }
 
@@ -113,8 +112,10 @@ class AddMultiDocViewModel(
 
     private fun setupAutoCheck() {
         docRefNo.observeForever {
-            if ((autoCheckAfterCodeDetect.value == true) && it != null)
+            if ((autoCheckAfterCodeDetect.value == true) && it != null) {
                 addToList(it)
+                docRefNo.value = null
+            }
         }
     }
 }

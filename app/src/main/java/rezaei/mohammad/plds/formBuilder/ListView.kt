@@ -157,17 +157,20 @@ open class ListView(
         selectedCourt = null
         fragment.get()?.let {
             courtList.observe(it, Observer<List<CourtResponse.Court>> { courts ->
+                if (selectedItem?.customActionCode?.contains("ChangeCourt") == false) {
+                    return@Observer
+                }
                 if (courts.isNotEmpty()) {
                     spnCustomAction.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                     spnCustomAction.hint = context.getString(R.string.select_right_court)
 
-                    val items = mutableListOf<String>()
+                    val items = mutableListOf<Pair<String, String?>>()
                     courts?.mapTo(items, {
-                        it.courtName ?: ""
+                        Pair(it.courtName ?: "", null)
                     })
 
-                    val adapter = SearchAdapter(items.toList(), R.layout.spinner_item)
+                    val adapter = SearchAdapter(items.toList())
                     spnCustomAction.adapter = adapter
 
                     spnCustomAction.onItemSelectedListener =
@@ -178,7 +181,8 @@ open class ListView(
                                 position: Int,
                                 id: Long
                             ) {
-                                selectedCourt = courts[position]
+                                //in searchable mode id is item position
+                                selectedCourt = courts[id.toInt()]
                             }
 
                             override fun onNothingSelected(parent: MaterialSpinner) {
@@ -194,17 +198,20 @@ open class ListView(
         selectedSheriff = null
         fragment.get()?.let {
             sheriffList.observe(it, Observer<List<SheriffResponse.Sheriff>> { sheriffs ->
+                if (selectedItem?.customActionCode?.contains("ChangeSheriff") == false) {
+                    return@Observer
+                }
                 if (sheriffs.isNotEmpty()) {
                     spnCustomAction.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
                     spnCustomAction.hint = context.getString(R.string.select_right_sherrif)
 
-                    val items = mutableListOf<String?>()
+                    val items = mutableListOf<Pair<String, String?>>()
                     sheriffs?.mapTo(items, {
-                        it.sheriffAreaName
+                        Pair(it.sheriffAreaName ?: "", it.courtName ?: "")
                     })
 
-                    val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, items)
+                    val adapter = SearchAdapter(items.toList())
                     spnCustomAction.adapter = adapter
 
                     spnCustomAction.onItemSelectedListener =
@@ -215,7 +222,8 @@ open class ListView(
                                 position: Int,
                                 id: Long
                             ) {
-                                selectedSheriff = sheriffs[position]
+                                //in searchable mode id is item position
+                                selectedSheriff = sheriffs[id.toInt()]
                             }
 
                             override fun onNothingSelected(parent: MaterialSpinner) {

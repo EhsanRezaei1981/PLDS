@@ -6,14 +6,15 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
-import android.widget.TextView
-import androidx.annotation.LayoutRes
+import android.widget.LinearLayout
+import kotlinx.android.synthetic.main.spinner_item_2.view.*
+import rezaei.mohammad.plds.R
 
-class SearchAdapter(private val searchableItems: List<String>, @LayoutRes private val spinnerItem: Int) :
+class SearchAdapter(private val mainItems: List<Pair<String, String?>>) :
     BaseAdapter(),
     Filterable {
 
-    private var newItemList = searchableItems
+    private var newItemList = mainItems
 
     override fun getCount(): Int {
         return newItemList.size
@@ -24,7 +25,8 @@ class SearchAdapter(private val searchableItems: List<String>, @LayoutRes privat
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        //its return real item position instead of item id
+        return mainItems.indexOf(newItemList[position]).toLong()
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View? {
@@ -33,8 +35,12 @@ class SearchAdapter(private val searchableItems: List<String>, @LayoutRes privat
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val view = LayoutInflater.from(parent.context)
-            .inflate(spinnerItem, parent, false) as TextView
-        view.text = newItemList[position]
+            .inflate(R.layout.spinner_item_2, parent, false) as LinearLayout
+        view.mainText.text = newItemList[position].first
+        newItemList[position].second?.let {
+            view.subText.visibility = View.VISIBLE
+            view.subText.text = newItemList[position].second
+        }
         return view
     }
 
@@ -43,10 +49,10 @@ class SearchAdapter(private val searchableItems: List<String>, @LayoutRes privat
             override fun performFiltering(filter: CharSequence?): FilterResults {
                 return FilterResults().apply {
                     if (filter.isNullOrEmpty()) {
-                        count = searchableItems.size
-                        values = searchableItems
+                        count = mainItems.size
+                        values = mainItems
                     } else {
-                        searchableItems.filter { it.contains(filter.toString(), true) }
+                        mainItems.filter { it.first.contains(filter.toString(), true) }
                             .let {
                                 count = it.size
                                 values = it
@@ -56,7 +62,7 @@ class SearchAdapter(private val searchableItems: List<String>, @LayoutRes privat
             }
 
             override fun publishResults(p0: CharSequence?, result: FilterResults?) {
-                newItemList = result?.values as List<String>
+                newItemList = result?.values as List<Pair<String, String?>>
                 notifyDataSetChanged()
             }
         }

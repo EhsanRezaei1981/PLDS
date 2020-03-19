@@ -58,12 +58,15 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun addMoreDocFragment() {
+        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
             childFragmentManager.beginTransaction()
                 .replace(multiAddDoc.id, AddMultiDocFragment.newInstance(DocumentType.ReportIssue))
                 .runOnCommit {
                     setupDocumentListObserver()
                 }
                 .commit()
+        else
+            setupDocumentListObserver()
     }
 
     private fun setupCommonIssueList() {
