@@ -12,4 +12,6 @@
 
     <color name="colorWhite">#FFFFFF</color>
 
+    <color name="colorWarning">#FFC107</color>
+
 </resources>

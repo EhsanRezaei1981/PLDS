@@ -15,6 +15,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.local.Environment
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.login.LoginActivity
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
         showChangeLog()
+        showEnvironment()
 
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             hideNote()
@@ -46,6 +48,11 @@ class MainActivity : AppCompatActivity() {
                 positiveButton(text = "Close")
             }
         }
+    }
+
+    private fun showEnvironment() {
+        if (prefs.activeEnvironment != Environment.Live)
+            supportActionBar?.subtitle = "${prefs.activeEnvironment.name.toUpperCase()} Environment"
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {

@@ -35,7 +35,7 @@ class LoginResponse : BaseResponse<LoginResponse.User>() {
         @field:SerializedName("JAToken")
         val jAToken: String? = null,
 
-        @field:SerializedName("UserImage")
+        @field:SerializedName("UserImageBase64")
         val userImage: String? = null,
 
         @field:SerializedName("EventLoginId")

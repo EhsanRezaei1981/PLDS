@@ -55,7 +55,7 @@ object Module {
         //retrofit
         single {
             Retrofit.Builder()
-                .baseUrl(get<PreferenceManager>().baseURL)
+                .baseUrl(get<PreferenceManager>().getActiveEnvironment().second)
                 .client(get())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
@@ -64,7 +64,7 @@ object Module {
 
         //remote repository
         single {
-            RemoteRepository(get())
+            RemoteRepository(get(), get())
         }
 
         //pref manager

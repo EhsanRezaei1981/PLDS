@@ -16,7 +16,9 @@ class GlobalViewModel(
 ) : ViewModel() {
 
     //live data to keep docRefNo and share it between fragments
-    val docRefNo = MutableLiveData<String>()
+    val docRefNo: MutableLiveData<String> by lazy {
+        MutableLiveData<String>()
+    }
 
     private val _documentsList = MutableLiveData<MutableList<Document>>()
     val documentsList: LiveData<MutableList<Document>> = _documentsList

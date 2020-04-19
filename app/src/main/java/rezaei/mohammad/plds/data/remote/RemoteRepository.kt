@@ -7,9 +7,11 @@ import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.Result
 import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.*
+import rezaei.mohammad.plds.data.preference.PreferenceManager
 
 class RemoteRepository(
     private val apiInterface: ApiInterface,
+    private val pref: PreferenceManager,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : RemoteRepository {
 
@@ -29,7 +31,11 @@ class RemoteRepository(
                         loginRequest = LoginRequest(
                             username = userName,
                             password = password
-                        )
+                        ),
+                        url = pref.getActiveEnvironment().first.trimEnd(
+                            '/',
+                            '\\'
+                        ) + "/WebCore/Account/Authenticate"
                     )
                 )
             }

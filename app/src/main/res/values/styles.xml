@@ -15,4 +15,8 @@
 
     <style name="AppTheme.PopupOverlay"  />
 
+    <style name="Toolbar.Subtitle" parent="TextAppearance.AppCompat.Widget.ActionBar.Subtitle">
+        <item name="android:textStyle">bold</item>
+    </style>
+
 </resources>

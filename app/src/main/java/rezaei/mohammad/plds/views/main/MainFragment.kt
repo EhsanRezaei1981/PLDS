@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
+import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.util.setActivityTitle
 
@@ -29,6 +30,8 @@ class MainFragment : Fragment() {
         btnReportIssue.setOnClickListener {
             navigateToReportIssue()
         }
+
+        setVersionName()
     }
 
     private fun navigateToGetDocRef() {
@@ -39,6 +42,10 @@ class MainFragment : Fragment() {
     private fun navigateToReportIssue() {
         val action = MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
         findNavController().navigate(action)
+    }
+
+    private fun setVersionName() {
+        txtVersion.text = "v${BuildConfig.VERSION_NAME}"
     }
 
 
