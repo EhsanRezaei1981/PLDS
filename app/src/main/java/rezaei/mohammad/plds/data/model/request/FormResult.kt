@@ -31,11 +31,11 @@ data class Result(
 
 data class Gps(
 
-    @field:SerializedName("X")
-    val X: Double? = null,
-
     @field:SerializedName("Y")
-    val Y: Double? = null
+    val Y: Double? = null,
+
+    @field:SerializedName("X")
+    val X: Double? = null
 )
 
 data class DocumentsInfoItem(
