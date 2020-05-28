@@ -28,7 +28,7 @@ fun View.snack(
             ?: if (actionText == null) estimateTimeForShowMessage(message?.errorMessage) else Snackbar.LENGTH_INDEFINITE
     )
 
-    snack.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 5
+    snack.view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text).maxLines = 20
 
     if (message?.isSuccessful != null && message.isSuccessful == false) {
         snack.setBackgroundTint(ContextCompat.getColor(context, R.color.colorFail))
