@@ -31,6 +31,8 @@ class DocProgressViewModel(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
+    val yesNoButtonsIsVisible = MutableLiveData<Boolean>()
+
     fun start(documentStatus: DocumentStatusResponse.Data) {
         _documentStatus.value = documentStatus
     }
@@ -50,6 +52,7 @@ class DocProgressViewModel(
             )
             _onNoPressEvent.value = Event(result)
             _dataLoading.value = false
+            yesNoButtonsIsVisible.value = true
         }
     }
 
@@ -64,6 +67,7 @@ class DocProgressViewModel(
             )
             _onYesPressEvent.value = Event(result)
             _dataLoading.value = false
+            yesNoButtonsIsVisible.value = true
         }
     }
 }

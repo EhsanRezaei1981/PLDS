@@ -38,6 +38,11 @@ class DocProgressFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setActivityTitle("Document Reference NO: ${args.documentStatus.documentReferenceNo}")
+
+        //hide yes no buttons when stage is null
+        viewModel.yesNoButtonsIsVisible.value =
+            !(args.documentStatus.documentStatusId != null && args.documentStatus.stage == null)
+
         setupButtonsCallback()
     }
 
