@@ -41,7 +41,7 @@ class DocProgressFragment : Fragment() {
 
         //hide yes no buttons when stage is null
         viewModel.yesNoButtonsIsVisible.value =
-            !(args.documentStatus.documentStatusId != null && args.documentStatus.stage == null)
+            (args.documentStatus.statusId != null && args.documentStatus.stage == null)
 
         setupButtonsCallback()
     }

@@ -36,6 +36,9 @@ class DocumentStatusResponse : BaseResponse<DocumentStatusResponse.Data>() {
         val gpsIsNeeded: Int? = null,
 
         @field:SerializedName("Stage")
-        val stage: String? = null
+        val stage: String? = null,
+
+        @field:SerializedName("StatusId")
+        val statusId: Int? = null
     ) : Parcelable
 }
