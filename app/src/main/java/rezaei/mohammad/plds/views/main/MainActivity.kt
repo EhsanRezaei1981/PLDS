@@ -2,13 +2,14 @@ package rezaei.mohammad.plds.views.main
 
 import android.content.Intent
 import android.os.Bundle
-import android.transition.TransitionManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.navigation.findNavController
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
@@ -20,6 +21,7 @@ import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -108,13 +110,19 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun enableTransition() {
+        val autoTransition = AutoTransition()
+        autoTransition.excludeChildren(toolbar, true)
+        TransitionManager.beginDelayedTransition(appBar, autoTransition)
+    }
+
     fun showNote() {
-        TransitionManager.beginDelayedTransition(appBar)
+        enableTransition()
         txtNote.visibility = View.VISIBLE
     }
 
     fun hideNote() {
-        TransitionManager.beginDelayedTransition(appBar)
+        enableTransition()
         txtNote.visibility = View.GONE
     }
 

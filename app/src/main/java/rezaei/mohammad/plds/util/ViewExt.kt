@@ -88,7 +88,7 @@ fun estimateTimeForShowMessage(message: String?): Int {
 
 fun Fragment.setActivityTitle(title: String?) {
     title?.let {
-        (requireActivity() as AppCompatActivity).supportActionBar?.title = title
+        (requireActivity() as AppCompatActivity).title = title
     }
 }
 

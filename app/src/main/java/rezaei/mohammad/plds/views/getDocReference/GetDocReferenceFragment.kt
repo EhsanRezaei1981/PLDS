@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
@@ -59,7 +60,18 @@ class GetDocReferenceFragment : Fragment() {
                 .runOnCommit { documentListChangeListener() }
                 .commit()
         else
-            documentListChangeListener()
+            childFragmentManager.registerFragmentLifecycleCallbacks(object :
+                FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentActivityCreated(
+                    fm: FragmentManager,
+                    f: Fragment,
+                    savedInstanceState: Bundle?
+                ) {
+                    super.onFragmentActivityCreated(fm, f, savedInstanceState)
+                    if (f is AddMultiDocFragment)
+                        documentListChangeListener()
+                }
+            }, false)
     }
 
     private fun setupForDocumentStatusResponse() {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.report_issue_fragment.*
@@ -58,15 +59,32 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun addMoreDocFragment() {
-        if (childFragmentManager.findFragmentById(R.id.multiAddDoc) == null)
+        if (childFragmentManager.findFragmentByTag("AddDoc") == null)
             childFragmentManager.beginTransaction()
-                .replace(multiAddDoc.id, AddMultiDocFragment.newInstance(DocumentType.ReportIssue))
+                .replace(
+                    multiAddDoc.id,
+                    AddMultiDocFragment.newInstance(DocumentType.ReportIssue),
+                    "AddDoc"
+                )
                 .runOnCommit {
                     setupDocumentListObserver()
                 }
                 .commit()
         else
-            setupDocumentListObserver()
+            childFragmentManager.registerFragmentLifecycleCallbacks(object :
+                FragmentManager.FragmentLifecycleCallbacks() {
+                override fun onFragmentActivityCreated(
+                    fm: FragmentManager,
+                    f: Fragment,
+                    savedInstanceState: Bundle?
+                ) {
+                    super.onFragmentActivityCreated(fm, f, savedInstanceState)
+                    if (f is AddMultiDocFragment)
+                        setupDocumentListObserver()
+                }
+            }, false)
+
+
     }
 
     private fun setupCommonIssueList() {
@@ -144,20 +162,20 @@ class ReportIssueFragment : Fragment() {
     private fun setupDocumentListObserver() {
         (childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)
             .documentList.observe(this, Observer {
-            //if common issue list was empty, load it again on document changes
-            if (viewDataBinding.layoutContainer.childCount == 0 && it.isNotEmpty())
-                viewModel.getCommonIssues()
-            else if (it.isEmpty()) {
-                viewDataBinding.layoutContainer.removeAllViews()
-                viewModel.dataExist.value = false
-            }
-            //show note if there is multiple doc in list
-            with((requireActivity() as MainActivity)) {
-                if (it.size > 1)
-                    showNote()
-                else
-                    hideNote()
-            }
-        })
+                //if common issue list was empty, load it again on document changes
+                if (viewDataBinding.layoutContainer.childCount == 0 && it.isNotEmpty())
+                    viewModel.getCommonIssues()
+                else if (it.isEmpty()) {
+                    viewDataBinding.layoutContainer.removeAllViews()
+                    viewModel.dataExist.value = false
+                }
+                //show note if there is multiple doc in list
+                with((requireActivity() as MainActivity)) {
+                    if (it.size > 1)
+                        showNote()
+                    else
+                        hideNote()
+                }
+            })
     }
 }

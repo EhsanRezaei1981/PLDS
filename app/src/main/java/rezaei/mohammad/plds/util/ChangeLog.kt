@@ -15,6 +15,10 @@ class ChangeLog(private val pref: PreferenceManager) {
                 "Fix user image bug.",
                 "Add Username to user info dialog."
             )
+        logs[10] = listOf(
+            "Fix change theme bug.",
+            "Fix toolbar show title bug."
+        )
     }
 
     fun getLogFor(versionCode: Int): List<String>? {
