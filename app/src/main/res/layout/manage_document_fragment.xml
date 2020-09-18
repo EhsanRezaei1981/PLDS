@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="rezaei.mohammad.plds.views.manageDoc.ManageDocumentViewModel" />
+
+        <import type="android.view.View" />
+    </data>
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:context=".views.manageDoc.ManageDocumentFragment">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtMessage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/mange_document"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputDocRefrence"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                app:errorEnabled="@{(viewmodel.docRefNoErr == 0) ? false : true}"
+                app:errorIconDrawable="@null"
+                app:errorText="@{viewmodel.docRefNoErr}"
+                app:layout_constraintEnd_toStartOf="@+id/btnReadQR"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/txtMessage">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Document reference NO"
+                    android:inputType="textCapCharacters"
+                    android:text="@{viewmodel.docRefNo}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnReadQR"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:minWidth="48dp"
+                app:icon="@drawable/ic_qr_code"
+                app:iconGravity="textStart"
+                app:iconPadding="0dp"
+                app:iconSize="36dp"
+                app:layout_constraintBottom_toBottomOf="@+id/inputDocRefrence"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnTackingHistory"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="@{(view) -> viewmodel.getDocumentBaseInfo(view,inputDocRefrence.getEditText().getText().toString())}"
+                android:text="@string/tacking_history"
+                android:textAllCaps="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputDocRefrence" />
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:layout_marginStart="140dp"
+                android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/btnTackingHistory"
+                app:layout_constraintStart_toEndOf="@+id/btnTackingHistory"
+                app:layout_constraintTop_toTopOf="@+id/btnTackingHistory" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</layout>

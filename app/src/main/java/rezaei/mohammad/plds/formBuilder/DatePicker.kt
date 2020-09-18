@@ -9,29 +9,43 @@ import rezaei.mohammad.plds.data.model.response.FormResponse
 
 import java.util.*
 
-class DatePicker(context: Context?, structure: FormResponse.DataItem) :
+class DatePicker(
+    context: Context?,
+    structure: FormResponse.DataItem,
+    readOnly: Boolean = false
+) :
     TextInputView(context, structure), DatePickerDialog.OnDateSetListener {
 
     init {
-        initDatePicker()
+        isReadOnly = readOnly
+        initDatePicker(structure)
         disableEditable()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initDatePicker() {
+    private fun initDatePicker(structure: FormResponse.DataItem) {
+        val year: Int
+        val month: Int
+        val dayOfMonth: Int
+
+        val selectedDate = structure.value?.reply?.split("/", "-")
         val date = Calendar.getInstance()
+        year = selectedDate?.get(0)?.toInt() ?: date.get(Calendar.YEAR)
+        month = selectedDate?.get(1)?.toInt() ?: date.get(Calendar.MONTH)
+        dayOfMonth = selectedDate?.get(1)?.toInt() ?: date.get(Calendar.DAY_OF_MONTH)
+
+
         inputText.editText?.setOnClickListener {
             DatePickerDialog(
                 context, this,
-                date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH),
-                date.get(Calendar.DAY_OF_MONTH)
+                year,
+                month,
+                dayOfMonth
             ).show()
         }
+
         inputText.editText?.setText(
-            "${date.get(Calendar.YEAR)}/" +
-                    "${date.get(Calendar.MONTH).plus(1).to2Digit()}/" +
-                    date.get(Calendar.DAY_OF_MONTH).to2Digit()
+            "${year}/" + "${month.plus(1).to2Digit()}/" + dayOfMonth.to2Digit()
         )
     }
 

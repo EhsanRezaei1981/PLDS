@@ -7,7 +7,7 @@ import okhttp3.Authenticator
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.Route
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 
 class RefreshTokenAuthenticator(
@@ -31,7 +31,7 @@ class RefreshTokenAuthenticator(
                 prefs.value.username ?: "",
                 prefs.value.password ?: ""
             )
-            (response as? Result.Success)?.let {
+            (response as? ApiResult.Success)?.let {
                 it.response.data?.jAToken?.let {
                     prefs.value.authToken = it
                     result = true

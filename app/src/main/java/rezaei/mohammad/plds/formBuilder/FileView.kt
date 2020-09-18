@@ -12,6 +12,7 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -19,9 +20,12 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.files.fileChooser
 import kotlinx.android.synthetic.main.file_view.view.*
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.model.request.ChoosenFile
+import rezaei.mohammad.plds.data.model.request.ChosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
+import rezaei.mohammad.plds.util.fromHtml
+import rezaei.mohammad.plds.util.makeClickable
+import rezaei.mohammad.plds.util.setLinkClickable
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -32,22 +36,35 @@ import java.util.*
 class FileView(
     context: Fragment,
     private val structure: FormResponse.DataItem,
-    private val fileRequestsCallback: FileRequestsCallback
+    private val fileRequestsCallback: FileRequestsCallback,
+    readOnly: Boolean = false
 ) : LinearLayout(context.requireContext()), FormView {
 
-    private val activity = WeakReference(context)
+    private val fragment = WeakReference(context)
 
     private val onActivityResult = MutableLiveData<Intent>()
     private var selectedFile: File? = null
     private var takenPhoto: ByteArray? = null
+    private var isClearImageClicked = false
+    var isReadOnly: Boolean = false
+        set(value) {
+            btnBrowseFile.isGone = value
+            txtError.isGone = value
+            field = value
+        }
 
     init {
         View.inflate(context.requireContext(), R.layout.file_view, this)
+        isReadOnly = readOnly
         setStructure()
     }
 
     private fun setStructure() {
         txtLabel.text = structure.label
+
+        structure.value?.fileId?.let {
+            showImageExistLayouts()
+        }
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
             btnBrowseFile.text = ""
@@ -60,12 +77,35 @@ class FileView(
         }
     }
 
+    private fun showImageExistLayouts() {
+        btnViewImage.isGone = false
+        btnDeleteImage.isGone = false
+        isClearImageClicked = false
+
+        btnViewImage.setOnClickListener {
+            fileRequestsCallback.onPreviewImageClicked(
+                structure.value?.fileId,
+                structure.value?.VTFileId,
+                takenPhoto?.toBase64() ?: selectedFile?.readBytes()?.toBase64()
+            )
+        }
+
+        btnDeleteImage.setOnClickListener {
+            isClearImageClicked = true
+            it.isGone = true
+            btnViewImage.isGone = true
+        }
+    }
+
     private val filePickerClick = {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.requireActivity().checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            if (context.requireActivity()
+                    .checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+            ) {
                 MaterialDialog(context.requireContext()).show {
                     fileChooser { dialog, file ->
                         selectedFile = file
+                        showImageExistLayouts()
                         validate()
                     }
                 }
@@ -76,6 +116,7 @@ class FileView(
             MaterialDialog(context.requireContext()).show {
                 fileChooser { dialog, file ->
                     selectedFile = file
+                    showImageExistLayouts()
                     validate()
                 }
             }
@@ -86,7 +127,9 @@ class FileView(
     private val takePictureClick = {
         fileRequestsCallback.onPhotoTaken(onActivityResult)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (context.requireActivity().checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (context.requireActivity()
+                    .checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+            ) {
                 openCamera()
             } else {
                 fileRequestsCallback.requestPermission(android.Manifest.permission.CAMERA)
@@ -115,7 +158,7 @@ class FileView(
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                    activity.get()?.startActivityForResult(takePictureIntent, cameraRequest)
+                    fragment.get()?.startActivityForResult(takePictureIntent, cameraRequest)
                 }
             }
         }
@@ -157,40 +200,48 @@ class FileView(
     override val elementId: Int = structure.statusQueryId ?: 0
 
     override val result: ElementResult?
-        get() = if (selectedFile != null || takenPhoto != null)
+        get() = if (selectedFile != null || takenPhoto != null || structure.value?.fileId != null)
             ElementResult.FileResult(
                 elementId,
                 when {
-                    selectedFile != null -> ChoosenFile(
+                    selectedFile != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
                         selectedFile?.extension,
                         selectedFile?.readBytes()?.toBase64(),
                         selectedFile?.totalSpace?.toInt(),
-                        selectedFile?.nameWithoutExtension
+                        selectedFile?.nameWithoutExtension,
+                        structure.value?.fileId
                     )
-                    takenPhoto != null -> ChoosenFile(
+                    takenPhoto != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
                         "jpg",
                         takenPhoto?.toBase64(),
                         takenPhoto?.size,
-                        System.currentTimeMillis().toString()
+                        System.currentTimeMillis().toString(),
+                        structure.value?.fileId
                     )
-                    else -> null
-                }
+                    else -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                        fileId = structure.value?.fileId
+                    )
+                },
+                structure.value?.vTMTId,
+                structure.value?.mTId
             ) else null
 
     private fun setupOnActivityResult() {
-        activity.get()?.let { activity ->
+        fragment.get()?.let { activity ->
             onActivityResult.observe(activity, Observer<Intent> {
                 /*takenPhoto = ImageCompressor.compressImage(
                     File(currentPhotoPath),
                     structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
                 )*/
                 takenPhoto = File(currentPhotoPath).readBytes()
+                showImageExistLayouts()
                 validate()
             })
         }
     }
 
     lateinit var currentPhotoPath: String
+
     @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
     private fun createImageFile(): File {
@@ -217,6 +268,7 @@ class FileView(
 interface FileRequestsCallback {
     fun requestPermission(permission: String)
     fun onPhotoTaken(result: MutableLiveData<Intent>)
+    fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?)
 }
 
 fun ByteArray.toBase64(): String? =

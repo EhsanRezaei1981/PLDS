@@ -25,7 +25,12 @@ import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoViewModel
 import rezaei.mohammad.plds.views.main.GlobalViewModel
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueViewModel
+import rezaei.mohammad.plds.views.manageDoc.ManageDocumentViewModel
+import rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHistoryViewModel
+import rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentViewModel
+import rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerViewModel
+import rezaei.mohammad.plds.views.reportIssue.ingeneral.ReportIssueInGeneralViewModel
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 import java.util.concurrent.TimeUnit
 
@@ -96,8 +101,29 @@ object Module {
 
         viewModel { SubmitFormViewModel(get(), get()) }
 
-        viewModel { ReportIssueViewModel(get(), get()) }
+        viewModel {
+            ReportIssueViewModel(
+                get(),
+                get()
+            )
+        }
 
         viewModel { LoginInfoViewModel(get()) }
+
+        viewModel { (docRefNo: MutableLiveData<String>) ->
+            ManageDocumentViewModel(
+                get(),
+                docRefNo
+            )
+        }
+
+        viewModel { ReportIssueInGeneralViewModel() }
+
+        viewModel { DocumentStatusHistoryViewModel(get()) }
+
+        viewModel { EditDocumentViewModel(get() as RemoteRepository) }
+
+        viewModel { ImageViewerViewModel(get() as RemoteRepository) }
+
     }
 }

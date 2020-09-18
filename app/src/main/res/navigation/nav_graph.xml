@@ -40,10 +40,13 @@
         <action
             android:id="@+id/action_mainActivityFragment_to_reportIssueFragment"
             app:destination="@id/reportIssueFragment" />
+        <action
+            android:id="@+id/action_mainActivityFragment_to_manageDocumentFragment"
+            app:destination="@id/manageDocumentFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportIssueFragment"
-        android:name="rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragment"
         android:label="report_issue_fragment"
         tools:layout="@layout/report_issue_fragment">
         <action
@@ -81,4 +84,66 @@
             app:popUpTo="@+id/mainActivityFragment"
             app:popUpToInclusive="true" />
     </fragment>
+    <fragment
+        android:id="@+id/manageDocumentFragment"
+        android:name="rezaei.mohammad.plds.views.manageDoc.ManageDocumentFragment"
+        android:label="ManageDocumentFragment">
+        <action
+            android:id="@+id/action_manageDocumentFragment_to_documentStatusHistoryFragment"
+            app:destination="@id/documentStatusHistoryFragment" />
+        <action
+            android:id="@+id/action_manageDocumentFragment_to_qrReaderFragment"
+            app:destination="@id/qrReaderFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/documentStatusHistoryFragment"
+        android:name="rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHistoryFragment"
+        android:label="document_status_history_fragment"
+        tools:layout="@layout/document_status_history_fragment">
+        <argument
+            android:name="documentBaseInfo"
+            app:argType="rezaei.mohammad.plds.data.model.response.DocumentBaseInfoResponse$Data" />
+        <action
+            android:id="@+id/action_documentStatusHistoryFragment_to_editDocumentFragment"
+            app:destination="@id/editDocumentFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editDocumentFragment"
+        android:name="rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentFragment"
+        android:label="EditDocumentFragment">
+        <argument
+            android:name="DocumentStatusId"
+            app:argType="integer" />
+        <argument
+            android:name="VT"
+            app:argType="string" />
+        <argument
+            android:name="documentBaseInfo"
+            app:argType="rezaei.mohammad.plds.data.model.response.DocumentBaseInfoResponse$Data" />
+        <action
+            android:id="@+id/action_editDocumentFragment_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
+        <argument
+            android:name="readOnly"
+            android:defaultValue="false"
+            app:argType="boolean" />
+        <argument
+            android:name="gpsNeeded"
+            app:argType="boolean" />
+        <argument
+            android:name="type"
+            app:argType="string" />
+    </fragment>
+    <dialog
+        android:id="@+id/imageViewerFragment"
+        android:name="rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerFragment"
+        android:label="ImageViewerFragment">
+        <argument
+            android:name="getFileRequest"
+            app:argType="rezaei.mohammad.plds.data.model.request.GetFileRequest" />
+        <argument
+            android:name="base64"
+            app:argType="string"
+            app:nullable="true" />
+    </dialog>
 </navigation>

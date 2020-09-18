@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -28,7 +29,8 @@ import java.lang.ref.WeakReference
 open class ListView(
     context: Fragment,
     private val structure: FormResponse.DataItem,
-    private val onListItemSelectedCallback: OnListItemSelectedCallback?
+    private val onListItemSelectedCallback: OnListItemSelectedCallback?,
+    readOnly: Boolean = false
 ) : LinearLayout(context.requireContext()), FormView {
 
     private val fragment = WeakReference(context)
@@ -40,8 +42,19 @@ open class ListView(
     private var selectedSheriff: SheriffResponse.Sheriff? = null
     private var selectedGps: Pair<Double, Double>? = null
 
+    var isReadOnly: Boolean = false
+        set(value) {
+            spnItems.isEnabled = !value
+            spnCustomAction.isEnabled = !value
+            inputComment.isEnabled = !value
+            inputComment.isFocusable = !value
+            inputComment.isFocusableInTouchMode = !value
+            field = value
+        }
+
     init {
         View.inflate(context.requireContext(), R.layout.list_view, this)
+        isReadOnly = readOnly
         setStructure()
     }
 
@@ -61,6 +74,15 @@ open class ListView(
             }
 
             override fun onNothingSelected(parent: MaterialSpinner) {
+            }
+        }
+
+        structure.value?.let { value ->
+            spnItems.selection = structure.list
+                ?.indexOfFirst { it.listId == value.listSelectedId ?: 0 } ?: 0
+            if (value.listComment?.isNotEmpty() == true) {
+                inputComment.isVisible = true
+                inputComment.editText?.setText(structure.value.listComment)
             }
         }
     }
@@ -83,7 +105,7 @@ open class ListView(
         if (selectedItem?.commentIsNeeded == 1) {
             inputComment.visibility = View.VISIBLE
         }
-        if (selectedItem?.gPSIsNeeded == 1) {
+        if (selectedItem?.gPSIsNeeded == 1 && !isReadOnly) {
             initGps()
         }
         if (selectedItem?.customActionCode?.contains("ChangeCourt") == true) {
@@ -283,7 +305,7 @@ open class ListView(
 
     override val result: ElementResult?
         get() {
-            var result: ElementResult = if (selectedItem?.customActionCode != "Issue")
+            return if (selectedItem?.customActionCode != "Issue")
                 ElementResult.ListResult(
                     elementId,
                     ListItem(
@@ -300,6 +322,8 @@ open class ListView(
                                 )
                             ) else null
                     ),
+                    structure.value?.vTMTId,
+                    structure.value?.mTId,
                     if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
@@ -319,7 +343,6 @@ open class ListView(
                             selectedGps?.second
                         ) else null
                 )
-            return result
         }
 
 }

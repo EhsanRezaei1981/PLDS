@@ -8,10 +8,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.databinding.DocumentItemBinding
+import rezaei.mohammad.plds.util.BindableAdapter
 
 
 class DocumentAdapter(private val viewModel: AddMultiDocViewModel) :
-    ListAdapter<Document, SubscriptionViewHolder>(SubscriptionDiffCallback()) {
+    ListAdapter<Document, SubscriptionViewHolder>(SubscriptionDiffCallback()),
+    BindableAdapter<List<Document>> {
+
+    override fun setData(data: List<Document>) {
+        submitList(data)
+    }
 
     override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
         val document = getItem(position)

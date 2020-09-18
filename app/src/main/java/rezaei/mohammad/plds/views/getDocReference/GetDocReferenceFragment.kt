@@ -12,7 +12,7 @@ import androidx.transition.TransitionManager
 import kotlinx.android.synthetic.main.get_doc_reference_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
 import rezaei.mohammad.plds.databinding.GetDocReferenceFragmentBinding
@@ -76,10 +76,10 @@ class GetDocReferenceFragment : Fragment() {
 
     private fun setupForDocumentStatusResponse() {
         viewModel.documentStatusEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let {
-                    navigateToDocProgress(it.response.data!!)
+            (it as? ApiResult.Success)?.let {
+                navigateToDocProgress(it.response.data!!)
             }
-            (it as? Result.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnCheckProgress.snack(error.errorHandling) }
         })
     }
 

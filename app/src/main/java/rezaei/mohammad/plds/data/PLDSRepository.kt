@@ -2,21 +2,24 @@ package rezaei.mohammad.plds.data
 
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
-import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
-import rezaei.mohammad.plds.data.model.request.FormResult
-import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
+import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.*
 
 interface RemoteRepository {
-    suspend fun login(userName: String, password: String): Result<LoginResponse>
-    suspend fun retrieveDocumentStatus(documentRefNo: String?): Result<DocumentStatusResponse>
-    suspend fun getDynamicFieldsUnsuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse>
-    suspend fun getDynamicFieldsSuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): Result<FormResponse>
-    suspend fun sendDynamicFieldResponse(formResult: FormResult): Result<BaseResponse<Unit>>
-    suspend fun getCourts(unit: Unit): Result<CourtResponse>
-    suspend fun getSheriffs(unit: Unit): Result<SheriffResponse>
-    suspend fun getCommonIssues(document: DocumentsInfoItem): Result<CommonIssuesResponse>
-
+    suspend fun login(userName: String, password: String): ApiResult<LoginResponse>
+    suspend fun retrieveDocumentStatus(documentRefNo: String?): ApiResult<DocumentStatusResponse>
+    suspend fun getDynamicFieldsUnsuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): ApiResult<FormResponse>
+    suspend fun getDynamicFieldsSuccessful(getDynamicFieldsRequest: GetDynamicFieldsRequest): ApiResult<FormResponse>
+    suspend fun sendDynamicFieldResponse(formResult: FormResult.DocumentProgress): ApiResult<BaseResponse<Unit>>
+    suspend fun getCourts(unit: Unit): ApiResult<CourtResponse>
+    suspend fun getSheriffs(unit: Unit): ApiResult<SheriffResponse>
+    suspend fun getCommonIssues(document: DocumentsInfoItem): ApiResult<CommonIssuesResponse>
+    suspend fun getDocumentBaseInfo(documentStatusRequest: DocumentStatusRequest): ApiResult<DocumentBaseInfoResponse>
+    suspend fun getDocumentStatusHistory(documentStatusHistoryRequest: DocumentBaseInfoResponse.Data): ApiResult<DocumentStatusHistoryResponse>
+    suspend fun getRespondedFields(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse>
+    suspend fun getStatusSuccesses(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse>
+    suspend fun getFileByMainLegalInfo(getFileRequest: GetFileRequest): ApiResult<GetFileResponse>
+    suspend fun updateRespondedFields(updateRespondedFieldsRequest: FormResult.RespondedFields): ApiResult<BaseResponse<Unit>>
 }
 
 interface LocalRepository {

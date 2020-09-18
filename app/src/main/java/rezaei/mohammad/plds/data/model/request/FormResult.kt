@@ -2,26 +2,32 @@ package rezaei.mohammad.plds.data.model.request
 
 import com.google.gson.annotations.SerializedName
 
-data class FormResult(
-
-    @field:SerializedName("DocumentsInfo")
-    var documentsInfo: List<DocumentsInfoItem?>? = null,
-
-    @field:SerializedName("Unsuccessful")
-    var unsuccessful: Result? = null,
-
-    @field:SerializedName("Successful")
-    var successful: Result? = null,
-
-    @field:SerializedName("ReportIssue")
-    var reportIssue: ElementResult? = null,
-
+sealed class FormResult {
     @field:SerializedName("GPS")
-    var gPS: Gps? = null,
+    var gps: Gps? = null
 
-    @field:SerializedName("ResponseType")
-    var responseType: String? = null
-)
+    data class DocumentProgress(
+        @field:SerializedName("DocumentsInfo")
+        var documentsInfo: List<DocumentsInfoItem?>? = null,
+        @field:SerializedName("Unsuccessful")
+        var unsuccessful: Result? = null,
+        @field:SerializedName("Successful")
+        var successful: Result? = null,
+        @field:SerializedName("ReportIssue")
+        var reportIssue: ElementResult? = null,
+        @field:SerializedName("ResponseType")
+        var responseType: String? = null
+    ) : FormResult()
+
+    data class RespondedFields(
+        @field:SerializedName("DocumentStatusId")
+        var documentStatusId: Int? = null,
+        @field:SerializedName("Elements")
+        var elements: MutableList<ElementResult?>? = null,
+        @field:SerializedName("VT")
+        var vT: String? = null
+    ) : FormResult()
+}
 
 data class Result(
 

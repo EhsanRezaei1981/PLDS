@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="rezaei.mohammad.plds.views.reportIssue.ReportIssueViewModel" />
+            type="rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueViewModel" />
 
         <import type="android.view.View" />
     </data>
@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".views.reportIssue.ReportIssueFragment">
+            tools:context=".views.reportIssue.perdocument.ReportIssueFragment">
 
             <FrameLayout
                 android:id="@+id/multiAddDoc"

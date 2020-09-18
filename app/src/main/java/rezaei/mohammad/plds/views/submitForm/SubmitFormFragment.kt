@@ -25,7 +25,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.request.Gps
@@ -100,22 +100,25 @@ class SubmitFormFragment : Fragment() {
                     this@SubmitFormFragment.sheriffList = sheriffList
                     viewModel.getSheriffs()
                 }
+
+                override fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?) {
+                }
             })
     }
 
     private fun setupCourtsSheriffsLoad() {
-        viewModel.getCourtsEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { courtList.value = it.response.data }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+        viewModel.getCourtsEvent.observe(this.viewLifecycleOwner, EventObserver {
+            (it as? ApiResult.Success)?.let { courtList.value = it.response.data }
+            (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
-        viewModel.getSheriffsEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { sheriffList.value = it.response.data }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+        viewModel.getSheriffsEvent.observe(this.viewLifecycleOwner, EventObserver {
+            (it as? ApiResult.Success)?.let { sheriffList.value = it.response.data }
+            (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
     private fun setupSubmitEvent() {
-        viewModel.submitEvent.observe(this, EventObserver {
+        viewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
             if (args.gpsNeeded) {
                 if (selectedGps == null) {
                     initGps()
@@ -127,7 +130,7 @@ class SubmitFormFragment : Fragment() {
             }
             if (elementParser.isItemsValid()) {
                 MainScope().launch {
-                    val formResult = FormResult().apply {
+                    val formResult = FormResult.DocumentProgress().apply {
                         val documents = mutableListOf<DocumentsInfoItem>()
                         viewModel.getDocumentList().forEach {
                             documents.add(DocumentsInfoItem(it.docRefNo))
@@ -142,17 +145,17 @@ class SubmitFormFragment : Fragment() {
                     val result = elementParser.getResult(formResult)
 
                     if (args.gpsNeeded)
-                        formResult.gPS = Gps(selectedGps?.first, selectedGps?.second)
+                        formResult.gps = Gps(selectedGps?.first, selectedGps?.second)
 
-                    viewModel.submitForm(result)
+                    viewModel.submitForm(result as FormResult.DocumentProgress)
                 }
             }
         })
     }
 
     private fun setupSubmitFormEvent() {
-        viewModel.submitFormEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { error ->
+        viewModel.submitFormEvent.observe(this.viewLifecycleOwner, EventObserver {
+            (it as? ApiResult.Success)?.let { error ->
                 btnSubmit.snack(error.response.errorHandling, onDismissAction = {
                     val action =
                         SubmitFormFragmentDirections.actionSubmitFormFragmentToMainActivityFragment()
@@ -160,7 +163,7 @@ class SubmitFormFragment : Fragment() {
                 })
                 viewModel.removeAllDocuments()
             }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
@@ -227,7 +230,7 @@ class SubmitFormFragment : Fragment() {
     }
 
     private fun setupNoteView() {
-        viewModel.isMultiDoc.observe(this, Observer {
+        viewModel.isMultiDoc.observe(this.viewLifecycleOwner, Observer {
             with((requireActivity() as MainActivity)) {
                 if (it) showNote() else hideNote()
             }

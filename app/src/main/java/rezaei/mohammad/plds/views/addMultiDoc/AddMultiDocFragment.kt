@@ -22,8 +22,8 @@ import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
 import rezaei.mohammad.plds.views.main.GlobalViewModel
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragment
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragmentDirections
 
 class AddMultiDocFragment : Fragment() {
 
@@ -96,7 +96,7 @@ class AddMultiDocFragment : Fragment() {
     }
 
     private fun setupItemRemover() {
-        viewModel.documentRemoveEvent.observe(this, EventObserver {
+        viewModel.documentRemoveEvent.observe(this.viewLifecycleOwner, EventObserver {
             listDocs?.snack(
                 message = ErrorHandling(errorMessage = getString(R.string.item_removed)),
                 actionText = getString(R.string.undo),
@@ -105,7 +105,7 @@ class AddMultiDocFragment : Fragment() {
                 duration = 3000
             )
         })
-        viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
+        viewModel.allDocumentsRemoveEvent.observe(this.viewLifecycleOwner, EventObserver {
             listDocs?.snack(
                 ErrorHandling(errorMessage = getString(R.string.all_items_deleted)),
                 getString(R.string.undo),
@@ -117,13 +117,13 @@ class AddMultiDocFragment : Fragment() {
     }
 
     private fun duplicateItemMessage() {
-        viewModel.duplicateDocumentEvent.observe(this, EventObserver {
+        viewModel.duplicateDocumentEvent.observe(this.viewLifecycleOwner, EventObserver {
             viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = getString(R.string.doc_exist)))
         })
     }
 
     private fun setupRecyclerScroll() {
-        viewModel.documentsList.observe(this, Observer {
+        viewModel.documentsList.observe(this.viewLifecycleOwner, Observer {
             listDocs?.post {
                 listDocs?.smoothScrollToPosition(0)
             }

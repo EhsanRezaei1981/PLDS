@@ -43,6 +43,30 @@
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
             tools:text="jpg,png" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnViewImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="56dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_image_preview"
+            app:iconPadding="0dp"
+            tools:visibility="visible" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDeleteImage"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:minWidth="0dp"
+            android:minHeight="0dp"
+            android:visibility="gone"
+            app:icon="@drawable/ic_delete"
+            app:iconPadding="0dp"
+            app:iconTint="@color/colorFail"
+            tools:visibility="visible" />
     </LinearLayout>
 
     <TextView
@@ -56,8 +80,4 @@
         android:textSize="14sp"
         tools:text="error" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/divider" />
 </LinearLayout>

@@ -31,6 +31,10 @@ class MainFragment : Fragment() {
             navigateToReportIssue()
         }
 
+        btnManageDocument.setOnClickListener {
+            navigateToManageDoc()
+        }
+
         setVersionName()
     }
 
@@ -41,6 +45,11 @@ class MainFragment : Fragment() {
 
     private fun navigateToReportIssue() {
         val action = MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToManageDoc() {
+        val action = MainFragmentDirections.actionMainActivityFragmentToManageDocumentFragment()
         findNavController().navigate(action)
     }
 

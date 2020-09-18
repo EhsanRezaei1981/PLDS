@@ -25,7 +25,7 @@
     <string name="check_progress">Check Progress</string>
     <string name="comment">Comment</string>
     <string name="close">Close</string>
-    <string name="report_issue">Report Issue &amp; Comment</string>
+    <string name="report_issue">Report Issue Per Document</string>
     <string name="submit">Submit</string>
     <string name="result_form">Result Form</string>
     <string name="item_removed">Item Removed.</string>
@@ -52,5 +52,20 @@
     <string name="login_url">Login url</string>
     <string name="not_valid">Not valid</string>
     <string name="save_and_restart">Save and restart</string>
+    <string name="report_issue_in_general">Report Issue In General</string>
+    <string name="check_in">Check In</string>
+    <string name="manual_functionality">Manual Functionality</string>
+    <string name="court">Court</string>
+    <string name="sheriff">Sheriff</string>
+    <string name="plds_attorney">PLDS Attorney</string>
+    <string name="manual">Manual</string>
+    <string name="go">Go</string>
+    <string name="mange_document">Manage Document</string>
+    <string name="tacking_history">Tracking History</string>
+    <string name="manage_document">Manage Document</string>
+    <string name="document_status_history">Document Status History</string>
+    <string name="modify">Modify</string>
+    <string name="view">View</string>
+    <string name="responded_fields">Responded Fields</string>
 
 </resources>

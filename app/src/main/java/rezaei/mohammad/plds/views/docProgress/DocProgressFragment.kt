@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import kotlinx.android.synthetic.main.doc_progress_fragment.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.databinding.DocProgressFragmentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
@@ -51,7 +51,7 @@ class DocProgressFragment : Fragment() {
             findNavController().popBackStack()
         })
         viewModel.onYesPressEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let {
+            (it as? ApiResult.Success)?.let {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         successful = it.response,
@@ -60,10 +60,10 @@ class DocProgressFragment : Fragment() {
                     )
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })
         viewModel.onNoPressEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let {
+            (it as? ApiResult.Success)?.let {
                 val action =
                     DocProgressFragmentDirections.actionDocProgressFragmentToSubmitFormFragment(
                         unsuccessful = it.response,
@@ -72,7 +72,7 @@ class DocProgressFragment : Fragment() {
                     )
                 findNavController().navigate(action)
             }
-            (it as? Result.Error)?.let { error -> btnBack.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })
     }
 

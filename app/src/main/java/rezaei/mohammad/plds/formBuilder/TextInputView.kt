@@ -8,17 +8,33 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
 
-open class TextInputView(context: Context?, private val structure: FormResponse.DataItem) :
+open class TextInputView(
+    context: Context?,
+    private val structure: FormResponse.DataItem,
+    readOnly: Boolean = false
+) :
     LinearLayout(context),
     FormView {
 
+    var isReadOnly: Boolean = false
+        set(value) {
+            inputText.editText?.isEnabled = !value
+            inputText.editText?.isFocusable = !value
+            inputText.isFocusableInTouchMode = !value
+            field = value
+        }
+
     init {
         View.inflate(context, R.layout.string_view, this)
+        isReadOnly = readOnly
         setStructure()
     }
 
     private fun setStructure() {
         inputText.hint = structure.label
+        structure.value?.reply?.let {
+            inputText.editText?.setText(it)
+        }
     }
 
     override fun validate(): Boolean {
@@ -40,6 +56,8 @@ open class TextInputView(context: Context?, private val structure: FormResponse.
     override val result: ElementResult?
         get() = ElementResult.StringResult(
             structure.statusQueryId,
-            inputText.editText?.text.toString()
+            inputText.editText?.text.toString(),
+            structure.value?.vTMTId,
+            structure.value?.mTId
         )
 }

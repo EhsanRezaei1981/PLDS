@@ -24,7 +24,34 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val statusQueryId: Int? = null,
 
         @field:SerializedName("DataTypeSetting")
-        val dataTypeSetting: DataTypeSetting? = null
+        val dataTypeSetting: DataTypeSetting? = null,
+
+        @field:SerializedName("VT")
+        val vT: String? = null,
+
+        @field:SerializedName("Value")
+        val value: Value? = null,
+
+        @field:SerializedName("CommonIssue")
+        val commonIssue: CommonIssue? = null,
+
+        @field:SerializedName("StatusQuery")
+        val statusQuery: List<DataItem>? = null,
+
+        @field:SerializedName("Date")
+        val date: String? = null
+    )
+
+    data class CommonIssue(
+
+        @field:SerializedName("CommentValue")
+        val commentValue: String? = null,
+
+        @field:SerializedName("CommonIssue")
+        val commonIssue: String? = null,
+
+        @field:SerializedName("CommonIssueId")
+        val commonIssueId: Int? = null
     )
 
     data class ListItem(
@@ -76,5 +103,35 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
         @field:SerializedName("MaxSize")
         val maxSize: String? = null
+    )
+
+    data class Value(
+
+        @field:SerializedName("Extension")
+        val extension: String? = null,
+
+        @field:SerializedName("VTMTId")
+        val vTMTId: String? = null,
+
+        @field:SerializedName("MTId")
+        val mTId: Int? = null,
+
+        @field:SerializedName("FileId")
+        val fileId: Int? = null,
+
+        @field:SerializedName("VTFileId")
+        val VTFileId: String? = null,
+
+        @field:SerializedName("Reply")
+        val reply: String? = null,
+
+        @field:SerializedName("Id")
+        val listSelectedId: Int? = null,
+
+        @field:SerializedName("Text")
+        val listSelectedText: String? = null,
+
+        @field:SerializedName("Comment")
+        val listComment: String? = null
     )
 }

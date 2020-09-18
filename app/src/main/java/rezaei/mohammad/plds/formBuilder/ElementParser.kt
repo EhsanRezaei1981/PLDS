@@ -21,11 +21,13 @@ class ElementParser(
     private val fragment: Fragment,
     elementList: List<FormResponse.DataItem>?,
     private val containerView: ViewGroup,
-    private val elementsActivityRequestCallback: ElementsActivityRequestCallback?
+    private val elementsActivityRequestCallback: ElementsActivityRequestCallback?,
+    private val justReadOnly: Boolean = false
 ) {
 
 
     init {
+        containerView.removeAllViews()
         TransitionManager.beginDelayedTransition(containerView)
 
         elementList?.forEach {
@@ -66,28 +68,32 @@ class ElementParser(
                     result.add(element.result)
                     (element.result as? ElementResult.ListResult)?.let {
                         if (it.gps != null)
-                            formResult.gPS = it.gps
+                            formResult.gps = it.gps
                     }
                     (element.result as? ElementResult.IssueResult)?.let {
                         if (it.gps != null)
-                            formResult.gPS = it.gps
+                            formResult.gps = it.gps
+                    }
+
+                }
+        }
+        if (formResult is FormResult.DocumentProgress)
+            when (formResult.responseType) {
+                "Unsuccessful" -> {
+                    formResult.unsuccessful = Result(result)
+                }
+                "Successful" -> {
+                    formResult.successful = Result(result)
+                }
+                else -> {
+                    formResult.reportIssue = result[1].also {
+                        (it as ElementResult.IssueResult).date =
+                            (result[0] as ElementResult.StringResult).reply
                     }
                 }
-        }
-        when (formResult.responseType) {
-            "Unsuccessful" -> {
-                formResult.unsuccessful = Result(result)
             }
-            "Successful" -> {
-                formResult.successful = Result(result)
-            }
-            else -> {
-                formResult.reportIssue = result[1].also {
-                    (it as ElementResult.IssueResult).date =
-                        (result[0] as ElementResult.StringResult).reply
-                }
-            }
-        }
+        else
+            (formResult as? FormResult.RespondedFields)?.elements = result
         return formResult
     }
 
@@ -117,8 +123,9 @@ class ElementParser(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val component = TextInputView(fragment.requireContext(), structure)
+        val component = TextInputView(fragment.requireContext(), structure, justReadOnly)
         component.layoutParams = param
+        component.isReadOnly = justReadOnly
         containerView.addView(component)
     }
 
@@ -139,7 +146,7 @@ class ElementParser(
             override fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>) {
                 elementsActivityRequestCallback?.sheriffListNeeded(sheriffList)
             }
-        })
+        }, justReadOnly)
 
         component.layoutParams = param
         containerView.addView(component)
@@ -150,7 +157,7 @@ class ElementParser(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-        val component = DatePicker(fragment.requireContext(), structure)
+        val component = DatePicker(fragment.requireContext(), structure, justReadOnly)
         component.layoutParams = param
         containerView.addView(component)
     }
@@ -168,7 +175,11 @@ class ElementParser(
             override fun onPhotoTaken(result: MutableLiveData<Intent>) {
                 elementsActivityRequestCallback?.onPhotoTaken(result)
             }
-        })
+
+            override fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?) {
+                elementsActivityRequestCallback?.onPreviewImageClicked(fileId, fileVT, base64)
+            }
+        }, justReadOnly)
         component.layoutParams = param
         containerView.addView(component)
     }
@@ -179,4 +190,5 @@ interface ElementsActivityRequestCallback {
     fun onPhotoTaken(result: MutableLiveData<Intent>)
     fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>)
     fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>)
+    fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?)
 }
