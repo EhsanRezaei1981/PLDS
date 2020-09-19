@@ -24,7 +24,7 @@ class ImageViewerFragment : DialogFragment() {
     override fun onStart() {
         dialog?.window?.setLayout(
             ViewGroup.LayoutParams.MATCH_PARENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.MATCH_PARENT
         )
         super.onStart()
     }
@@ -48,13 +48,6 @@ class ImageViewerFragment : DialogFragment() {
             loadImage(args.base64)
         else
             viewModel.loadImage(args.getFileRequest)
-        initDialog()
-    }
-
-    private fun initDialog() {
-        btnClose.setOnClickListener {
-            dismiss()
-        }
     }
 
     private fun setImageLoaderHandler() {

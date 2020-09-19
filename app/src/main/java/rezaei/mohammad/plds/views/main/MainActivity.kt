@@ -37,6 +37,8 @@ class MainActivity : AppCompatActivity() {
 
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             hideNote()
+            if (destination.label == "fragment_main")
+                viewModel.docRefNo.postValue(null)
         }
     }
 

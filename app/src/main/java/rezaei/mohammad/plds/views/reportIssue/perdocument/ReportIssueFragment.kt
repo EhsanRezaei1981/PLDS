@@ -1,4 +1,4 @@
-package rezaei.mohammad.plds.views.reportIssue
+package rezaei.mohammad.plds.views.reportIssue.perdocument
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,7 +13,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
@@ -88,8 +88,8 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun setupCommonIssueList() {
-        viewModel.commonIssues.observe(this, Observer {
-            (it as? Result.Success)?.let { result ->
+        viewModel.commonIssues.observe(this.viewLifecycleOwner, Observer {
+            (it as? ApiResult.Success)?.let { result ->
                 viewDataBinding.layoutContainer.removeAllViews()
                 if (result.response.data?.isNotEmpty() == true) {
                     elementParser = ElementParser(
@@ -122,15 +122,15 @@ class ReportIssueFragment : Fragment() {
                     btnSubmit.snack(ErrorHandling(errorMessage = getString(R.string.no_data_for_docs)))
                 }
             }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
     private fun setupSubmitEvent() {
-        viewModel.submitEvent.observe(this, EventObserver {
+        viewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
             if (elementParser.isItemsValid()) {
                 MainScope().launch {
-                    val formResult = FormResult().apply {
+                    val formResult = FormResult.DocumentProgress().apply {
                         val documents = mutableListOf<DocumentsInfoItem>()
                         //ad document ref nos to response
                         viewModel.getDocumentList().forEach {
@@ -141,27 +141,27 @@ class ReportIssueFragment : Fragment() {
                         this.responseType = "ReportIssue"
                     }
                     val result = elementParser.getResult(formResult)
-                    viewModel.submitForm(result)
+                    viewModel.submitForm(result as FormResult.DocumentProgress)
                 }
             }
         })
     }
 
     private fun setupSubmitFormEvent() {
-        viewModel.submitFormEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { error ->
+        viewModel.submitFormEvent.observe(this.viewLifecycleOwner, EventObserver {
+            (it as? ApiResult.Success)?.let { error ->
                 btnSubmit.snack(
                     error.response.errorHandling,
                     onDismissAction = { findNavController().popBackStack() })
                 viewModel.removeAllDocuments()
             }
-            (it as? Result.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
+            (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
     private fun setupDocumentListObserver() {
         (childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)
-            .documentList.observe(this, Observer {
+            .documentList.observe(this.viewLifecycleOwner, Observer {
                 //if common issue list was empty, load it again on document changes
                 if (viewDataBinding.layoutContainer.childCount == 0 && it.isNotEmpty())
                     viewModel.getCommonIssues()

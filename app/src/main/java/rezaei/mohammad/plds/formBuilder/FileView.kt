@@ -23,9 +23,6 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
-import rezaei.mohammad.plds.util.fromHtml
-import rezaei.mohammad.plds.util.makeClickable
-import rezaei.mohammad.plds.util.setLinkClickable
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -49,22 +46,26 @@ class FileView(
     var isReadOnly: Boolean = false
         set(value) {
             btnBrowseFile.isGone = value
-            txtError.isGone = value
+            btnDeleteImage.isGone = value
             field = value
         }
 
     init {
+        isSaveEnabled = true
         View.inflate(context.requireContext(), R.layout.file_view, this)
         isReadOnly = readOnly
         setStructure()
     }
 
+
     private fun setStructure() {
         txtLabel.text = structure.label
 
-        structure.value?.fileId?.let {
+        if (structure.value?.fileId != null || takenPhoto != null || selectedFile != null)
             showImageExistLayouts()
-        }
+        else
+            btnDeleteImage.isGone = true
+
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
             btnBrowseFile.text = ""
@@ -79,7 +80,7 @@ class FileView(
 
     private fun showImageExistLayouts() {
         btnViewImage.isGone = false
-        btnDeleteImage.isGone = false
+        btnDeleteImage.isGone = isReadOnly
         isClearImageClicked = false
 
         btnViewImage.setOnClickListener {
@@ -154,7 +155,7 @@ class FileView(
                 photoFile?.also {
                     val photoURI: Uri = FileProvider.getUriForFile(
                         context,
-                        "com.example.android.fileprovider",
+                        "${context.packageName}.provider",
                         it
                     )
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
@@ -200,31 +201,29 @@ class FileView(
     override val elementId: Int = structure.statusQueryId ?: 0
 
     override val result: ElementResult?
-        get() = if (selectedFile != null || takenPhoto != null || structure.value?.fileId != null)
-            ElementResult.FileResult(
-                elementId,
-                when {
-                    selectedFile != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
-                        selectedFile?.extension,
-                        selectedFile?.readBytes()?.toBase64(),
-                        selectedFile?.totalSpace?.toInt(),
-                        selectedFile?.nameWithoutExtension,
-                        structure.value?.fileId
-                    )
-                    takenPhoto != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
-                        "jpg",
-                        takenPhoto?.toBase64(),
-                        takenPhoto?.size,
-                        System.currentTimeMillis().toString(),
-                        structure.value?.fileId
-                    )
-                    else -> if (isClearImageClicked) ChosenFile() else ChosenFile(
-                        fileId = structure.value?.fileId
-                    )
-                },
-                structure.value?.vTMTId,
-                structure.value?.mTId
-            ) else null
+        get() = ElementResult.FileResult(
+            elementId,
+            when {
+                selectedFile != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                    selectedFile?.extension,
+                    selectedFile?.readBytes()?.toBase64(),
+                    selectedFile?.totalSpace?.toInt(),
+                    selectedFile?.nameWithoutExtension
+                )
+                takenPhoto != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                    "jpg",
+                    takenPhoto?.toBase64(),
+                    takenPhoto?.size,
+                    System.currentTimeMillis().toString()
+                )
+                structure.value?.fileId != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                    fileId = structure.value.fileId
+                )
+                else -> ChosenFile()
+            },
+            structure.value?.vTMTId,
+            structure.value?.mTId
+        )
 
     private fun setupOnActivityResult() {
         fragment.get()?.let { activity ->
@@ -261,7 +260,6 @@ class FileView(
     companion object {
         val cameraRequest = 2364
     }
-
 
 }
 

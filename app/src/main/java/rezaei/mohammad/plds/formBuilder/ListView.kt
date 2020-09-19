@@ -53,6 +53,7 @@ open class ListView(
         }
 
     init {
+        isSaveEnabled = true
         View.inflate(context.requireContext(), R.layout.list_view, this)
         isReadOnly = readOnly
         setStructure()

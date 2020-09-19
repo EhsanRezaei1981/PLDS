@@ -9,7 +9,9 @@ import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.util.setActivityTitle
+import rezaei.mohammad.plds.util.snack
 
 class MainFragment : Fragment() {
 
@@ -27,8 +29,13 @@ class MainFragment : Fragment() {
             navigateToGetDocRef()
         }
 
-        btnReportIssue.setOnClickListener {
-            navigateToReportIssue()
+        btnReportIssueGeneral.setOnClickListener {
+//            navigateToReportIssueInGeneral()
+            it.snack(ErrorHandling(errorMessage = "Coming soon...", isSuccessful = true))
+        }
+
+        btnReportIssueDocument.setOnClickListener {
+            navigateToReportIssuePerDocument()
         }
 
         btnManageDocument.setOnClickListener {
@@ -43,8 +50,14 @@ class MainFragment : Fragment() {
         findNavController().navigate(action)
     }
 
-    private fun navigateToReportIssue() {
+    private fun navigateToReportIssuePerDocument() {
         val action = MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
+        findNavController().navigate(action)
+    }
+
+    private fun navigateToReportIssueInGeneral() {
+        val action =
+            MainFragmentDirections.actionMainActivityFragmentToReportIssueInGeneralFragment()
         findNavController().navigate(action)
     }
 
@@ -56,6 +69,5 @@ class MainFragment : Fragment() {
     private fun setVersionName() {
         txtVersion.text = "v${BuildConfig.VERSION_NAME}"
     }
-
 
 }

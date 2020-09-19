@@ -159,7 +159,8 @@ class SubmitFormFragment : Fragment() {
                 btnSubmit.snack(error.response.errorHandling, onDismissAction = {
                     val action =
                         SubmitFormFragmentDirections.actionSubmitFormFragmentToMainActivityFragment()
-                    findNavController().navigate(action)
+                    if (isAdded)
+                        findNavController().navigate(action)
                 })
                 viewModel.removeAllDocuments()
             }

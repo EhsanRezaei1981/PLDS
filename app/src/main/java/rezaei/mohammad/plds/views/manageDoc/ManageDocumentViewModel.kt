@@ -28,25 +28,41 @@ class ManageDocumentViewModel(
     private val _documentBaseInfo = MutableLiveData<Event<ApiResult<DocumentBaseInfoResponse>>>()
     val documentBaseInfo: LiveData<Event<ApiResult<DocumentBaseInfoResponse>>> = _documentBaseInfo
 
-    fun getDocumentBaseInfo(view: View, docRefNo: String?) {
-        view.hideKeyboard()
-        validateDocRefNo(docRefNo)
+    init {
+        setupAutoCheck()
+    }
+
+    fun getDocumentBaseInfo(view: View?, docRefNo: String?) {
+        view?.hideKeyboard()
+        this@ManageDocumentViewModel.docRefNo.postValue(docRefNo)
+    }
+
+    private fun getDocumentBaseInfo() {
+        validateDocRefNo()
         if (_docRefNoErr.value == 0)
             viewModelScope.launch {
                 _dataLoading.value = true
                 _documentBaseInfo.value =
-                    Event(remoteRepository.getDocumentBaseInfo(DocumentStatusRequest(docRefNo)))
+                    Event(remoteRepository.getDocumentBaseInfo(DocumentStatusRequest(docRefNo.value)))
                 _dataLoading.value = false
-                this@ManageDocumentViewModel.docRefNo.postValue(null)
+
             }
     }
 
-    private fun validateDocRefNo(docRefNo: String?) {
-        val currentDocRefNo = docRefNo
+    private fun validateDocRefNo() {
+        val currentDocRefNo = docRefNo.value
 
         if (currentDocRefNo == null || currentDocRefNo.isEmpty())
             _docRefNoErr.value = R.string.doc_ref_no_validate_err
         else
             _docRefNoErr.value = 0
+    }
+
+    private fun setupAutoCheck() {
+        docRefNo.observeForever {
+            if (it != null) {
+                getDocumentBaseInfo()
+            }
+        }
     }
 }

@@ -17,6 +17,7 @@ class DatePicker(
     TextInputView(context, structure), DatePickerDialog.OnDateSetListener {
 
     init {
+        isSaveEnabled = true
         isReadOnly = readOnly
         initDatePicker(structure)
         disableEditable()
@@ -31,8 +32,8 @@ class DatePicker(
         val selectedDate = structure.value?.reply?.split("/", "-")
         val date = Calendar.getInstance()
         year = selectedDate?.get(0)?.toInt() ?: date.get(Calendar.YEAR)
-        month = selectedDate?.get(1)?.toInt() ?: date.get(Calendar.MONTH)
-        dayOfMonth = selectedDate?.get(1)?.toInt() ?: date.get(Calendar.DAY_OF_MONTH)
+        month = selectedDate?.get(1)?.toInt()?.minus(1) ?: date.get(Calendar.MONTH)
+        dayOfMonth = selectedDate?.get(2)?.toInt() ?: date.get(Calendar.DAY_OF_MONTH)
 
 
         inputText.editText?.setOnClickListener {

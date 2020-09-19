@@ -73,7 +73,11 @@ class EditDocumentFragment : Fragment() {
             setupSubmitEvent()
             setupSubmitFormEvent()
         }
-        viewModel.getRespondedFields(args.DocumentStatusId, args.VT, args.readOnly, args.type)
+        if (viewModel.fieldsResult.value == null)
+            viewModel.getRespondedFields(args.DocumentStatusId, args.VT, args.readOnly, args.type)
+
+        if (!args.readOnly && args.gpsNeeded && selectedGps == null)
+            initGps()
     }
 
     private fun setGetFieldsResult() {
@@ -97,7 +101,7 @@ class EditDocumentFragment : Fragment() {
 
     private fun prepareCommonIssueFields(data: List<FormResponse.DataItem>): List<FormResponse.DataItem>? {
         val result = mutableListOf<FormResponse.DataItem>()
-        data.forEach {
+        data.forEach { Item ->
             result.add(
                 FormResponse.DataItem(
                     isMandatory = 0,
@@ -105,7 +109,7 @@ class EditDocumentFragment : Fragment() {
                     label = "Date",
                     value = FormResponse.Value
                         (
-                        reply = it.date
+                        reply = Item.date
                     )
                 )
             )
@@ -116,23 +120,11 @@ class EditDocumentFragment : Fragment() {
                     label = "Reason",
                     value = FormResponse.Value
                         (
-                        reply = it.commonIssue?.commonIssue
+                        reply = """${Item.commonIssue?.commonIssue} ${Item.commonIssue?.commentValue?.let { ", $it" } ?: ""}"""
+
                     )
                 )
             )
-            it.commonIssue?.commonIssue?.let {
-                result.add(
-                    FormResponse.DataItem(
-                        isMandatory = 0,
-                        dataType = "String",
-                        label = "Comment",
-                        value = FormResponse.Value
-                            (
-                            reply = it
-                        )
-                    )
-                )
-            }
         }
         return result
     }
@@ -179,7 +171,8 @@ class EditDocumentFragment : Fragment() {
 
     private fun setupSubmitEvent() {
         viewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
-            if (args.gpsNeeded) {
+            if (args.gpsNeeded && selectedGps == null) {
+                initGps()
                 if (selectedGps == null) {
                     initGps()
                     txtFormError.text = getString(R.string.gps_not_available)
@@ -209,7 +202,8 @@ class EditDocumentFragment : Fragment() {
         viewModel.submitFormEvent.observe(this.viewLifecycleOwner, EventObserver {
             (it as? ApiResult.Success)?.let { error ->
                 btnSubmit.snack(error.response.errorHandling, onDismissAction = {
-                    findNavController().popBackStack()
+                    if (isAdded)
+                        findNavController().popBackStack()
                 })
             }
             (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
@@ -217,7 +211,6 @@ class EditDocumentFragment : Fragment() {
     }
 
     private fun initGps() {
-        selectedGps = null
         val awesomeConfiguration = LocationConfiguration.Builder()
             .keepTracking(false)
             .askForPermission(

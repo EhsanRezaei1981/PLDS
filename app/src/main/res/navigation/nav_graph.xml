@@ -43,6 +43,9 @@
         <action
             android:id="@+id/action_mainActivityFragment_to_manageDocumentFragment"
             app:destination="@id/manageDocumentFragment" />
+        <action
+            android:id="@+id/action_mainActivityFragment_to_reportIssueInGeneralFragment"
+            app:destination="@id/reportIssueInGeneralFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportIssueFragment"
@@ -62,6 +65,7 @@
         android:label="fragment_qr_reader"
         tools:layout="@layout/fragment_qr_reader" />
     <fragment
+        tools:layout="@layout/submit_form_fragment"
         android:id="@+id/submitFormFragment"
         android:name="rezaei.mohammad.plds.views.submitForm.SubmitFormFragment"
         android:label="SubmitFormFragment">
@@ -85,6 +89,7 @@
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
+        tools:layout="@layout/manage_document_fragment"
         android:id="@+id/manageDocumentFragment"
         android:name="rezaei.mohammad.plds.views.manageDoc.ManageDocumentFragment"
         android:label="ManageDocumentFragment">
@@ -108,6 +113,7 @@
             app:destination="@id/editDocumentFragment" />
     </fragment>
     <fragment
+        tools:layout="@layout/edit_document_fragment"
         android:id="@+id/editDocumentFragment"
         android:name="rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentFragment"
         android:label="EditDocumentFragment">
@@ -135,6 +141,7 @@
             app:argType="string" />
     </fragment>
     <dialog
+        tools:layout="@layout/image_viewer_fragment"
         android:id="@+id/imageViewerFragment"
         android:name="rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerFragment"
         android:label="ImageViewerFragment">
@@ -146,4 +153,9 @@
             app:argType="string"
             app:nullable="true" />
     </dialog>
+    <fragment
+        android:id="@+id/reportIssueInGeneralFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.ingeneral.ReportIssueInGeneralFragment"
+        android:label="ReportIssueInGeneralFragment"
+        tools:layout="@layout/report_issue_in_general_fragment" />
 </navigation>

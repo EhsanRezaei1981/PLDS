@@ -124,6 +124,7 @@ class ElementParser(
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         val component = TextInputView(fragment.requireContext(), structure, justReadOnly)
+        component.id = component.hashCode()
         component.layoutParams = param
         component.isReadOnly = justReadOnly
         containerView.addView(component)
@@ -147,7 +148,7 @@ class ElementParser(
                 elementsActivityRequestCallback?.sheriffListNeeded(sheriffList)
             }
         }, justReadOnly)
-
+        component.id = component.hashCode()
         component.layoutParams = param
         containerView.addView(component)
     }
@@ -158,6 +159,7 @@ class ElementParser(
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         val component = DatePicker(fragment.requireContext(), structure, justReadOnly)
+        component.id = component.hashCode()
         component.layoutParams = param
         containerView.addView(component)
     }
@@ -180,6 +182,7 @@ class ElementParser(
                 elementsActivityRequestCallback?.onPreviewImageClicked(fileId, fileVT, base64)
             }
         }, justReadOnly)
+        component.id = component.hashCode()
         component.layoutParams = param
         containerView.addView(component)
     }

@@ -18,6 +18,7 @@ open class TextInputView(
 
     var isReadOnly: Boolean = false
         set(value) {
+            isSaveEnabled = true
             inputText.editText?.isEnabled = !value
             inputText.editText?.isFocusable = !value
             inputText.isFocusableInTouchMode = !value

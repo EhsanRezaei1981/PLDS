@@ -70,7 +70,7 @@ class SubscriptionViewHolder private constructor(private val binding: ItemDocume
         else
             binding.btnView.iconTint = ColorStateList.valueOf(
                 ResourcesCompat
-                    .getColor(binding.btnView.context.resources, R.color.colorAccent, null)
+                    .getColor(binding.btnView.context.resources, R.color.colorSuccessful, null)
             )
 
         if (document?.stage == "Start" || document?.stage == "End") {
