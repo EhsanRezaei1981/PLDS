@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
-import kotlinx.android.synthetic.main.string_view.view.*
+import kotlinx.android.synthetic.main.view_string.view.*
 import rezaei.mohammad.plds.data.model.response.FormResponse
 
 import java.util.*

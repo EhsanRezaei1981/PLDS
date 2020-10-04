@@ -18,7 +18,6 @@
             android:layout_height="wrap_content"
             android:background="?attr/colorPrimary"
             app:subtitleTextAppearance="@style/Toolbar.Subtitle"
-            app:subtitleTextColor="@color/colorWarning"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <TextView

@@ -194,10 +194,49 @@ class RemoteRepository(
             networkError
         }
 
+    override suspend fun checkIn(checkInRequest: CheckInRequest): ApiResult<CheckInResponse> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.checkIn(
+                        checkInRequest
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            networkError
+        }
+
+    override suspend fun checkOut(checkOutRequest: CheckOutRequest): ApiResult<BaseResponse<Unit>> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.checkOut(
+                        checkOutRequest
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            networkError
+        }
+
+    override suspend fun userTracking(userTrackRequest: UserTrackRequest): ApiResult<BaseResponse<Unit>> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.userTracking(
+                        userTrackRequest
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            networkError
+        }
+
     private fun <T : BaseResponse<*>> parseResult(result: T?): ApiResult<T> {
         return try {
             if (result != null)
-                if (result.errorHandling?.isSuccessful == true)
+                if (result.data != null || result.errorHandling?.isSuccessful == true)
                     ApiResult.Success(result)
                 else
                     ApiResult.Error(result.errorHandling)

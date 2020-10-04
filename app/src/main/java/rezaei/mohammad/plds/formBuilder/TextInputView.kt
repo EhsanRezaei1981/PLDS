@@ -3,7 +3,7 @@ package rezaei.mohammad.plds.formBuilder
 import android.content.Context
 import android.view.View
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.string_view.view.*
+import kotlinx.android.synthetic.main.view_string.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
@@ -26,7 +26,7 @@ open class TextInputView(
         }
 
     init {
-        View.inflate(context, R.layout.string_view, this)
+        View.inflate(context, R.layout.view_string, this)
         isReadOnly = readOnly
         setStructure()
     }

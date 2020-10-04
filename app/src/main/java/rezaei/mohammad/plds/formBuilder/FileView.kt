@@ -18,7 +18,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.files.fileChooser
-import kotlinx.android.synthetic.main.file_view.view.*
+import kotlinx.android.synthetic.main.view_file.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
@@ -52,7 +52,7 @@ class FileView(
 
     init {
         isSaveEnabled = true
-        View.inflate(context.requireContext(), R.layout.file_view, this)
+        View.inflate(context.requireContext(), R.layout.view_file, this)
         isReadOnly = readOnly
         setStructure()
     }

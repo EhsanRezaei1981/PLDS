@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
+import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -17,7 +17,7 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
-import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentAddMultiDocBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
@@ -43,7 +43,7 @@ class AddMultiDocFragment : Fragment() {
             DocumentType.valueOf(arguments?.getString(DOC_TYPE)!!)
         )
     }
-    private lateinit var viewDataBinding: AddMultiDocFragmentBinding
+    private lateinit var viewDataBinding: FragmentAddMultiDocBinding
     private lateinit var documentAdapter: DocumentAdapter
     // live data of document list for parent fragments access
     lateinit var documentList: LiveData<MutableList<Document>>
@@ -52,8 +52,8 @@ class AddMultiDocFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.add_multi_doc_fragment, container, false)
-        viewDataBinding = AddMultiDocFragmentBinding.bind(root).apply {
+        val root = inflater.inflate(R.layout.fragment_add_multi_doc, container, false)
+        viewDataBinding = FragmentAddMultiDocBinding.bind(root).apply {
             this.viewmodel = this@AddMultiDocFragment.viewModel
         }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner

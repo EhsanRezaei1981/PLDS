@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.report_issue_fragment.*
+import kotlinx.android.synthetic.main.fragment_report_issue.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,7 +19,7 @@ import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.FormResponse
-import rezaei.mohammad.plds.databinding.ReportIssueFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentReportIssueBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
@@ -30,7 +30,7 @@ import rezaei.mohammad.plds.views.main.MainActivity
 class ReportIssueFragment : Fragment() {
 
     private val viewModel: ReportIssueViewModel by viewModel()
-    private lateinit var viewDataBinding: ReportIssueFragmentBinding
+    private lateinit var viewDataBinding: FragmentReportIssueBinding
     private lateinit var elementParser: ElementParser
 
     override fun onCreateView(
@@ -38,7 +38,7 @@ class ReportIssueFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewDataBinding =
-            ReportIssueFragmentBinding.inflate(layoutInflater, container, false).apply {
+            FragmentReportIssueBinding.inflate(layoutInflater, container, false).apply {
                 viewmodel = viewModel
             }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner

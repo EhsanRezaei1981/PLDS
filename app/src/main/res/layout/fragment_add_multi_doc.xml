@@ -117,7 +117,7 @@
                 app:layout_constraintHeight_max="300dp"
                 app:layout_constraintHeight_min="50dp"
                 tools:itemCount="5"
-                tools:listitem="@layout/document_item" />
+                tools:listitem="@layout/item_document" />
 
             <TextView
                 android:id="@+id/noDocPlaceHolder"

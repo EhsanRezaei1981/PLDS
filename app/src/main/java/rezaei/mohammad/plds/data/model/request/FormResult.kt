@@ -38,10 +38,13 @@ data class Result(
 data class Gps(
 
     @field:SerializedName("Y")
-    val Y: Double? = null,
+    var Y: Double? = null,
 
     @field:SerializedName("X")
-    val X: Double? = null
+    var X: Double? = null,
+
+    @field:SerializedName("RadiusInMetters")
+    var radius: Int? = null
 )
 
 data class DocumentsInfoItem(

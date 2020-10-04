@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import rezaei.mohammad.plds.data.model.local.Document
-import rezaei.mohammad.plds.databinding.DocumentItemBinding
+import rezaei.mohammad.plds.databinding.ItemDocumentBinding
 import rezaei.mohammad.plds.util.BindableAdapter
 
 
@@ -43,7 +43,7 @@ class DocumentAdapter(private val viewModel: AddMultiDocViewModel) :
     }
 }
 
-class SubscriptionViewHolder private constructor(private val binding: DocumentItemBinding) :
+class SubscriptionViewHolder private constructor(private val binding: ItemDocumentBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(viewModel: AddMultiDocViewModel, document: Document?) {
         binding.document = document
@@ -54,7 +54,7 @@ class SubscriptionViewHolder private constructor(private val binding: DocumentIt
     companion object {
         fun from(parent: ViewGroup): SubscriptionViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
-            val binding = DocumentItemBinding.inflate(layoutInflater, parent, false)
+            val binding = ItemDocumentBinding.inflate(layoutInflater, parent, false)
             return SubscriptionViewHolder(binding)
         }
     }

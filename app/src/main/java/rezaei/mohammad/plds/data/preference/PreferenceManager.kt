@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.edit
 import androidx.preference.PreferenceManager
 import rezaei.mohammad.plds.data.local.Environment
+import rezaei.mohammad.plds.data.model.response.CheckInResponse
 
 
 class PreferenceManager(context: Context) {
@@ -135,10 +136,19 @@ class PreferenceManager(context: Context) {
 
     var nighMode: Int
         get() {
-            return pref.getInt("NIGHT_MODE",AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+            return pref.getInt("NIGHT_MODE", AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
         }
         set(value) {
-            pref.edit { putInt("NIGHT_MODE",value) }
+            pref.edit { putInt("NIGHT_MODE", value) }
+        }
+
+    var currentLocation: CheckInResponse.LocationItem?
+        get() {
+            val location = pref.getString("CURRENT_LOCATION", null)?.split(",") ?: return null
+            return CheckInResponse.LocationItem(location[0].toInt(), location[2], location[1])
+        }
+        set(value) {
+            pref.edit { putString("CURRENT_LOCATION", value?.toString()) }
         }
 
 }

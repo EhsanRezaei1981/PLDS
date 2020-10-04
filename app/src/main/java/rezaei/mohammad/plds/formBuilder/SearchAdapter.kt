@@ -21,7 +21,7 @@ class SearchAdapter(private val mainItems: List<Pair<String, String?>>) :
     }
 
     override fun getItem(position: Int): Any? {
-        return newItemList[position]
+        return newItemList[position].first
     }
 
     override fun getItemId(position: Int): Long {

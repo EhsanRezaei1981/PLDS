@@ -52,5 +52,14 @@ interface ApiInterface {
     @POST("Tracking/UpdateRespondedFields")
     suspend fun updateRespondedFields(@Body updateRespondedFieldsRequest: FormResult.RespondedFields): BaseResponse<Unit>?
 
+    @POST("Tracking/CheckIn")
+    suspend fun checkIn(@Body checkInRequest: CheckInRequest): CheckInResponse?
+
+    @POST("Tracking/CheckOut")
+    suspend fun checkOut(@Body checkOutRequest: CheckOutRequest): BaseResponse<Unit>?
+
+    @POST("Tracking/UserTracking")
+    suspend fun userTracking(@Body userTrackRequest: UserTrackRequest): BaseResponse<Unit>?
+
 
 }

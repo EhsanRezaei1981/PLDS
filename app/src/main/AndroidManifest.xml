@@ -11,7 +11,7 @@
         android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
         android:name=".PLDSapp"
@@ -24,13 +24,18 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:supportsRtl">
+
+        <service
+            android:name=".service.CheckInService"
+            android:enabled="true"
+            android:exported="false" />
+
         <activity
             android:name=".views.main.MainActivity"
+            android:configChanges="keyboard|screenLayout|orientation|screenSize"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme"
-            android:configChanges="keyboard|screenLayout|orientation|screenSize"
             android:windowSoftInputMode="adjustPan" />
-
         <activity
             android:name=".views.login.LoginActivity"
             android:configChanges="keyboard|screenLayout|orientation|screenSize"

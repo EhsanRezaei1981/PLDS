@@ -9,16 +9,16 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.image_viewer_fragment.*
+import kotlinx.android.synthetic.main.fragment_image_viewer.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.data.ApiResult
-import rezaei.mohammad.plds.databinding.ImageViewerFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentImageViewerBinding
 import rezaei.mohammad.plds.util.snack
 
 class ImageViewerFragment : DialogFragment() {
 
     private val viewModel: ImageViewerViewModel by viewModel()
-    private lateinit var viewDataBinding: ImageViewerFragmentBinding
+    private lateinit var viewDataBinding: FragmentImageViewerBinding
     private val args: ImageViewerFragmentArgs by navArgs()
 
     override fun onStart() {
@@ -33,7 +33,7 @@ class ImageViewerFragment : DialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewDataBinding = ImageViewerFragmentBinding.inflate(inflater, container, false)
+        viewDataBinding = FragmentImageViewerBinding.inflate(inflater, container, false)
             .apply {
                 viewmodel = viewModel
                 this.lifecycleOwner = this@ImageViewerFragment.viewLifecycleOwner

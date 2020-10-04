@@ -66,7 +66,9 @@
     <string name="modify">Modify</string>
     <string name="view">View</string>
     <string name="responded_fields">Responded Fields</string>
-    <string name="report_issue_in_general">Report Issue In General</string>
+    <string name="report_issue_in_general">Common Action</string>
     <string name="report_issue_per_document">Report Issue Per Document</string>
+    <string name="check_out">Check Out</string>
+    <string name="looking_for_gps">Looking For Gps</string>
 
 </resources>

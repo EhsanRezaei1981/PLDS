@@ -20,7 +20,7 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
-import kotlinx.android.synthetic.main.edit_document_fragment.*
+import kotlinx.android.synthetic.main.fragment_edit_document.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -32,7 +32,7 @@ import rezaei.mohammad.plds.data.model.request.Gps
 import rezaei.mohammad.plds.data.model.response.CourtResponse
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.data.model.response.SheriffResponse
-import rezaei.mohammad.plds.databinding.EditDocumentFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentEditDocumentBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.formBuilder.FileView
@@ -42,7 +42,7 @@ import rezaei.mohammad.plds.util.snack
 class EditDocumentFragment : Fragment() {
 
     private val viewModel: EditDocumentViewModel by viewModel()
-    private lateinit var viewDataBinding: EditDocumentFragmentBinding
+    private lateinit var viewDataBinding: FragmentEditDocumentBinding
     private val args: EditDocumentFragmentArgs by navArgs()
     private lateinit var elementParser: ElementParser
     private lateinit var cameraResult: MutableLiveData<Intent>
@@ -53,7 +53,7 @@ class EditDocumentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewDataBinding = EditDocumentFragmentBinding.inflate(inflater, container, false)
+        viewDataBinding = FragmentEditDocumentBinding.inflate(inflater, container, false)
             .apply {
                 this.viewmodel = viewModel
                 this.lifecycleOwner = this@EditDocumentFragment.viewLifecycleOwner

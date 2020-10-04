@@ -29,6 +29,7 @@ import rezaei.mohammad.plds.views.manageDoc.ManageDocumentViewModel
 import rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHistoryViewModel
 import rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentViewModel
 import rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerViewModel
+import rezaei.mohammad.plds.views.manualfunctionality.ManualFunctionalityViewModel
 import rezaei.mohammad.plds.views.reportIssue.ingeneral.ReportIssueInGeneralViewModel
 import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
@@ -124,6 +125,8 @@ object Module {
         viewModel { EditDocumentViewModel(get() as RemoteRepository) }
 
         viewModel { ImageViewerViewModel(get() as RemoteRepository) }
+
+        viewModel { ManualFunctionalityViewModel(get() as RemoteRepository) }
 
     }
 }

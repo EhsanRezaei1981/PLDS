@@ -17,7 +17,7 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
-import kotlinx.android.synthetic.main.list_view.view.*
+import kotlinx.android.synthetic.main.view_list.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.CourtResponse
@@ -54,7 +54,7 @@ open class ListView(
 
     init {
         isSaveEnabled = true
-        View.inflate(context.requireContext(), R.layout.list_view, this)
+        View.inflate(context.requireContext(), R.layout.view_list, this)
         isReadOnly = readOnly
         setStructure()
     }
@@ -94,7 +94,7 @@ open class ListView(
             it.description
         })
 
-        val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, items)
+        val adapter = ArrayAdapter<String>(context, R.layout.item_spinner, items)
         spnItems.adapter = adapter
     }
 

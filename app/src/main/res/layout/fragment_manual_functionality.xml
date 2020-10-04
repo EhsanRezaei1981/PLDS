@@ -27,6 +27,9 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:descendantFocusability="beforeDescendants"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -80,8 +83,9 @@
                         android:text="@string/manual" />
                 </RadioGroup>
 
+
                 <com.tiper.MaterialSpinner
-                    android:id="@+id/spnManualExtraOption"
+                    android:id="@+id/spnCourtSheriffList"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -94,6 +98,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/radgManualFunc"
+                    app:searchable="true"
                     app:spinnerMode="dialog"
                     tools:visibility="visible" />
 
@@ -103,12 +108,13 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:layout_marginBottom="8dp"
-                    android:onClick="@{() -> viewmodel.submitForm()}"
+                    android:onClick="@{(view) -> viewmodel.submitForm(radgManualFunc.getCheckedRadioButtonId())}"
                     android:text="@string/go"
                     android:textAllCaps="false"
                     android:visibility="@{viewmodel.dataLoading ? View.GONE : View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/spnManualExtraOption" />
+                    app:layout_constraintTop_toBottomOf="@+id/spnCourtSheriffList" />
 
                 <TextView
                     android:id="@+id/txtFormError"
@@ -129,11 +135,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="8dp"
-                    android:layout_marginStart="140dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintBottom_toBottomOf="@+id/btnSubmit"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/txtFormError"
-                    app:layout_constraintTop_toTopOf="@+id/btnSubmit" />
+                    app:layout_constraintTop_toBottomOf="@+id/spnCourtSheriffList" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

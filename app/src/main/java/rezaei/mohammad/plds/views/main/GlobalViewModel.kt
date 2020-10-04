@@ -6,9 +6,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.data.local.LocalRepository
-import rezaei.mohammad.plds.data.model.local.Document
-import rezaei.mohammad.plds.data.model.local.DocumentType
+import rezaei.mohammad.plds.data.model.response.CheckInResponse
 import rezaei.mohammad.plds.data.preference.PreferenceManager
+import rezaei.mohammad.plds.service.CheckInService
 
 class GlobalViewModel(
     private val preferenceManager: PreferenceManager,
@@ -16,12 +16,16 @@ class GlobalViewModel(
 ) : ViewModel() {
 
     //live data to keep docRefNo and share it between fragments
-    val docRefNo: MutableLiveData<String> by lazy {
-        MutableLiveData<String>()
-    }
+    val docRefNo: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
-    private val _documentsList = MutableLiveData<MutableList<Document>>()
-    val documentsList: LiveData<MutableList<Document>> = _documentsList
+    var checkInService = MutableLiveData<CheckInService?>()
+
+    val _locationList = MutableLiveData<List<CheckInResponse.LocationItem>>()
+    val locationList: LiveData<List<CheckInResponse.LocationItem>> = _locationList
+
+    val _dataLoading = MutableLiveData<Boolean>()
+    val dataLoading: LiveData<Boolean> = _dataLoading
+
 
     fun signOut() {
         preferenceManager.authToken = null
@@ -29,12 +33,6 @@ class GlobalViewModel(
         preferenceManager.password = null
         viewModelScope.launch {
             localRepository.deleteUser(localRepository.getUser())
-        }
-    }
-
-    fun getDocuments(documentType: DocumentType) {
-        viewModelScope.launch {
-            _documentsList.value = localRepository.getAllDocument(documentType).toMutableList()
         }
     }
 

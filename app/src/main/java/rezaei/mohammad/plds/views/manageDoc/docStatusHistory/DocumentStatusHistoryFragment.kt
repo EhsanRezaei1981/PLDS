@@ -10,7 +10,7 @@ import androidx.navigation.fragment.navArgs
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.response.DocumentStatusHistoryResponse
-import rezaei.mohammad.plds.databinding.DocumentStatusHistoryFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentDocumentStatusHistoryBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
@@ -18,7 +18,7 @@ import rezaei.mohammad.plds.util.snack
 class DocumentStatusHistoryFragment : Fragment() {
 
     private val viewModel: DocumentStatusHistoryViewModel by viewModel()
-    private lateinit var viewDataBinding: DocumentStatusHistoryFragmentBinding
+    private lateinit var viewDataBinding: FragmentDocumentStatusHistoryBinding
     private val args: DocumentStatusHistoryFragmentArgs by navArgs()
 
     override fun onCreateView(
@@ -26,7 +26,7 @@ class DocumentStatusHistoryFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         setActivityTitle(getString(R.string.document_status_history))
-        viewDataBinding = DocumentStatusHistoryFragmentBinding.inflate(inflater, container, false)
+        viewDataBinding = FragmentDocumentStatusHistoryBinding.inflate(inflater, container, false)
             .apply {
                 this.viewmodel = viewModel
                 this.lifecycleOwner = this@DocumentStatusHistoryFragment.viewLifecycleOwner

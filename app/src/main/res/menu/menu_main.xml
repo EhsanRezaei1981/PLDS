@@ -8,6 +8,13 @@
         android:title="@string/last_login_info"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/action_checkOut"
+        android:title="@string/check_out"
+        android:visible="false"
+        app:showAsAction="always|withText" />
+
+
     <!--<item
         android:id="@+id/action_change_password"
         android:orderInCategory="100"

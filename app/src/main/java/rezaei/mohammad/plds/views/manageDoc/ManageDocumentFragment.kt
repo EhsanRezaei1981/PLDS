@@ -6,13 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.manage_document_fragment.*
+import kotlinx.android.synthetic.main.fragment_manage_document.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.ApiResult
-import rezaei.mohammad.plds.databinding.ManageDocumentFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentManageDocumentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
@@ -24,14 +24,14 @@ class ManageDocumentFragment : Fragment() {
     private val viewModel: ManageDocumentViewModel by viewModel {
         parametersOf(globalViewModel.docRefNo)
     }
-    private lateinit var viewDataBinding: ManageDocumentFragmentBinding
+    private lateinit var viewDataBinding: FragmentManageDocumentBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         setActivityTitle(getString(R.string.manage_document))
-        viewDataBinding = ManageDocumentFragmentBinding
+        viewDataBinding = FragmentManageDocumentBinding
             .inflate(inflater, container, false)
             .apply {
                 this.viewmodel = viewModel

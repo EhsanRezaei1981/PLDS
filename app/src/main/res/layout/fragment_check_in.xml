@@ -6,16 +6,12 @@
     <data>
 
         <variable
-            name="viewmodel"
-            type="rezaei.mohammad.plds.views.checkin.CheckInViewModel" />
+            name="viewModel"
+            type="rezaei.mohammad.plds.views.main.GlobalViewModel" />
 
         <import type="android.view.View" />
 
     </data>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -53,13 +49,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:clipToPadding="true"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txtCardTitle"
+                        app:items="@{viewModel.locationList}"
                         tools:itemCount="5"
-                        tools:listitem="@layout/item_2_line" />
+                        tools:listitem="@layout/item_location" />
 
                     <ProgressBar
                         android:id="@+id/progressBar4"
@@ -69,10 +65,23 @@
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:visibility="@{viewmodel.dataLoading ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{viewModel.dataLoading ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/listLocations" />
+
+                    <TextView
+                        android:id="@+id/txtLoadingMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/looking_for_gps"
+                        android:visibility="@{viewModel.dataLoading ? View.VISIBLE : View.GONE}"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/progressBar4"
+                        app:layout_constraintTop_toBottomOf="@+id/listLocations" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -81,7 +90,6 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </ScrollView>
 
 
 </layout>
