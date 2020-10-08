@@ -5,9 +5,14 @@ import android.content.Intent
 import android.location.Location
 import android.os.Binder
 import android.os.IBinder
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import kotlinx.coroutines.*
+import androidx.lifecycle.Observer
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.RemoteRepository
@@ -24,13 +29,13 @@ import rezaei.mohammad.plds.util.LocationHelper
 
 class CheckInService : Service() {
 
-    private val _dataLoading = MutableLiveData<Boolean>()
+    val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
     private val _checkedInLocation = MutableLiveData<CheckInResponse.Data>()
     val checkedInLocation: LiveData<CheckInResponse.Data> = _checkedInLocation
 
-    private val _locationList = MutableLiveData<List<CheckInResponse.LocationItem>>()
+    val _locationList = MutableLiveData<List<CheckInResponse.LocationItem>>()
     val locationList: LiveData<List<CheckInResponse.LocationItem>> = _locationList
 
     private val _goToManualFunctionalityEvent = MutableLiveData<Event<Unit>>()
@@ -39,8 +44,8 @@ class CheckInService : Service() {
     private val _isCheckedIn = MutableLiveData<Boolean>()
     val isCheckedIn: LiveData<Boolean> = _isCheckedIn
 
-    private val _errorHandling = MutableLiveData<ErrorHandling>()
-    val errorHandling: LiveData<ErrorHandling> = _errorHandling
+    private val _errorHandling = MutableLiveData<Event<ErrorHandling?>>()
+    val errorHandling: LiveData<Event<ErrorHandling?>> = _errorHandling
 
     private val location = MutableLiveData<Location>()
 
@@ -53,13 +58,14 @@ class CheckInService : Service() {
     private var notification: NotificationBuilder? = null
 
     override fun onBind(intent: Intent): IBinder {
+        _dataLoading.postValue(true)
         return binder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent?.action == CHECK_OUT)
             checkOut()
-        return super.onStartCommand(intent, flags, startId)
+        return START_NOT_STICKY
     }
 
     override fun onCreate() {
@@ -68,36 +74,33 @@ class CheckInService : Service() {
     }
 
     fun checkIn(checkInRequest: CheckInRequest) {
+        _dataLoading.postValue(true)
         GlobalScope.launch(Dispatchers.Main) {
-            _dataLoading.postValue(true)
-
-            val response = GlobalScope.async {
-                remoteRepository.checkIn(modifyDataForTest(checkInRequest))
-            }.await()
-
-            when (response) {
+            when (val response = remoteRepository.checkIn(checkInRequest)) {
                 is ApiResult.Success -> {
                     checkForLocation(checkInRequest.checkInPart, response.response.data)
+                    _errorHandling.postValue(Event(response.response.errorHandling))
                 }
                 is ApiResult.Error -> {
                     if (response.errorHandling?.errorMessage == "No location found.")
                         _goToManualFunctionalityEvent.postValue(Event(Unit))
                     else
-                        _errorHandling.postValue(response.errorHandling)
+                        _errorHandling.postValue(Event(response.errorHandling))
                 }
             }
             _dataLoading.postValue(false)
         }
     }
 
-    private fun modifyDataForTest(checkInRequest: CheckInRequest): CheckInRequest {
-        return checkInRequest.also {
-//            it.gPS?.radius = 2450 // 1 location
-            it.gPS?.X = 27.9736844
-            it.gPS?.Y = -26.0821684
-        }
+    /* private fun modifyDataForTest(checkInRequest: CheckInRequest): CheckInRequest {
+         return checkInRequest.also {
+ //            it.gPS?.radius = 2450 // 1 location
+             it.gPS?.radius = 500000
+             it.gPS?.X = 27.9736844
+             it.gPS?.Y = -26.0821684
+         }
 
-    }
+     }*/
 
     private fun checkForLocation(checkInPart: String?, response: CheckInResponse.Data?) {
         when {
@@ -127,23 +130,24 @@ class CheckInService : Service() {
     }
 
     private fun startTracking(trackingInterval: Int) {
-        GlobalScope.launch {
-            if (isCheckedIn.value == true && location.value != null) {
-                val response = remoteRepository.userTracking(
-                    UserTrackRequest(
-                        checkedInLocation.value?.uTPId,
-                        checkedInLocation.value?.vTUTPId,
-                        Gps(location.value!!.latitude, location.value!!.longitude)
+        GlobalScope.launch(Dispatchers.Main) {
+            if (isCheckedIn.value == true) {
+                if (location.value != null) {
+                    val response = remoteRepository.userTracking(
+                        UserTrackRequest(
+                            checkedInLocation.value?.uTPId,
+                            checkedInLocation.value?.vTUTPId,
+                            Gps(location.value!!.latitude, location.value!!.longitude)
+                        )
                     )
-                )
-                (response as? ApiResult.Error)?.let {
-                    _errorHandling.postValue(response.errorHandling)
+                    (response as? ApiResult.Error)?.let {
+                        _errorHandling.postValue(Event(response.errorHandling))
+                    }
                 }
+
+                delay(trackingInterval.toLong())
+                startTracking(trackingInterval)
             }
-
-            delay(trackingInterval.toLong())
-            startTracking(trackingInterval)
-
         }
     }
 
@@ -159,8 +163,8 @@ class CheckInService : Service() {
     }
 
     fun checkOut() {
-        GlobalScope.launch {
-            _dataLoading.postValue(true)
+        _dataLoading.postValue(true)
+        GlobalScope.launch(Dispatchers.Main) {
             notification?.setCheckingOutStatus()
             val response = remoteRepository.checkOut(
                 CheckOutRequest(
@@ -176,10 +180,10 @@ class CheckInService : Service() {
             )
             when (response) {
                 is ApiResult.Success -> {
-                    _errorHandling.postValue(response.response.errorHandling)
+                    _errorHandling.postValue(Event(response.response.errorHandling))
                     setCheckedOut()
                 }
-                is ApiResult.Error -> _errorHandling.postValue(response.errorHandling)
+                is ApiResult.Error -> _errorHandling.postValue(Event(response.errorHandling))
             }
             _dataLoading.postValue(false)
         }
@@ -188,6 +192,7 @@ class CheckInService : Service() {
     private fun setCheckedOut() {
         _isCheckedIn.postValue(false)
         _checkedInLocation.postValue(null)
+        locationHelper.liveLocation.removeObserver(locationObserver)
         locationHelper.stop()
         pref.currentLocation = null
         stopForeground(true)
@@ -195,9 +200,12 @@ class CheckInService : Service() {
     }
 
     private fun startGetLocation() {
-        locationHelper.start(true).observeForever {
-            location.postValue(it)
-        }
+        locationHelper.start(true)
+        locationHelper.liveLocation.observeForever(locationObserver)
+    }
+
+    val locationObserver = Observer<Location> {
+        location.postValue(it)
     }
 
     private fun showNotification(location: CheckInResponse.Data?) {
@@ -207,6 +215,12 @@ class CheckInService : Service() {
             "You checked in ${location?.locationName}."
         )
         startForeground(notification!!.notificationId, notification!!.getNotification().build())
+    }
+
+    override fun onDestroy() {
+        stopForeground(true)
+        Log.d(this::class.java.simpleName, "destroyed")
+        super.onDestroy()
     }
 
     inner class CheckInBinder : Binder() {

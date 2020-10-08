@@ -48,8 +48,7 @@
             app:destination="@id/reportIssueInGeneralFragment" />
         <action
             android:id="@+id/action_mainActivityFragment_to_checkInFragment2"
-            app:destination="@id/checkInFragment"
-            app:launchSingleTop="true" />
+            app:destination="@id/checkInFragment" />
     </fragment>
     <fragment
         android:id="@+id/reportIssueFragment"
@@ -206,7 +205,6 @@
         <action
             android:id="@+id/action_manualFunctionalityFragment_to_checkInFragment"
             app:destination="@id/checkInFragment"
-            app:launchSingleTop="true"
             app:popUpTo="@id/manualFunctionalityFragment"
             app:popUpToInclusive="true" />
     </fragment>

@@ -69,6 +69,6 @@
     <string name="report_issue_in_general">Common Action</string>
     <string name="report_issue_per_document">Report Issue Per Document</string>
     <string name="check_out">Check Out</string>
-    <string name="looking_for_gps">Looking For Gps</string>
+    <string name="looking_for_gps">Looking For Location…</string>
 
 </resources>

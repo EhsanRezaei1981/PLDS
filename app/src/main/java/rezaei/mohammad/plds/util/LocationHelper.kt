@@ -17,10 +17,10 @@ import com.yayandroid.locationmanager.listener.LocationListener
 class LocationHelper(private val context: Context, private val activity: Activity?) {
 
     private var locationManager: LocationManager? = null
+    private val _liveLocation = MutableLiveData<Location>()
+    val liveLocation: LiveData<Location> = _liveLocation
 
-    fun start(trackMode: Boolean = false): LiveData<Location> {
-        val liveLocation = MutableLiveData<Location>()
-
+    fun start(trackMode: Boolean = false) {
         val awesomeConfiguration = LocationConfiguration.Builder()
             .keepTracking(trackMode)
             .askForPermission(
@@ -50,7 +50,7 @@ class LocationHelper(private val context: Context, private val activity: Activit
             .notify(object : LocationListener {
                 override fun onLocationChanged(location: Location?) {
                     if (location?.latitude != null)
-                        liveLocation.postValue(location)
+                        _liveLocation.postValue(location)
                 }
 
                 override fun onPermissionGranted(alreadyHadPermission: Boolean) {
@@ -73,10 +73,10 @@ class LocationHelper(private val context: Context, private val activity: Activit
             })
             .build()
         locationManager!!.get()
-        return liveLocation
     }
 
     fun stop() {
         locationManager?.cancel()
+        locationManager?.onDestroy()
     }
 }

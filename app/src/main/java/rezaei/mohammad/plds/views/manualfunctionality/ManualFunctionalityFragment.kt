@@ -226,7 +226,7 @@ class ManualFunctionalityFragment : Fragment() {
     }
 
     private fun validateSpinner(): Boolean {
-        return if (selectedCourt == null || selectedSheriff == null) {
+        return if (selectedCourt == null && selectedSheriff == null) {
             spnCourtSheriffList.error = getString(R.string.field_mandatory)
             false
         } else {

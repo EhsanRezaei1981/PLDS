@@ -1,12 +1,10 @@
 package rezaei.mohammad.plds.views.main
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.data.local.LocalRepository
-import rezaei.mohammad.plds.data.model.response.CheckInResponse
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.service.CheckInService
 
@@ -19,13 +17,6 @@ class GlobalViewModel(
     val docRefNo: MutableLiveData<String> by lazy { MutableLiveData<String>() }
 
     var checkInService = MutableLiveData<CheckInService?>()
-
-    val _locationList = MutableLiveData<List<CheckInResponse.LocationItem>>()
-    val locationList: LiveData<List<CheckInResponse.LocationItem>> = _locationList
-
-    val _dataLoading = MutableLiveData<Boolean>()
-    val dataLoading: LiveData<Boolean> = _dataLoading
-
 
     fun signOut() {
         preferenceManager.authToken = null

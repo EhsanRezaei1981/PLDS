@@ -25,6 +25,7 @@ import rezaei.mohammad.plds.data.local.Environment
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.service.CheckInService
 import rezaei.mohammad.plds.util.ChangeLog
+import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
@@ -39,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
             isBound = false
+            viewModel.checkInService.value = null
         }
 
         override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
@@ -65,8 +67,9 @@ class MainActivity : AppCompatActivity() {
 
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             hideNote()
-            if (destination.label == "fragment_main")
+            if (destination.label == "fragment_main") {
                 viewModel.docRefNo.postValue(null)
+            }
         }
     }
 
@@ -182,12 +185,15 @@ class MainActivity : AppCompatActivity() {
 
             checkInService.isCheckedIn.observe(this) {
                 setActivityCheckInStatus(it)
+
+                if (!it)// on checkout
+                    findNavController(R.id.nav_host_fragment)
+                        .popBackStack(R.id.mainActivityFragment, false)
             }
 
-            checkInService.errorHandling.observe(this) {
+            checkInService.errorHandling.observe(this, EventObserver {
                 toolbar?.snack(it)
-                viewModel._dataLoading.postValue(false)
-            }
+            })
         }
     }
 
@@ -201,12 +207,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        if (!isChangingConfigurations) {
+    fun unbindService() {
+        if (!isChangingConfigurations && isBound) {
             unbindService(connection)
             isBound = false
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService()
     }
 
     override fun onStart() {

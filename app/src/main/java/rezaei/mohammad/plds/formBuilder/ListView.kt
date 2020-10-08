@@ -109,11 +109,11 @@ open class ListView(
         if (selectedItem?.gPSIsNeeded == 1 && !isReadOnly) {
             initGps()
         }
-        if (selectedItem?.customActionCode?.contains("ChangeCourt") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeCourt") == true && !isReadOnly) {
             onListItemSelectedCallback?.courtListNeeded(courtList)
             initCourtList()
         }
-        if (selectedItem?.customActionCode?.contains("ChangeSheriff") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeSheriff") == true && !isReadOnly) {
             onListItemSelectedCallback?.sheriffListNeeded(sheriffList)
             initSheriffList()
         }

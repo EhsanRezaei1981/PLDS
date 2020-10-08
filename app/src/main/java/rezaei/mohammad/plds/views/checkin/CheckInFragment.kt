@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -46,16 +47,17 @@ class CheckInFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        globalViewModel._dataLoading.postValue(true)
         setRecyclerView()
         updateLocation()
         setupServiceValuesObservers()
+        //set initial state when service is ran from before
+        globalViewModel.checkInService.value?._dataLoading?.postValue(true)
+        globalViewModel.checkInService.value?._locationList?.postValue(emptyList())
     }
 
     private fun setRecyclerView() {
         val adapter = LocationAdapter {
             checkIn(it)
-            globalViewModel._dataLoading.postValue(true)
             viewDataBinding.listLocations.isGone = true
         }
         viewDataBinding.listLocations.adapter = adapter
@@ -69,16 +71,10 @@ class CheckInFragment : Fragment() {
             checkIn(args.location)
 
             checkInService.isCheckedIn.observe(this.viewLifecycleOwner) {
-                if (it) {
-                    globalViewModel._dataLoading.postValue(false)
+                if (it)
                     continueLoadSourceFragment()
-                }
             }
 
-            checkInService.locationList.observe(this.viewLifecycleOwner) {
-                globalViewModel._locationList.postValue(it)
-                globalViewModel._dataLoading.postValue(false)
-            }
             checkInService.goToManualFunctionalityEvent.observe(
                 this.viewLifecycleOwner,
                 EventObserver {
@@ -102,9 +98,11 @@ class CheckInFragment : Fragment() {
 
     private fun updateLocation() {
         with(LocationHelper(requireContext(), requireActivity())) {
-            start().observe(this@CheckInFragment.viewLifecycleOwner) { location ->
+            start()
+            liveLocation.observe(viewLifecycleOwner) { location ->
                 gps = Gps(location.latitude, location.longitude)
                 stop()
+                liveLocation.removeObservers(viewLifecycleOwner)
             }
         }
 
@@ -112,7 +110,7 @@ class CheckInFragment : Fragment() {
 
     private fun checkIn(locationItem: CheckInResponse.LocationItem? = null) {
         if (gps == null) {
-            GlobalScope.launch {
+            GlobalScope.launch(Dispatchers.Main) {
                 delay(2000)
                 checkIn(locationItem)
             }
@@ -128,6 +126,5 @@ class CheckInFragment : Fragment() {
             )
         )
     }
-
 
 }
