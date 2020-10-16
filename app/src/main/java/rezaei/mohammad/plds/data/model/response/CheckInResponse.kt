@@ -4,6 +4,7 @@ import android.os.Parcelable
 import androidx.room.Entity
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import rezaei.mohammad.plds.data.model.local.CheckInResponseEntity
 
 class CheckInResponse : BaseResponse<CheckInResponse.Data>() {
 
@@ -27,42 +28,62 @@ class CheckInResponse : BaseResponse<CheckInResponse.Data>() {
         val locationName: String? = null
 
 
-    ) : Parcelable {
-        override fun toString(): String {
-            return "$locationId,$locationName,$locationType"
-        }
-    }
+    ) : Parcelable
 
     data class Data(
 
         @field:SerializedName("TrackingConfig")
-        val trackingConfig: TrackingConfig? = null,
+        var trackingConfig: TrackingConfig? = null,
 
         @field:SerializedName("CheckInPart")
-        val checkInPart: String? = null,
+        var checkInPart: String? = null,
 
         @field:SerializedName("LocationId")
-        val locationId: Int? = null,
+        var locationId: Int? = null,
 
         @field:SerializedName("VTLocation")
-        val vTLocation: String? = null,
+        var vTLocation: String? = null,
 
         @field:SerializedName("UTPId")
-        val uTPId: Int? = null,
+        var uTPId: Int? = null,
 
         @field:SerializedName("VTUTPId")
-        val vTUTPId: String? = null,
+        var vTUTPId: String? = null,
 
         @field:SerializedName("LocationType")
-        val locationType: String? = null,
+        var locationType: String? = null,
 
         @field:SerializedName("VTLocationId")
-        val vTLocationId: String? = null,
+        var vTLocationId: String? = null,
 
         @field:SerializedName("LocationName")
-        val locationName: String? = null,
+        var locationName: String? = null,
 
         @field:SerializedName("Locations")
         val locations: List<LocationItem>? = null
-    )
+    ) {
+        fun toLocal() = CheckInResponseEntity(
+            trackingConfig?.trackingInterval,
+            checkInPart,
+            locationId,
+            vTLocation,
+            uTPId,
+            vTUTPId,
+            locationType,
+            vTLocationId,
+            locationName
+        )
+
+        fun fromLocal(checkInResponseEntity: CheckInResponseEntity) {
+            trackingConfig = TrackingConfig(checkInResponseEntity.trackingInterval)
+            checkInPart = checkInResponseEntity.checkInPart
+            locationId = checkInResponseEntity.locationId
+            vTLocation = checkInResponseEntity.vTLocation
+            uTPId = checkInResponseEntity.uTPId
+            vTUTPId = checkInResponseEntity.vTUTPId
+            locationType = checkInResponseEntity.locationType
+            vTLocationId = checkInResponseEntity.vTLocationId
+            locationName = checkInResponseEntity.locationName
+        }
+    }
 }

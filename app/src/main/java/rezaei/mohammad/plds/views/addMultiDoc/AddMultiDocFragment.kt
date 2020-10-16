@@ -20,6 +20,7 @@ import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.databinding.FragmentAddMultiDocBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragment
@@ -78,7 +79,7 @@ class AddMultiDocFragment : Fragment() {
                 ReportIssueFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
             else
                 GetDocReferenceFragmentDirections.actionGetDocReferenceFragmentToQrReaderFragment()
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun setupRecyclerView() {

@@ -15,6 +15,7 @@ import rezaei.mohammad.plds.databinding.FragmentDocProgressBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 
 class DocProgressFragment : Fragment() {
 
@@ -58,7 +59,7 @@ class DocProgressFragment : Fragment() {
                         unsuccessful = null,
                         gpsNeeded = args.documentStatus.gpsIsNeeded == 1
                     )
-                findNavController().navigate(action)
+                findNavController().tryNavigate(action)
             }
             (it as? ApiResult.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })
@@ -70,7 +71,7 @@ class DocProgressFragment : Fragment() {
                         successful = null,
                         gpsNeeded = args.documentStatus.gpsIsNeeded == 1
                     )
-                findNavController().navigate(action)
+                findNavController().tryNavigate(action)
             }
             (it as? ApiResult.Error)?.let { error -> btnBack.snack(error.errorHandling) }
         })

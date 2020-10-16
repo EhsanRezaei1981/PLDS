@@ -39,6 +39,7 @@ import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.main.MainActivity
 
 
@@ -160,7 +161,7 @@ class SubmitFormFragment : Fragment() {
                     val action =
                         SubmitFormFragmentDirections.actionSubmitFormFragmentToMainActivityFragment()
                     if (isAdded)
-                        findNavController().navigate(action)
+                        findNavController().tryNavigate(action)
                 })
                 viewModel.removeAllDocuments()
             }

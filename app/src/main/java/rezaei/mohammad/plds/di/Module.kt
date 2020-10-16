@@ -20,6 +20,7 @@ import rezaei.mohammad.plds.data.remote.RefreshTokenAuthenticator
 import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
+import rezaei.mohammad.plds.views.checkin.CheckInViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
@@ -127,6 +128,8 @@ object Module {
         viewModel { ImageViewerViewModel(get() as RemoteRepository) }
 
         viewModel { ManualFunctionalityViewModel(get() as RemoteRepository) }
+
+        viewModel { CheckInViewModel() }
 
     }
 }

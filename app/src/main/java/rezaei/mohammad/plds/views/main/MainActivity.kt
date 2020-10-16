@@ -17,36 +17,44 @@ import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.local.Environment
+import rezaei.mohammad.plds.data.model.response.CheckInResponse
+import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.service.CheckInService
+import rezaei.mohammad.plds.service.CheckInViewCallbacks
 import rezaei.mohammad.plds.util.ChangeLog
-import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.views.checkin.CheckInFragment
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
 
     private val viewModel: GlobalViewModel by viewModel()
     private val prefs: PreferenceManager by inject()
     private var isBound = false
+    var checkInService: CheckInService? = null
 
     private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
             isBound = false
-            viewModel.checkInService.value = null
+            checkInService = null
         }
 
         override fun onServiceConnected(className: ComponentName?, service: IBinder?) {
             val binder = service as CheckInService.CheckInBinder
-            viewModel.checkInService.value = binder.service
+            checkInService = binder.service
+            checkInService!!.viewCallbacks = this@MainActivity
             isBound = true
+            checkCheckedIn()
         }
     }
 
@@ -54,22 +62,35 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //start service
-        if (!isBound)
-            Intent(this, CheckInService::class.java).also { intent ->
-                startService(intent)
-            }
+        startService()
+        viewModel.findIfAnyCheckInExist()
 
         setSupportActionBar(toolbar)
         showChangeLog()
         showEnvironment()
-        setupServiceValuesObservers()
 
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             hideNote()
             if (destination.label == "fragment_main") {
                 viewModel.docRefNo.postValue(null)
             }
+        }
+    }
+
+    private fun startService() {
+        viewModel.checkInResponseEntity.observe(this) {
+            //start service
+            if (!isBound)
+                Intent(this, CheckInService::class.java).also { intent ->
+                    GlobalScope.launch {
+                        Intent(this@MainActivity, CheckInService::class.java).also { intent ->
+                            if (it != null)
+                                intent.action = CheckInService.RESUME_PREVIOUS_CHECK_IN
+                            startService(intent)
+                        }
+                    }
+                    startService(intent)
+                }
         }
     }
 
@@ -108,8 +129,8 @@ class MainActivity : AppCompatActivity() {
                 menu?.findItem(R.id.theme_default)?.isChecked = true
             }
         }
-        menu?.findItem(R.id.action_checkOut)?.isVisible = viewModel.checkInService.value
-            ?.isCheckedIn?.value ?: false
+        menu?.findItem(R.id.action_checkOut)?.isVisible = checkInService
+            ?.isCheckedIn ?: false
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -148,7 +169,7 @@ class MainActivity : AppCompatActivity() {
                 prefs.nighMode = AppCompatDelegate.MODE_NIGHT_YES
             }
             R.id.action_checkOut -> {
-                viewModel.checkInService.value?.checkOut()
+                checkInService?.checkOut()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -178,33 +199,35 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupServiceValuesObservers() {
-        viewModel.checkInService.observe(this) { checkInService ->
-            if (checkInService == null)
-                return@observe
-
-            checkInService.isCheckedIn.observe(this) {
-                setActivityCheckInStatus(it)
-
-                if (!it)// on checkout
-                    findNavController(R.id.nav_host_fragment)
-                        .popBackStack(R.id.mainActivityFragment, false)
-            }
-
-            checkInService.errorHandling.observe(this, EventObserver {
-                toolbar?.snack(it)
-            })
+    private fun checkCheckedIn() {
+        if (checkInService?.isCheckedIn == true) {
+            toolbar?.menu?.findItem(R.id.action_checkOut)?.isVisible = true
+            supportActionBar?.subtitle = checkInService?.checkedInLocation?.locationName
         }
     }
 
-    private fun setActivityCheckInStatus(isCheckedIn: Boolean) {
-        toolbar?.menu?.findItem(R.id.action_checkOut)?.isVisible = isCheckedIn
-        if (isCheckedIn) {
-            supportActionBar?.subtitle = viewModel.checkInService.value
-                ?.checkedInLocation?.value?.locationName
-        } else {
-            supportActionBar?.subtitle = null
-        }
+    override fun onCheckedIn(checkedInLocation: CheckInResponse.Data) {
+        checkCheckedIn()
+        getCheckInFragment()?.onCheckedIn(checkedInLocation)
+    }
+
+    override fun onCheckedOut() {
+        toolbar?.menu?.findItem(R.id.action_checkOut)?.isVisible = false
+        supportActionBar?.subtitle = null
+        findNavController(R.id.nav_host_fragment)
+            .popBackStack(R.id.mainActivityFragment, false)
+    }
+
+    override fun showLocationList(locationList: List<CheckInResponse.LocationItem>) {
+        getCheckInFragment()?.showLocationList(locationList)
+    }
+
+    override fun onNoLocationFound() {
+        getCheckInFragment()?.onNoLocationFound()
+    }
+
+    override fun onError(errorHandling: ErrorHandling?) {
+        toolbar?.snack(errorHandling)
     }
 
     fun unbindService() {
@@ -214,14 +237,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        unbindService()
-    }
-
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         bindService()
     }
 
+    override fun onPause() {
+        super.onPause()
+        unbindService()
+    }
+
+    private fun getCheckInFragment(): CheckInFragment? {
+        return supportFragmentManager
+            .fragments[0]
+            .childFragmentManager
+            .fragments.find { it is CheckInFragment } as? CheckInFragment
+    }
 }

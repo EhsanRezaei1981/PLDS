@@ -1,5 +1,6 @@
 package rezaei.mohammad.plds.data
 
+import rezaei.mohammad.plds.data.model.local.CheckInResponseEntity
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.*
@@ -40,5 +41,13 @@ interface LocalRepository {
     suspend fun deleteDocument(document: Document)
 
     suspend fun deleteAllDocs(documents: List<Document>)
+
+    suspend fun insertCheckInResponse(checkInResponseEntity: CheckInResponseEntity)
+
+    suspend fun getCheckInResponse(): CheckInResponseEntity?
+
+    suspend fun deleteCheckInResponse(checkInResponseEntity: CheckInResponseEntity)
+
+    suspend fun deleteAllCheckInResponse()
 
 }

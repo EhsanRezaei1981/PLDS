@@ -3,6 +3,7 @@ package rezaei.mohammad.plds.data.remote
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import rezaei.mohammad.plds.PLDSapp
 import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.model.request.*
@@ -30,7 +31,8 @@ class RemoteRepository(
                     apiInterface.login(
                         loginRequest = LoginRequest(
                             username = userName,
-                            password = password
+                            password = password,
+                            deviceInfo = PLDSapp.userAgent
                         ),
                         url = pref.getActiveEnvironment().first.trimEnd(
                             '/',

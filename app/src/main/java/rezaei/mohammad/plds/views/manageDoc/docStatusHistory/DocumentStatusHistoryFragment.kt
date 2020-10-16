@@ -14,6 +14,7 @@ import rezaei.mohammad.plds.databinding.FragmentDocumentStatusHistoryBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 
 class DocumentStatusHistoryFragment : Fragment() {
 
@@ -69,7 +70,7 @@ class DocumentStatusHistoryFragment : Fragment() {
                 doc.vT!!, args.documentBaseInfo, readOnly, doc.gPSIsNeeded == 1,
                 if (doc.isSuccess == 1) "Success" else "Query"
             )
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
 

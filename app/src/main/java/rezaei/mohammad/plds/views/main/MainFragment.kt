@@ -13,6 +13,7 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 
 class MainFragment : Fragment() {
 
@@ -56,7 +57,7 @@ class MainFragment : Fragment() {
                 null,
                 chekinPartName = "UpdateDocumentProgress"
             )
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun navigateToReportIssuePerDocument() {
@@ -67,7 +68,7 @@ class MainFragment : Fragment() {
                 null,
                 chekinPartName = "ReportIssuePerDocument"
             )
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun navigateToReportIssueInGeneral() {
@@ -78,17 +79,19 @@ class MainFragment : Fragment() {
                 null,
                 chekinPartName = "ReportIssueInGeneral"
             )
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun navigateToManageDoc() {
         val action = MainFragmentDirections.actionMainActivityFragmentToManageDocumentFragment()
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
-    private fun isCheckedIn(): Boolean =
-        globalViewModel.checkInService.value != null &&
-                globalViewModel.checkInService.value?.isCheckedIn?.value == true
+    private fun isCheckedIn(): Boolean {
+        val checkInService = (requireActivity() as MainActivity).checkInService
+        return checkInService != null && checkInService.isCheckedIn
+    }
+
 
     private fun setVersionName() {
         txtVersion.text = "v${BuildConfig.VERSION_NAME}"

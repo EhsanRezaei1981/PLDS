@@ -19,6 +19,7 @@ import rezaei.mohammad.plds.databinding.FragmentGetDocReferenceBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 
 class GetDocReferenceFragment : Fragment() {
@@ -89,7 +90,7 @@ class GetDocReferenceFragment : Fragment() {
             GetDocReferenceFragmentDirections.actionGetDocReferenceFragmentToDocProgressFragment(
                 documentStatusResponse
             )
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun documentListChangeListener() {

@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="rezaei.mohammad.plds.views.main.GlobalViewModel" />
+            type="rezaei.mohammad.plds.views.checkin.CheckInViewModel" />
 
         <import type="android.view.View" />
 
@@ -52,8 +52,8 @@
                         android:layout_marginBottom="8dp"
                         android:clipToPadding="true"
                         android:layout_marginTop="8dp"
-                        android:visibility="@{viewModel.checkInService.dataLoading ? View.GONE : View.VISIBLE}"
-                        app:items="@{viewModel.checkInService.locationList}"
+                        android:visibility="@{viewModel.dataLoading ? View.GONE : View.VISIBLE}"
+                        app:items="@{viewModel.locationList}"
                         app:layout_constrainedHeight="true"
                         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginTop="8dp"
-                        android:visibility="@{viewModel.checkInService.dataLoading ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{viewModel.dataLoading ? View.VISIBLE : View.GONE}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txtCardTitle" />
 
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:text="@string/looking_for_gps"
-                        android:visibility="@{viewModel.checkInService.dataLoading ? View.VISIBLE : View.GONE}"
+                        android:visibility="@{viewModel.dataLoading ? View.VISIBLE : View.GONE}"
                         app:layout_constraintBottom_toBottomOf="@+id/progressBar4"
                         app:layout_constraintStart_toEndOf="@id/progressBar4"
                         app:layout_constraintTop_toTopOf="@+id/progressBar4" />

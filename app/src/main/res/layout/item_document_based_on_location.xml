@@ -25,17 +25,43 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:text="DC 12563" />
 
-        <TextView
-            android:id="@+id/txtAction"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtClient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:textColor="?android:textColorPrimary"
             android:textSize="16sp"
+            app:drawableStartCompat="@drawable/ic_round_person_24"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtDocNo"
-            tools:text="Action" />
+            tools:text="Client" />
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/txtProcess"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:drawableStart="@drawable/ic_baseline_flag_24"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtClient"
+            app:layout_constraintStart_toEndOf="@id/txtClient"
+            app:layout_constraintTop_toTopOf="@+id/txtClient"
+            tools:text="Process" />
+
+        <TextView
+            android:id="@+id/txtAction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:textColor="?android:textColorSecondary"
+            android:textSize="16sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtProcess"
+            tools:text="Process" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddReportIssue"
@@ -46,8 +72,10 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="Report Issue"
+            android:textColor="@color/colorFail"
             android:textAllCaps="false"
             app:icon="@drawable/ic_round_add_list"
+            app:iconTint="@color/colorFail"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtAction" />
@@ -61,6 +89,8 @@
             android:layout_marginBottom="8dp"
             android:text="Document Progress"
             android:textAllCaps="false"
+            android:textColor="@color/colorSuccessful"
+            app:iconTint="@color/colorSuccessful"
             app:icon="@drawable/ic_round_add_list"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnAddReportIssue"

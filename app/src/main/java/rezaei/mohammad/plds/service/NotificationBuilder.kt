@@ -10,6 +10,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.service.CheckInService.Companion.CHECK_OUT
 import rezaei.mohammad.plds.views.main.MainActivity
 
 class NotificationBuilder(
@@ -85,9 +86,5 @@ class NotificationBuilder(
 
     fun closeNotification() {
         notificationManager.cancel(notificationId)
-    }
-
-    companion object {
-        const val CHECK_OUT = "CHECK_OUT"
     }
 }

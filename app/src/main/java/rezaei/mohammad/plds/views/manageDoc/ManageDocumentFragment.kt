@@ -16,6 +16,7 @@ import rezaei.mohammad.plds.databinding.FragmentManageDocumentBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 
 class ManageDocumentFragment : Fragment() {
@@ -49,7 +50,7 @@ class ManageDocumentFragment : Fragment() {
     }
 
     private fun navigateToQrScanner() {
-        findNavController().navigate(
+        findNavController().tryNavigate(
             ManageDocumentFragmentDirections
                 .actionManageDocumentFragmentToQrReaderFragment()
         )
@@ -61,7 +62,7 @@ class ManageDocumentFragment : Fragment() {
                 is ApiResult.Success -> {
                     it.response.data?.let {
                         findNavController()
-                            .navigate(
+                            .tryNavigate(
                                 ManageDocumentFragmentDirections
                                     .actionManageDocumentFragmentToDocumentStatusHistoryFragment(it)
                             )

@@ -1,5 +1,6 @@
 package rezaei.mohammad.plds.views.checkin
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,25 +14,30 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.data.model.request.CheckInRequest
 import rezaei.mohammad.plds.data.model.request.Gps
 import rezaei.mohammad.plds.data.model.response.CheckInResponse
-import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.databinding.FragmentCheckInBinding
-import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.service.CheckInService
 import rezaei.mohammad.plds.util.LocationHelper
-import rezaei.mohammad.plds.views.main.GlobalViewModel
+import rezaei.mohammad.plds.util.tryNavigate
+import rezaei.mohammad.plds.views.main.MainActivity
+
 
 class CheckInFragment : Fragment() {
 
-
     private lateinit var viewDataBinding: FragmentCheckInBinding
-    private val globalViewModel: GlobalViewModel by sharedViewModel()
+    private val viewModel: CheckInViewModel by viewModel()
     private val args: CheckInFragmentArgs by navArgs()
+    private lateinit var locationHelper: LocationHelper
     private var gps: Gps? = null
-    private val prefs: PreferenceManager by inject()
+    var checkInService: CheckInService? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        checkInService = (context as MainActivity).checkInService
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,51 +45,28 @@ class CheckInFragment : Fragment() {
     ): View? {
         viewDataBinding = FragmentCheckInBinding.inflate(layoutInflater, container, false)
             .apply {
-                this.viewModel = globalViewModel
+                this.viewModel = this@CheckInFragment.viewModel
                 this.lifecycleOwner = this@CheckInFragment.viewLifecycleOwner
             }
         return viewDataBinding.root
     }
 
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setRecyclerView()
         updateLocation()
-        setupServiceValuesObservers()
-        //set initial state when service is ran from before
-        globalViewModel.checkInService.value?._dataLoading?.postValue(true)
-        globalViewModel.checkInService.value?._locationList?.postValue(emptyList())
+        if (viewModel.locationList.value?.isNotEmpty() != false)
+            checkIn(args.location)
     }
 
     private fun setRecyclerView() {
         val adapter = LocationAdapter {
             checkIn(it)
             viewDataBinding.listLocations.isGone = true
+            viewModel._locationList.value = null
         }
         viewDataBinding.listLocations.adapter = adapter
-    }
-
-    private fun setupServiceValuesObservers() {
-        globalViewModel.checkInService.observe(this.viewLifecycleOwner) { checkInService ->
-            if (checkInService == null)
-                return@observe
-
-            checkIn(args.location)
-
-            checkInService.isCheckedIn.observe(this.viewLifecycleOwner) {
-                if (it)
-                    continueLoadSourceFragment()
-            }
-
-            checkInService.goToManualFunctionalityEvent.observe(
-                this.viewLifecycleOwner,
-                EventObserver {
-                    findNavController().navigate(
-                        CheckInFragmentDirections
-                            .actionCheckInFragmentToManualFunctionalityFragment(args.chekinPartName)
-                    )
-                })
-        }
     }
 
     private fun continueLoadSourceFragment() {
@@ -93,38 +76,64 @@ class CheckInFragment : Fragment() {
             "ReportIssueInGeneral" -> CheckInFragmentDirections.actionCheckInFragmentToReportIssueInGeneralFragment()
             else -> CheckInFragmentDirections.actionCheckInFragmentToGetDocReferenceFragment()
         }
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun updateLocation() {
-        with(LocationHelper(requireContext(), requireActivity())) {
-            start()
-            liveLocation.observe(viewLifecycleOwner) { location ->
-                gps = Gps(location.latitude, location.longitude)
-                stop()
-                liveLocation.removeObservers(viewLifecycleOwner)
+        locationHelper = LocationHelper(requireContext(), requireActivity())
+            .apply {
+                start()
+                liveLocation.observe(viewLifecycleOwner) { location ->
+                    if (location == null)
+                        return@observe
+                    gps = Gps(location.latitude, location.longitude)
+                }
             }
-        }
 
     }
 
     private fun checkIn(locationItem: CheckInResponse.LocationItem? = null) {
-        if (gps == null) {
+        if (!isAdded)
+            return
+
+        if (gps == null || !LocationHelper.isGpsEnable(requireContext())) {
             GlobalScope.launch(Dispatchers.Main) {
                 delay(2000)
+                locationHelper.start()
                 checkIn(locationItem)
             }
             return
         }
-        globalViewModel.checkInService.value?.checkIn(
+        checkInService?.checkIn(
             CheckInRequest(
                 args.chekinPartName,
-                locationItem?.locationId ?: prefs.currentLocation?.locationId,
+                locationItem?.locationId,
                 gps,
-                locationItem?.locationType ?: prefs.currentLocation?.locationType,
-                locationItem?.locationName ?: prefs.currentLocation?.locationName
+                locationItem?.locationType,
+                locationItem?.locationName
             )
         )
     }
 
+    fun onCheckedIn(checkedInLocation: CheckInResponse.Data) {
+        continueLoadSourceFragment()
+    }
+
+    fun showLocationList(locationList: List<CheckInResponse.LocationItem>) {
+        viewModel._locationList.value = locationList
+        gps = null
+    }
+
+    fun onNoLocationFound() {
+        findNavController().tryNavigate(
+            CheckInFragmentDirections
+                .actionCheckInFragmentToManualFunctionalityFragment(args.chekinPartName)
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        locationHelper.stop()
+        viewModel._locationList.value = null
+    }
 }

@@ -38,6 +38,7 @@ import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 
 class EditDocumentFragment : Fragment() {
 
@@ -151,7 +152,7 @@ class EditDocumentFragment : Fragment() {
                 }
 
                 override fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?) {
-                    findNavController().navigate(
+                    findNavController().tryNavigate(
                         EditDocumentFragmentDirections
                             .actionEditDocumentFragmentToImageViewerFragment(
                                 GetFileRequest(

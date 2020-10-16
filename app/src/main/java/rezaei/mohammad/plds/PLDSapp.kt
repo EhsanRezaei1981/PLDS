@@ -1,5 +1,6 @@
 package rezaei.mohammad.plds
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import org.koin.android.ext.android.inject
@@ -7,8 +8,27 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.di.Module
+import java.util.*
 
 class PLDSapp : MultiDexApplication() {
+
+    companion object {
+        const val VERSION_NAME = BuildConfig.VERSION_NAME
+        const val APPLICATION_ID = BuildConfig.APPLICATION_ID
+        val userAgent by lazy {
+            String.format(
+                Locale.US,
+                "%s/%s (Android %s; %s; %s %s;)",
+                APPLICATION_ID,
+                VERSION_NAME,
+                Build.VERSION.RELEASE,
+                Build.MODEL,
+                Build.BRAND,
+                Build.DEVICE
+            )
+        }
+    }
+
 
     override fun onCreate() {
         super.onCreate()

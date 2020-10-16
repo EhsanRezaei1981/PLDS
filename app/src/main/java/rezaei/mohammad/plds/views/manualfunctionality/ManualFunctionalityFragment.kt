@@ -24,6 +24,7 @@ import rezaei.mohammad.plds.databinding.FragmentManualFunctionalityBinding
 import rezaei.mohammad.plds.formBuilder.SearchAdapter
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 
 class ManualFunctionalityFragment : Fragment() {
 
@@ -157,7 +158,7 @@ class ManualFunctionalityFragment : Fragment() {
                 R.id.radCourt -> {
                     if (!validateSpinner())
                         return@EventObserver
-                    findNavController().navigate(
+                    findNavController().tryNavigate(
                         ManualFunctionalityFragmentDirections
                             .actionManualFunctionalityFragmentToCheckInFragment(
                                 CheckInResponse.LocationItem(
@@ -172,7 +173,7 @@ class ManualFunctionalityFragment : Fragment() {
                 R.id.radSheriff -> {
                     if (!validateSpinner())
                         return@EventObserver
-                    findNavController().navigate(
+                    findNavController().tryNavigate(
                         ManualFunctionalityFragmentDirections
                             .actionManualFunctionalityFragmentToCheckInFragment(
                                 CheckInResponse.LocationItem(
@@ -185,7 +186,7 @@ class ManualFunctionalityFragment : Fragment() {
                     )
                 }
                 R.id.radAttorney -> {
-                    findNavController().navigate(
+                    findNavController().tryNavigate(
                         ManualFunctionalityFragmentDirections
                             .actionManualFunctionalityFragmentToCheckInFragment(
                                 CheckInResponse.LocationItem(
@@ -198,7 +199,7 @@ class ManualFunctionalityFragment : Fragment() {
                     )
                 }
                 R.id.radManual -> {
-                    findNavController().navigate(
+                    findNavController().tryNavigate(
                         ManualFunctionalityFragmentDirections
                             .actionManualFunctionalityFragmentToCheckInFragment(
                                 CheckInResponse.LocationItem(
