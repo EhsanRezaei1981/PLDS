@@ -45,20 +45,12 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:497834442007:android:f9e728f420e00ba1df4b52",
+        "mobilesdk_app_id": "1:497834442007:android:72de4966a3a57663df4b52",
         "android_client_info": {
           "package_name": "rezaei.mohammad.plds.debug"
         }
       },
       "oauth_client": [
-        {
-          "client_id": "497834442007-69bpvhln3q5dqhcnpnufd15jvv966c9f.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "rezaei.mohammad.plds.debug",
-            "certificate_hash": "8654c44e6669eafe1b2da3bbffea8167a2984333"
-          }
-        },
         {
           "client_id": "497834442007-q3jleths23mnibk6ld440k57ti2jc9m9.apps.googleusercontent.com",
           "client_type": 3

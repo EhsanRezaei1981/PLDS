@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.appdistribution'
 
 // Load keystore
 def keystorePropertiesFile = rootProject.file("local.properties")
@@ -36,6 +37,10 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.visro
+            firebaseAppDistribution {
+                releaseNotes="Release notes for full version"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
         }
         debug {
             minifyEnabled false
@@ -47,7 +52,10 @@ android {
                 // you can speed up your build by disabling mapping file uploading.
                 mappingFileUploadEnabled false
             }
-//            signingConfig signingConfigs.visro
+            firebaseAppDistribution {
+                releaseNotes="Show error when no gps available"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
         }
     }
 
