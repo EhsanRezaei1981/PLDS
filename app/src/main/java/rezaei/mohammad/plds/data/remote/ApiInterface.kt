@@ -61,5 +61,8 @@ interface ApiInterface {
     @POST("Tracking/UserTracking")
     suspend fun userTracking(@Body userTrackRequest: UserTrackRequest): BaseResponse<Unit>?
 
+    @POST("Tracking/RetrieveDocumentsByLocation")
+    suspend fun getDocumentListOnLocation(@Body getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest): DocumentOnLocationResponse?
+
 
 }

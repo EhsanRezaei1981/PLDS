@@ -21,6 +21,7 @@ import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
 import rezaei.mohammad.plds.views.checkin.CheckInViewModel
+import rezaei.mohammad.plds.views.docListByLocation.DocListByLocationViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
@@ -31,8 +32,8 @@ import rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHisto
 import rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentViewModel
 import rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerViewModel
 import rezaei.mohammad.plds.views.manualfunctionality.ManualFunctionalityViewModel
-import rezaei.mohammad.plds.views.reportIssue.ingeneral.ReportIssueInGeneralViewModel
-import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueViewModel
+import rezaei.mohammad.plds.views.reportIssue.ingeneral.CommonActionViewModel
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 import java.util.concurrent.TimeUnit
 
@@ -104,7 +105,7 @@ object Module {
         viewModel { SubmitFormViewModel(get(), get()) }
 
         viewModel {
-            ReportIssueViewModel(
+            ReportIssuePerDocViewModel(
                 get(),
                 get()
             )
@@ -119,7 +120,7 @@ object Module {
             )
         }
 
-        viewModel { ReportIssueInGeneralViewModel() }
+        viewModel { CommonActionViewModel() }
 
         viewModel { DocumentStatusHistoryViewModel(get()) }
 
@@ -130,6 +131,13 @@ object Module {
         viewModel { ManualFunctionalityViewModel(get() as RemoteRepository) }
 
         viewModel { CheckInViewModel() }
+
+        viewModel {
+            DocListByLocationViewModel(
+                get() as RemoteRepository,
+                get() as LocalRepository
+            )
+        }
 
     }
 }

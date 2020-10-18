@@ -9,11 +9,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.transition.TransitionManager
+import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
 import kotlinx.android.synthetic.main.fragment_get_doc_reference.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.local.DocumentType
+import rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
 import rezaei.mohammad.plds.databinding.FragmentGetDocReferenceBinding
 import rezaei.mohammad.plds.util.EventObserver
@@ -21,6 +23,7 @@ import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
+import rezaei.mohammad.plds.views.main.MainActivity
 
 class GetDocReferenceFragment : Fragment() {
 
@@ -59,7 +62,7 @@ class GetDocReferenceFragment : Fragment() {
                     multiAddDoc.id,
                     AddMultiDocFragment.newInstance(DocumentType.CheckProgress)
                 )
-                .runOnCommit { documentListChangeListener() }
+                .runOnCommit { setupMultiDocFragmentInteractor() }
                 .commit()
         else
             childFragmentManager.registerFragmentLifecycleCallbacks(object :
@@ -71,7 +74,7 @@ class GetDocReferenceFragment : Fragment() {
                 ) {
                     super.onFragmentActivityCreated(fm, f, savedInstanceState)
                     if (f is AddMultiDocFragment)
-                        documentListChangeListener()
+                        setupMultiDocFragmentInteractor()
                 }
             }, false)
     }
@@ -93,8 +96,9 @@ class GetDocReferenceFragment : Fragment() {
         findNavController().tryNavigate(action)
     }
 
-    private fun documentListChangeListener() {
+    private fun setupMultiDocFragmentInteractor() {
         (childFragmentManager.findFragmentById(R.id.multiAddDoc) as? AddMultiDocFragment)?.let { fragment ->
+            //setDocumentListObserver
             fragment.documentList.observe(this.viewLifecycleOwner, Observer {
                 TransitionManager.beginDelayedTransition(viewDataBinding.root as ViewGroup)
                 if (it.isNotEmpty())
@@ -102,6 +106,23 @@ class GetDocReferenceFragment : Fragment() {
                 else
                     layCheckProgress.visibility = View.GONE
             })
+            //setOnDocumentListButtonClickListener
+            fragment.btnDocumentList.setOnClickListener {
+                val location = (requireActivity() as MainActivity).checkInService?.checkedInLocation
+                findNavController().navigate(
+                    GetDocReferenceFragmentDirections
+                        .actionGetDocReferenceFragmentToDocListByLocationFragment(
+                            GetDocumentsOnLocationRequest(
+                                location?.locationId,
+                                location?.vTLocationId,
+                                location?.vTLocation,
+                                location?.uTPId,
+                                location?.vTUTPId,
+                                location?.locationType
+                            )
+                        )
+                )
+            }
         }
     }
 

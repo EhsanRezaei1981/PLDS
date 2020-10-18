@@ -1,100 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    app:cardCornerRadius="4dp"
-    app:cardElevation="4dp"
-    app:cardUseCompatPadding="true">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <data>
+
+        <variable
+            name="viewmodel"
+            type="rezaei.mohammad.plds.views.docListByLocation.DocListByLocationViewModel" />
+
+        <variable
+            name="document"
+            type="rezaei.mohammad.plds.data.model.response.DocumentOnLocationResponse.Data" />
+    </data>
+
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:cardUseCompatPadding="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
-        <TextView
-            android:id="@+id/txtDocNo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/colorAccent"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="DC 12563" />
+            <TextView
+                android:id="@+id/txtDocNo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@{document.documentReferenceNo}"
+                android:textColor="@color/colorAccent"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="DC 12563" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txtClient"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="16sp"
-            app:drawableStartCompat="@drawable/ic_round_person_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtDocNo"
-            tools:text="Client" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txtClient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:text="@{document.clientName}"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_round_person_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtDocNo"
+                tools:text="Client" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/txtProcess"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:drawableStart="@drawable/ic_baseline_flag_24"
-            android:textColor="?android:textColorPrimary"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@+id/txtClient"
-            app:layout_constraintStart_toEndOf="@id/txtClient"
-            app:layout_constraintTop_toTopOf="@+id/txtClient"
-            tools:text="Process" />
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txtProcess"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:drawableStart="@drawable/ic_baseline_flag_24"
+                android:text="@{document.processDescription}"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtClient"
+                tools:text="Process" />
 
-        <TextView
-            android:id="@+id/txtAction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:textColor="?android:textColorSecondary"
-            android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtProcess"
-            tools:text="Process" />
+            <TextView
+                android:id="@+id/txtAction"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@{document.actionDescription}"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtProcess"
+                tools:text="Process" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddReportIssue"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Report Issue"
-            android:textColor="@color/colorFail"
-            android:textAllCaps="false"
-            app:icon="@drawable/ic_round_add_list"
-            app:iconTint="@color/colorFail"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/txtAction" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddReportIssue"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="@{(view) -> viewmodel.addToReportIssue(document.documentReferenceNo)}"
+                android:text="Report Issue"
+                android:textAllCaps="false"
+                android:textColor="@color/colorFail"
+                app:icon="@drawable/ic_round_add_list"
+                app:iconTint="@color/colorFail"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtAction" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnAddToUpdateDoc"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:text="Document Progress"
-            android:textAllCaps="false"
-            android:textColor="@color/colorSuccessful"
-            app:iconTint="@color/colorSuccessful"
-            app:icon="@drawable/ic_round_add_list"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnAddReportIssue"
-            app:layout_constraintTop_toTopOf="@+id/btnAddReportIssue" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnAddToUpdateDoc"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:onClick="@{(view) -> viewmodel.addToDocumentProgress(document.documentReferenceNo)}"
+                android:text="Document Progress"
+                android:textAllCaps="false"
+                android:textColor="@color/colorSuccessful"
+                app:icon="@drawable/ic_round_add_list"
+                app:iconTint="@color/colorSuccessful"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnAddReportIssue"
+                app:layout_constraintTop_toTopOf="@+id/btnAddReportIssue" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.cardview.widget.CardView>
+    </androidx.cardview.widget.CardView>
+</layout>

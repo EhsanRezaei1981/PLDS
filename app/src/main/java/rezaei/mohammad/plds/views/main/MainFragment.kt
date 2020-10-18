@@ -53,7 +53,7 @@ class MainFragment : Fragment() {
         val action = if (isCheckedIn())
             MainFragmentDirections.actionMainActivityFragmentToGetDocReferenceFragment()
         else
-            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment2(
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
                 null,
                 chekinPartName = "UpdateDocumentProgress"
             )
@@ -64,7 +64,7 @@ class MainFragment : Fragment() {
         val action = if (isCheckedIn())
             MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
         else
-            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment2(
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
                 null,
                 chekinPartName = "ReportIssuePerDocument"
             )
@@ -75,7 +75,7 @@ class MainFragment : Fragment() {
         val action = if (isCheckedIn())
             MainFragmentDirections.actionMainActivityFragmentToReportIssueInGeneralFragment()
         else
-            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment2(
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
                 null,
                 chekinPartName = "ReportIssueInGeneral"
             )

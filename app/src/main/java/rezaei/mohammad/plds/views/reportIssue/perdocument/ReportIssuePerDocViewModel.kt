@@ -15,7 +15,7 @@ import rezaei.mohammad.plds.data.model.response.CommonIssuesResponse
 import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.util.Event
 
-class ReportIssueViewModel(
+class ReportIssuePerDocViewModel(
     private val localRepository: LocalRepository,
     private val remoteRepository: RemoteRepository
 ) : ViewModel() {

@@ -235,6 +235,17 @@ class RemoteRepository(
             networkError
         }
 
+    override suspend fun getDocumentListOnLocation(getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest): ApiResult<DocumentOnLocationResponse> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getDocumentListOnLocation(getDocumentsOnLocationRequest)
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            networkError
+        }
+
     private fun <T : BaseResponse<*>> parseResult(result: T?): ApiResult<T> {
         return try {
             if (result != null)

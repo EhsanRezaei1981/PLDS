@@ -5,28 +5,50 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.navArgs
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.databinding.FragmentDocListByLocationBinding
+import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.setActivityTitle
+import rezaei.mohammad.plds.util.snack
 
 class DocListByLocationFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = DocListByLocationFragment()
-    }
-
-    private lateinit var viewModel: DocListByLocationViewModel
+    private val viewModel: DocListByLocationViewModel by viewModel()
+    private lateinit var viewDataBinding: FragmentDocListByLocationBinding
+    private val args: DocListByLocationFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_doc_list_by_location, container, false)
+        viewDataBinding = FragmentDocListByLocationBinding.inflate(inflater, container, false)
+            .apply {
+                viewmodel = viewModel
+                lifecycleOwner = viewLifecycleOwner
+            }
+        return viewDataBinding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(DocListByLocationViewModel::class.java)
-        // TODO: Use the ViewModel
+        setActivityTitle(getString(R.string.doc_list_on_location))
+        setRecyclerView()
+        setEventObserver()
+        if (viewModel.documentList.value?.isEmpty() == true)
+            viewModel.getDocuments(args.location)
+    }
+
+    private fun setRecyclerView() {
+        val adapter = DocumentOnLocationAdapter(viewModel)
+        viewDataBinding.listLocations.adapter = adapter
+    }
+
+    private fun setEventObserver() {
+        viewModel.documentEvent.observe(viewLifecycleOwner, EventObserver {
+            view?.snack(it)
+        })
     }
 
 }

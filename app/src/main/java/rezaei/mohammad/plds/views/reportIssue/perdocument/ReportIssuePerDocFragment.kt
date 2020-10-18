@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
 import kotlinx.android.synthetic.main.fragment_report_issue.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -17,6 +18,7 @@ import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
+import rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.databinding.FragmentReportIssueBinding
@@ -27,9 +29,9 @@ import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 import rezaei.mohammad.plds.views.main.MainActivity
 
-class ReportIssueFragment : Fragment() {
+class ReportIssuePerDocFragment : Fragment() {
 
-    private val viewModel: ReportIssueViewModel by viewModel()
+    private val perDocViewModel: ReportIssuePerDocViewModel by viewModel()
     private lateinit var viewDataBinding: FragmentReportIssueBinding
     private lateinit var elementParser: ElementParser
 
@@ -39,7 +41,7 @@ class ReportIssueFragment : Fragment() {
     ): View? {
         viewDataBinding =
             FragmentReportIssueBinding.inflate(layoutInflater, container, false).apply {
-                viewmodel = viewModel
+                viewmodel = perDocViewModel
             }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         return viewDataBinding.root
@@ -67,7 +69,7 @@ class ReportIssueFragment : Fragment() {
                     "AddDoc"
                 )
                 .runOnCommit {
-                    setupDocumentListObserver()
+                    setupMultiDocFragmentInteractor()
                 }
                 .commit()
         else
@@ -80,7 +82,7 @@ class ReportIssueFragment : Fragment() {
                 ) {
                     super.onFragmentActivityCreated(fm, f, savedInstanceState)
                     if (f is AddMultiDocFragment)
-                        setupDocumentListObserver()
+                        setupMultiDocFragmentInteractor()
                 }
             }, false)
 
@@ -88,7 +90,7 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun setupCommonIssueList() {
-        viewModel.commonIssues.observe(this.viewLifecycleOwner, Observer {
+        perDocViewModel.commonIssues.observe(this.viewLifecycleOwner, Observer {
             (it as? ApiResult.Success)?.let { result ->
                 viewDataBinding.layoutContainer.removeAllViews()
                 if (result.response.data?.isNotEmpty() == true) {
@@ -127,13 +129,13 @@ class ReportIssueFragment : Fragment() {
     }
 
     private fun setupSubmitEvent() {
-        viewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
+        perDocViewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
             if (elementParser.isItemsValid()) {
                 MainScope().launch {
                     val formResult = FormResult.DocumentProgress().apply {
                         val documents = mutableListOf<DocumentsInfoItem>()
                         //ad document ref nos to response
-                        viewModel.getDocumentList().forEach {
+                        perDocViewModel.getDocumentList().forEach {
                             documents.add(DocumentsInfoItem(it.docRefNo))
                         }
                         this.documentsInfo = documents
@@ -141,33 +143,34 @@ class ReportIssueFragment : Fragment() {
                         this.responseType = "ReportIssue"
                     }
                     val result = elementParser.getResult(formResult)
-                    viewModel.submitForm(result as FormResult.DocumentProgress)
+                    perDocViewModel.submitForm(result as FormResult.DocumentProgress)
                 }
             }
         })
     }
 
     private fun setupSubmitFormEvent() {
-        viewModel.submitFormEvent.observe(this.viewLifecycleOwner, EventObserver {
+        perDocViewModel.submitFormEvent.observe(this.viewLifecycleOwner, EventObserver {
             (it as? ApiResult.Success)?.let { error ->
                 btnSubmit.snack(
                     error.response.errorHandling,
                     onDismissAction = { findNavController().popBackStack() })
-                viewModel.removeAllDocuments()
+                perDocViewModel.removeAllDocuments()
             }
             (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }
         })
     }
 
-    private fun setupDocumentListObserver() {
-        (childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)
-            .documentList.observe(this.viewLifecycleOwner, Observer {
+    private fun setupMultiDocFragmentInteractor() {
+        with((childFragmentManager.findFragmentById(R.id.multiAddDoc) as AddMultiDocFragment)) {
+            //setDocumentListObserver
+            documentList.observe(this.viewLifecycleOwner, Observer {
                 //if common issue list was empty, load it again on document changes
                 if (viewDataBinding.layoutContainer.childCount == 0 && it.isNotEmpty())
-                    viewModel.getCommonIssues()
+                    perDocViewModel.getCommonIssues()
                 else if (it.isEmpty()) {
                     viewDataBinding.layoutContainer.removeAllViews()
-                    viewModel.dataExist.value = false
+                    perDocViewModel.dataExist.value = false
                 }
                 //show note if there is multiple doc in list
                 with((requireActivity() as MainActivity)) {
@@ -177,5 +180,24 @@ class ReportIssueFragment : Fragment() {
                         hideNote()
                 }
             })
+
+            //setOnDocumentListButtonClickListener
+            this.btnDocumentList.setOnClickListener {
+                val location = (requireActivity() as MainActivity).checkInService?.checkedInLocation
+                findNavController().navigate(
+                    ReportIssuePerDocFragmentDirections
+                        .actionReportIssuePerDocFragmentToDocListByLocationFragment(
+                            GetDocumentsOnLocationRequest(
+                                location?.locationId,
+                                location?.vTLocationId,
+                                location?.vTLocation,
+                                location?.uTPId,
+                                location?.vTUTPId,
+                                location?.locationType
+                            )
+                        )
+                )
+            }
+        }
     }
 }

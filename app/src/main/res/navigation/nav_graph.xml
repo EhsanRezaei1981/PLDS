@@ -16,6 +16,9 @@
         <action
             android:id="@+id/action_getDocReferenceFragment_to_qrReaderFragment"
             app:destination="@id/qrReaderFragment" />
+        <action
+            android:id="@+id/action_getDocReferenceFragment_to_docListByLocationFragment"
+            app:destination="@id/docListByLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/docProgressFragment"
@@ -39,28 +42,28 @@
             app:destination="@id/getDocReferenceFragment" />
         <action
             android:id="@+id/action_mainActivityFragment_to_reportIssueFragment"
-            app:destination="@id/reportIssueFragment" />
+            app:destination="@id/reportIssuePerDocFragment" />
         <action
             android:id="@+id/action_mainActivityFragment_to_manageDocumentFragment"
             app:destination="@id/manageDocumentFragment" />
         <action
             android:id="@+id/action_mainActivityFragment_to_reportIssueInGeneralFragment"
-            app:destination="@id/reportIssueInGeneralFragment" />
+            app:destination="@id/commonActionFragment" />
         <action
-            android:id="@+id/action_mainActivityFragment_to_checkInFragment2"
+            android:id="@+id/action_mainActivityFragment_to_checkInFragment"
             app:destination="@id/checkInFragment" />
     </fragment>
     <fragment
-        android:id="@+id/reportIssueFragment"
-        android:name="rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragment"
+        android:id="@+id/reportIssuePerDocFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocFragment"
         android:label="report_issue_fragment"
         tools:layout="@layout/fragment_report_issue">
         <action
             android:id="@+id/action_reportIssueFragment_to_qrReaderFragment"
             app:destination="@id/qrReaderFragment" />
         <action
-            android:id="@+id/action_reportIssueFragment_to_qrReaderFragment2"
-            app:destination="@id/qrReaderFragment" />
+            android:id="@+id/action_reportIssuePerDocFragment_to_docListByLocationFragment"
+            app:destination="@id/docListByLocationFragment" />
     </fragment>
     <fragment
         android:id="@+id/qrReaderFragment"
@@ -157,8 +160,8 @@
             app:nullable="true" />
     </dialog>
     <fragment
-        android:id="@+id/reportIssueInGeneralFragment"
-        android:name="rezaei.mohammad.plds.views.reportIssue.ingeneral.ReportIssueInGeneralFragment"
+        android:id="@+id/commonActionFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.ingeneral.CommonActionFragment"
         android:label="ReportIssueInGeneralFragment"
         tools:layout="@layout/fragment_report_issue_in_general" />
     <fragment
@@ -175,7 +178,7 @@
             app:argType="string" />
         <action
             android:id="@+id/action_checkInFragment_to_reportIssueFragment"
-            app:destination="@id/reportIssueFragment"
+            app:destination="@id/reportIssuePerDocFragment"
             app:popUpTo="@+id/checkInFragment"
             app:popUpToInclusive="true" />
         <action
@@ -185,7 +188,7 @@
             app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_checkInFragment_to_reportIssueInGeneralFragment"
-            app:destination="@id/reportIssueInGeneralFragment"
+            app:destination="@id/commonActionFragment"
             app:popUpTo="@+id/checkInFragment"
             app:popUpToInclusive="true" />
         <action
@@ -207,5 +210,14 @@
             app:destination="@id/checkInFragment"
             app:popUpTo="@id/manualFunctionalityFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/docListByLocationFragment"
+        android:name="rezaei.mohammad.plds.views.docListByLocation.DocListByLocationFragment"
+        android:label="DocListByLocationFragment"
+        tools:layout="@layout/fragment_doc_list_by_location">
+        <argument
+            android:name="location"
+            app:argType="rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest" />
     </fragment>
 </navigation>

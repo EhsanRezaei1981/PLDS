@@ -15,12 +15,14 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.CheckInRequest
 import rezaei.mohammad.plds.data.model.request.Gps
 import rezaei.mohammad.plds.data.model.response.CheckInResponse
 import rezaei.mohammad.plds.databinding.FragmentCheckInBinding
 import rezaei.mohammad.plds.service.CheckInService
 import rezaei.mohammad.plds.util.LocationHelper
+import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.main.MainActivity
 
@@ -54,6 +56,7 @@ class CheckInFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        setActivityTitle(getString(R.string.check_in))
         setRecyclerView()
         updateLocation()
         if (viewModel.locationList.value?.isNotEmpty() != false)

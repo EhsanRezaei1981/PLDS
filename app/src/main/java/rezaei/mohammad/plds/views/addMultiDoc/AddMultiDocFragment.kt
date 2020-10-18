@@ -23,8 +23,8 @@ import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
 import rezaei.mohammad.plds.views.main.GlobalViewModel
-import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragment
-import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssueFragmentDirections
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocFragment
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocFragmentDirections
 
 class AddMultiDocFragment : Fragment() {
 
@@ -71,12 +71,13 @@ class AddMultiDocFragment : Fragment() {
         setupItemRemover()
         duplicateItemMessage()
         setupRecyclerScroll()
+        viewModel.loadDocumentList()
     }
 
     private fun navigateToQrScanner() {
         val action =
-            if (parentFragment is ReportIssueFragment)
-                ReportIssueFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
+            if (parentFragment is ReportIssuePerDocFragment)
+                ReportIssuePerDocFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
             else
                 GetDocReferenceFragmentDirections.actionGetDocReferenceFragmentToQrReaderFragment()
         findNavController().tryNavigate(action)
