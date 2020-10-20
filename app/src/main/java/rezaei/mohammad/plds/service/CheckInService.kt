@@ -77,7 +77,7 @@ class CheckInService : Service() {
 
     fun checkIn(checkInRequest: CheckInRequest) {
         GlobalScope.launch(Dispatchers.Main) {
-            when (val response = remoteRepository.checkIn(modifyDataForTest(checkInRequest))) {
+            when (val response = remoteRepository.checkIn(checkInRequest)) {
                 is ApiResult.Success -> {
                     checkForLocation(checkInRequest.checkInPart, response.response.data!!)
                     viewCallbacks?.onError(response.response.errorHandling)

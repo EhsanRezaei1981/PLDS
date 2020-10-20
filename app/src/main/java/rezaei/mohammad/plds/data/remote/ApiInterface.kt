@@ -64,5 +64,11 @@ interface ApiInterface {
     @POST("Tracking/RetrieveDocumentsByLocation")
     suspend fun getDocumentListOnLocation(@Body getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest): DocumentOnLocationResponse?
 
+    @POST("Tracking/CommonActionRetrieve")
+    suspend fun getCommonActionReasons(@Body commonActionReasonsRequest: CommonActionReasonsRequest): CommonActionReasonsResponse?
+
+    @POST("Tracking/CommonActionHistoryCreate")
+    suspend fun submitCommonActionForm(@Body commonActionResult: FormResult.CommonAction): BaseResponse<Unit>?
+
 
 }

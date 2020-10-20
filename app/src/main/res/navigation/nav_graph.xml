@@ -93,6 +93,9 @@
             app:launchSingleTop="true"
             app:popUpTo="@+id/mainActivityFragment"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_submitFormFragment_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
     </fragment>
     <fragment
         tools:layout="@layout/fragment_manage_document"
@@ -153,7 +156,8 @@
         android:label="ImageViewerFragment">
         <argument
             android:name="getFileRequest"
-            app:argType="rezaei.mohammad.plds.data.model.request.GetFileRequest" />
+            app:argType="rezaei.mohammad.plds.data.model.request.GetFileRequest"
+            app:nullable="true" />
         <argument
             android:name="base64"
             app:argType="string"
@@ -161,9 +165,13 @@
     </dialog>
     <fragment
         android:id="@+id/commonActionFragment"
-        android:name="rezaei.mohammad.plds.views.reportIssue.ingeneral.CommonActionFragment"
+        android:name="rezaei.mohammad.plds.views.reportIssue.commonaction.CommonActionFragment"
         android:label="ReportIssueInGeneralFragment"
-        tools:layout="@layout/fragment_report_issue_in_general" />
+        tools:layout="@layout/fragment_common_action">
+        <action
+            android:id="@+id/action_commonActionFragment_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
+    </fragment>
     <fragment
         android:id="@+id/checkInFragment"
         android:name="rezaei.mohammad.plds.views.checkin.CheckInFragment"

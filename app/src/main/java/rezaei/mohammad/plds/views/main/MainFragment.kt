@@ -10,9 +10,7 @@ import kotlinx.android.synthetic.main.fragment_main.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.util.setActivityTitle
-import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.util.tryNavigate
 
 class MainFragment : Fragment() {
@@ -34,8 +32,7 @@ class MainFragment : Fragment() {
         }
 
         btnReportIssueGeneral.setOnClickListener {
-//            navigateToReportIssueInGeneral()
-            it.snack(ErrorHandling(errorMessage = "Coming soon...", isSuccessful = true))
+            navigateToCommonAction()
         }
 
         btnReportIssueDocument.setOnClickListener {
@@ -71,7 +68,7 @@ class MainFragment : Fragment() {
         findNavController().tryNavigate(action)
     }
 
-    private fun navigateToReportIssueInGeneral() {
+    private fun navigateToCommonAction() {
         val action = if (isCheckedIn())
             MainFragmentDirections.actionMainActivityFragmentToReportIssueInGeneralFragment()
         else

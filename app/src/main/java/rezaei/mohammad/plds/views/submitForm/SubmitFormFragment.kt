@@ -103,6 +103,13 @@ class SubmitFormFragment : Fragment() {
                 }
 
                 override fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?) {
+                    findNavController().tryNavigate(
+                        SubmitFormFragmentDirections
+                            .actionSubmitFormFragmentToImageViewerFragment(
+                                base64 = base64,
+                                getFileRequest = null
+                            )
+                    )
                 }
             })
     }

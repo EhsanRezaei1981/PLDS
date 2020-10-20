@@ -32,7 +32,7 @@ import rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHisto
 import rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentViewModel
 import rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerViewModel
 import rezaei.mohammad.plds.views.manualfunctionality.ManualFunctionalityViewModel
-import rezaei.mohammad.plds.views.reportIssue.ingeneral.CommonActionViewModel
+import rezaei.mohammad.plds.views.reportIssue.commonaction.CommonActionViewModel
 import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 import java.util.concurrent.TimeUnit
@@ -120,7 +120,7 @@ object Module {
             )
         }
 
-        viewModel { CommonActionViewModel() }
+        viewModel { CommonActionViewModel(get() as RemoteRepository) }
 
         viewModel { DocumentStatusHistoryViewModel(get()) }
 

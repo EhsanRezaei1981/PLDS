@@ -246,6 +246,28 @@ class RemoteRepository(
             networkError
         }
 
+    override suspend fun getCommonActionReasons(commonActionReasonsRequest: CommonActionReasonsRequest): ApiResult<CommonActionReasonsResponse> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getCommonActionReasons(commonActionReasonsRequest)
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            networkError
+        }
+
+    override suspend fun submitCommonActionForm(commonActionResult: FormResult.CommonAction): ApiResult<BaseResponse<Unit>> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.submitCommonActionForm(commonActionResult)
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            networkError
+        }
+
     private fun <T : BaseResponse<*>> parseResult(result: T?): ApiResult<T> {
         return try {
             if (result != null)

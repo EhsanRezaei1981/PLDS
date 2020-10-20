@@ -46,8 +46,8 @@ class ImageViewerFragment : DialogFragment() {
         setImageLoaderHandler()
         if (args.base64 != null)
             loadImage(args.base64)
-        else
-            viewModel.loadImage(args.getFileRequest)
+        else if (args.getFileRequest != null)
+            viewModel.loadImage(args.getFileRequest!!)
     }
 
     private fun setImageLoaderHandler() {

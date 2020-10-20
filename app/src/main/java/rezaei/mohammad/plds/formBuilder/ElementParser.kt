@@ -77,8 +77,8 @@ class ElementParser(
 
                 }
         }
-        if (formResult is FormResult.DocumentProgress)
-            when (formResult.responseType) {
+        when (formResult) {
+            is FormResult.DocumentProgress -> when (formResult.responseType) {
                 "Unsuccessful" -> {
                     formResult.unsuccessful = Result(result)
                 }
@@ -92,8 +92,16 @@ class ElementParser(
                     }
                 }
             }
-        else
-            (formResult as? FormResult.RespondedFields)?.elements = result
+            is FormResult.RespondedFields -> (formResult as? FormResult.RespondedFields)?.elements =
+                result
+            is FormResult.CommonAction -> {
+                formResult.date = (result[0] as ElementResult.StringResult).reply
+                formResult.commonActionId = (result[1] as ElementResult.ListResult).listItem?.id
+                formResult.chosenFile = (result[2] as ElementResult.FileResult).chosenFile
+                formResult.comment = (result[3] as ElementResult.StringResult).reply
+            }
+        }
+
         return formResult
     }
 

@@ -27,6 +27,23 @@ sealed class FormResult {
         @field:SerializedName("VT")
         var vT: String? = null
     ) : FormResult()
+
+    data class CommonAction(
+        @field:SerializedName("LocationType")
+        var locationType: String? = null,
+        @field:SerializedName("LocationId")
+        var locationId: Int? = null,
+        @field:SerializedName("Date")
+        var date: String? = null,
+        @field:SerializedName("CommonActionId")
+        var commonActionId: Int? = null,
+        @field:SerializedName("VTCommonActionId")
+        var vTCommonActionId: String? = null,
+        @field:SerializedName("Comment")
+        var comment: String? = null,
+        @field:SerializedName("File")
+        var chosenFile: ChosenFile? = null
+    ) : FormResult()
 }
 
 data class Result(
@@ -41,10 +58,10 @@ data class Gps(
     var Y: Double? = null,
 
     @field:SerializedName("X")
-    var X: Double? = null,
+    var X: Double? = null
 
-    @field:SerializedName("RadiusInMetters")
-    var radius: Int? = null
+/*    @field:SerializedName("RadiusInMetters")
+    var radius: Int? = null*/
 )
 
 data class DocumentsInfoItem(
