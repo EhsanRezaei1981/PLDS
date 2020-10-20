@@ -36,7 +36,7 @@ class DocListByLocationFragment : Fragment() {
         setActivityTitle(getString(R.string.doc_list_on_location))
         setRecyclerView()
         setEventObserver()
-        if (viewModel.documentList.value?.isEmpty() == true)
+        if (viewModel.documentList.value?.isEmpty() != false)
             viewModel.getDocuments(args.location)
     }
 

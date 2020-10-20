@@ -26,8 +26,8 @@ android {
         applicationId "rezaei.mohammad.plds"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 13
-        versionName "1.2.3"
+        versionCode 14
+        versionName "1.2.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
@@ -53,7 +53,7 @@ android {
                 mappingFileUploadEnabled false
             }
             firebaseAppDistribution {
-                releaseNotes="Common Action now available"
+                releaseNotes="Fix location list bug"
                 testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
             }
         }
