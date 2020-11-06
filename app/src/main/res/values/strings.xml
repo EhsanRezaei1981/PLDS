@@ -71,7 +71,7 @@
     <string name="check_out">Check Out</string>
     <string name="looking_for_gps">Looking For Location…</string>
     <string name="doc_list_on_location">List Of Documents</string>
-    <string name="reset_check_in">Solve Ckeck In Problem</string>
+    <string name="reset_check_in">Solve Check-In Problem</string>
     <string name="reset_check_in_title">Reset Check In/Out Status</string>
     <string name="reset_check_in_message">If You Have Issue With Check In Or Check Out, Press Reset Button.\n\nNote: By Doing This Action Your Currently Check In Status Will Be Lose!</string>
     <string name="reset">Reset</string>

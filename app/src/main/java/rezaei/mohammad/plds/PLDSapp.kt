@@ -14,16 +14,16 @@ class PLDSapp : MultiDexApplication() {
 
     companion object {
         const val VERSION_NAME = BuildConfig.VERSION_NAME
-        const val APPLICATION_ID = BuildConfig.APPLICATION_ID
+
         val userAgent by lazy {
             String.format(
                 Locale.US,
-                " (Android %s %s; %s; %s %s;)",
-                VERSION_NAME,
-                Build.VERSION.RELEASE,
-                Build.MODEL,
+                "(Device %s %s; Android %s; App %s %s)",
                 Build.BRAND,
-                Build.DEVICE
+                Build.MODEL,
+                Build.VERSION.RELEASE,
+                BuildConfig.VERSION_NAME,
+                BuildConfig.VERSION_CODE
             )
         }
     }
