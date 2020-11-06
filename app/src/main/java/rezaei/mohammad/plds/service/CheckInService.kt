@@ -8,9 +8,8 @@ import android.content.IntentFilter
 import android.location.Location
 import android.os.Binder
 import android.os.IBinder
+import android.os.PowerManager
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -40,14 +39,14 @@ class CheckInService : Service() {
 
     var checkedInLocation: CheckInResponse.Data? = null
     var isCheckedIn: Boolean = false
-    private val location = MutableLiveData<Location?>()
 
     private val localRepository: LocalRepository by inject<rezaei.mohammad.plds.data.local.LocalRepository>()
     private val remoteRepository: RemoteRepository by inject<rezaei.mohammad.plds.data.remote.RemoteRepository>()
-    private lateinit var locationHelper: LocationHelper
+    private var locationHelper: LocationHelper? = null
     private val binder = CheckInBinder()
     private var notification: NotificationBuilder? = null
     var viewCallbacks: CheckInViewCallbacks? = null
+    private var wakeLock: PowerManager.WakeLock? = null
 
     override fun onBind(intent: Intent): IBinder {
         return binder
@@ -61,6 +60,11 @@ class CheckInService : Service() {
         return START_NOT_STICKY
     }
 
+    override fun onCreate() {
+        super.onCreate()
+        registerReceiver(broadcastReceiver, IntentFilter("android.location.PROVIDERS_CHANGED"))
+    }
+
     private fun resumeCheckIn() {
         GlobalScope.launch(Dispatchers.Main) {
             val checkInResponse = localRepository.getCheckInResponse()
@@ -70,16 +74,12 @@ class CheckInService : Service() {
         }
     }
 
-    override fun onCreate() {
-        super.onCreate()
-        locationHelper = LocationHelper(this, null, true)
-    }
 
     fun checkIn(checkInRequest: CheckInRequest) {
         GlobalScope.launch(Dispatchers.Main) {
-            when (val response = remoteRepository.checkIn(checkInRequest)) {
+            when (val response = remoteRepository.checkIn(modifyDataForTest(checkInRequest))) {
                 is ApiResult.Success -> {
-                    checkForLocation(checkInRequest.checkInPart, response.response.data!!)
+                    checkForLocation(response.response.data!!)
                     viewCallbacks?.onError(response.response.errorHandling)
                 }
                 is ApiResult.Error -> {
@@ -94,64 +94,50 @@ class CheckInService : Service() {
 
     private fun modifyDataForTest(checkInRequest: CheckInRequest): CheckInRequest {
         return checkInRequest.also {
-            //            it.gPS?.radius = 2450 // 1 location
-            /*it.gPS?.radius = 500000
+            /*it.gPS?.radius = 2450 // 1 location
+//            it.gPS?.radius = 50000
             it.gPS?.X = 27.9736844
             it.gPS?.Y = -26.0821684*/
         }
 
     }
 
-    private fun checkForLocation(checkInPart: String?, response: CheckInResponse.Data) {
+    private fun checkForLocation(response: CheckInResponse.Data) {
         when {
             response.locationId != null -> {// location selected
                 setCheckedIn(response)
             }
             response.locations?.isNotEmpty() == true -> {// need to select location
-                if (response.locations.size > 1)//user should select one location
+                if (response.locations.isNotEmpty())//user should select one location
                     viewCallbacks?.showLocationList(response.locations)
-                else // check in with this location
-                    with(response.locations[0]) {
-                        checkIn(
-                            CheckInRequest(
-                                checkInPart,
-                                locationId,
-                                Gps(location.value?.longitude, location.value?.longitude),
-                                locationType,
-                                locationName
-                            )
-                        )
-                    }
             }
         }
     }
 
-    private fun startTracking(trackingInterval: Int) {
-        GlobalScope.launch(Dispatchers.Main) {
-            delay(trackingInterval.toLong())
-            if (isCheckedIn) {
-                if (location.value != null && LocationHelper.isGpsEnable(this@CheckInService)) {
+    private fun sendLocation(location: Location) {
+        if (isCheckedIn) {
+            if (LocationHelper.isGpsEnable(this@CheckInService)) {
+                GlobalScope.launch(Dispatchers.IO) {
                     val response = remoteRepository.userTracking(
                         UserTrackRequest(
                             checkedInLocation?.uTPId,
                             checkedInLocation?.vTUTPId,
-                            Gps(location.value!!.latitude, location.value!!.longitude)
+                            Gps(location.latitude, location.longitude)
                         )
                     )
                     (response as? ApiResult.Error)?.let {
                         viewCallbacks?.onError(response.errorHandling)
                     }
-                } else {
-                    viewCallbacks?.onError(
-                        ErrorHandling(
-                            true,
-                            errorMessage = getString(R.string.gps_not_available),
-                            isSuccessful = false
-                        )
-                    )
-                    locationHelper.start()
                 }
-                startTracking(trackingInterval)
+            } else {
+                viewCallbacks?.onError(
+                    ErrorHandling(
+                        true,
+                        errorMessage = getString(R.string.gps_not_available),
+                        isSuccessful = false
+                    )
+                )
+                locationHelper?.startTracking()
             }
         }
     }
@@ -160,55 +146,70 @@ class CheckInService : Service() {
         checkedInLocation = location
         isCheckedIn = true
         viewCallbacks?.onCheckedIn(location)
-        startGetLocation()
-        location.trackingConfig?.trackingInterval?.let {
-            startTracking(it)
+        GlobalScope.launch(Dispatchers.Main) {
+            delay(location.trackingConfig?.trackingInterval ?: 0)
+            startGetLocation(location.trackingConfig?.trackingInterval)
         }
         saveState(location)
         showNotification(location)
+        initWakeLock()
+    }
+
+    private fun initWakeLock() {
+        val mgr = this.applicationContext.getSystemService(Context.POWER_SERVICE) as PowerManager
+        wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "myAppName:MyWakeLock")
+        wakeLock!!.acquire()
     }
 
     fun checkOut() {
-        if (!LocationHelper.isGpsEnable(this)) {
-            viewCallbacks?.onError(
-                ErrorHandling(
-                    true,
-                    errorMessage = getString(R.string.gps_not_available),
-                    isSuccessful = false
+        locationHelper?.getLastLocation { location ->
+            if (location == null || !LocationHelper.isGpsEnable(this)) {
+                viewCallbacks?.onError(
+                    ErrorHandling(
+                        true,
+                        errorMessage = getString(R.string.gps_not_available),
+                        isSuccessful = false
+                    )
                 )
-            )
-            return
-        }
-        GlobalScope.launch(Dispatchers.Main) {
-            notification?.setCheckingOutStatus()
-            val response = remoteRepository.checkOut(
-                CheckOutRequest(
-                    checkedInLocation?.locationId,
-                    checkedInLocation?.checkInPart,
-                    checkedInLocation?.vTLocation,
-                    checkedInLocation?.uTPId,
-                    checkedInLocation?.vTUTPId,
-                    Gps(location.value?.latitude, location.value?.longitude),
-                    checkedInLocation?.locationType,
-                    checkedInLocation?.locationName
+                notification?.setCheckOutFailStatus(getString(R.string.gps_not_available))
+                locationHelper?.startTracking()
+                return@getLastLocation
+            }
+
+            GlobalScope.launch(Dispatchers.Main) {
+                notification?.setCheckingOutStatus()
+                val response = remoteRepository.checkOut(
+                    CheckOutRequest(
+                        checkedInLocation?.locationId,
+                        checkedInLocation?.checkInPart,
+                        checkedInLocation?.vTLocation,
+                        checkedInLocation?.uTPId,
+                        checkedInLocation?.vTUTPId,
+                        Gps(location.latitude, location.longitude),
+                        checkedInLocation?.locationType,
+                        checkedInLocation?.locationName
+                    )
                 )
-            )
-            when (response) {
-                is ApiResult.Success -> {
-                    viewCallbacks?.onError(response.response.errorHandling)
-                    setCheckedOut()
+                when (response) {
+                    is ApiResult.Success -> {
+                        viewCallbacks?.onError(response.response.errorHandling)
+                        setCheckedOut()
+                    }
+                    is ApiResult.Error -> {
+                        viewCallbacks?.onError(response.errorHandling)
+                        //restore notification status to checked in
+                        notification?.setCheckOutFailStatus(response.errorHandling?.errorMessage)
+                    }
                 }
-                is ApiResult.Error -> viewCallbacks?.onError(response.errorHandling)
             }
         }
     }
 
-    private fun setCheckedOut() {
+    fun setCheckedOut() {
         isCheckedIn = false
         viewCallbacks?.onCheckedOut()
         checkedInLocation = null
-        locationHelper.liveLocation.removeObserver(locationObserver)
-        locationHelper.stop()
+        locationHelper?.stop()
         deleteState()
         stopForeground(true)
     }
@@ -225,25 +226,20 @@ class CheckInService : Service() {
         }
     }
 
-    private fun startGetLocation() {
-        registerReceiver(broadcastReceiver, IntentFilter("android.location.PROVIDERS_CHANGED"))
+    private fun startGetLocation(trackingInterval: Long?) {
+        locationHelper = LocationHelper(this, trackingInterval) {
+            if (isCheckedIn)
+                sendLocation(it)
+        }
+        trackingInterval?.let { locationHelper!!.startTracking() }
         checkGpsStatus()
-        locationHelper.start()
-        locationHelper.liveLocation.observeForever(locationObserver)
-    }
-
-    private val locationObserver = Observer<Location?> {
-        location.postValue(it)
     }
 
     private fun checkGpsStatus() {
         val isGpsEnable = LocationHelper.isGpsEnable(this)
 
-        if (!isGpsEnable)
-            location.postValue(null)
-
         if (isGpsEnable && isCheckedIn)
-            locationHelper.start()
+            locationHelper?.startTracking()
     }
 
     private fun showNotification(location: CheckInResponse.Data?) {
@@ -259,6 +255,7 @@ class CheckInService : Service() {
         stopForeground(true)
         unregisterReceiver(broadcastReceiver)
         Log.d(this::class.java.simpleName, "destroyed")
+        wakeLock?.release()
         super.onDestroy()
     }
 

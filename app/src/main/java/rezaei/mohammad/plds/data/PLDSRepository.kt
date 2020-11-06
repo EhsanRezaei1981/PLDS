@@ -27,6 +27,7 @@ interface RemoteRepository {
     suspend fun getDocumentListOnLocation(getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest): ApiResult<DocumentOnLocationResponse>
     suspend fun getCommonActionReasons(commonActionReasonsRequest: CommonActionReasonsRequest): ApiResult<CommonActionReasonsResponse>
     suspend fun submitCommonActionForm(commonActionResult: FormResult.CommonAction): ApiResult<BaseResponse<Unit>>
+    suspend fun resetCheckInOutOperation(resetCheckInRequest: ResetCheckInRequest): ApiResult<BaseResponse<Unit>>
 }
 
 interface LocalRepository {

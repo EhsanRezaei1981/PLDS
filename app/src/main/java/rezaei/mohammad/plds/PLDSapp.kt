@@ -18,8 +18,7 @@ class PLDSapp : MultiDexApplication() {
         val userAgent by lazy {
             String.format(
                 Locale.US,
-                "%s/%s (Android %s; %s; %s %s;)",
-                APPLICATION_ID,
+                " (Android %s %s; %s; %s %s;)",
                 VERSION_NAME,
                 Build.VERSION.RELEASE,
                 Build.MODEL,

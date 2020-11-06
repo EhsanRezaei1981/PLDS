@@ -88,7 +88,7 @@ object Module {
 
         viewModel { LoginViewModel(get(), get(), get()) }
 
-        viewModel { GlobalViewModel(get(), get()) }
+        viewModel { GlobalViewModel(get(), get(), get()) }
 
         viewModel { GetDocReferenceViewModel(get(), get()) }
 

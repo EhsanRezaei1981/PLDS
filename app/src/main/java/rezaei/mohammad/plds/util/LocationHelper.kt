@@ -1,112 +1,82 @@
 package rezaei.mohammad.plds.util
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.location.Location
-import android.os.Bundle
+import android.os.Looper
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.yayandroid.locationmanager.LocationManager
-import com.yayandroid.locationmanager.configuration.DefaultProviderConfiguration
-import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfiguration
-import com.yayandroid.locationmanager.configuration.LocationConfiguration
-import com.yayandroid.locationmanager.configuration.PermissionConfiguration
-import com.yayandroid.locationmanager.listener.LocationListener
+import com.google.android.gms.location.*
+
 
 class LocationHelper(
     context: Context,
-    activity: Activity?,
-    trackMode: Boolean = false
+    trackingInterval: Long? = null,
+    private val onLocationUpdated: (Location: Location) -> Unit
 ) {
 
-    private var locationManager: LocationManager? = null
-    private val _liveLocation = MutableLiveData<Location>()
-    val liveLocation: LiveData<Location?> = _liveLocation
+    private val TAG: String = LocationHelper::class.java.simpleName
+    private var mLocationRequest: LocationRequest
+    private var mFusedLocationClient: FusedLocationProviderClient
+    private var mLocationCallback: LocationCallback? = null
 
     init {
-        val awesomeConfiguration = LocationConfiguration.Builder()
-            .keepTracking(trackMode)
-            .askForPermission(
-                PermissionConfiguration.Builder()
-                    .rationaleMessage("Please accept location permission.")
-                    .requiredPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
-                    .build()
-            )
-            .useGooglePlayServices(
-                GooglePlayServicesConfiguration.Builder()
-                    .fallbackToDefault(true)
-                    .askForGooglePlayServices(false)
-                    .askForSettingsApi(true)
-                    .failOnConnectionSuspended(true)
-                    .failOnSettingsApiSuspended(false)
-                    .ignoreLastKnowLocation(false)
-                    .build()
-            )
-            .useDefaultProviders(
-                DefaultProviderConfiguration.Builder()
-                    .build()
-            )
-            .build()
-        locationManager = LocationManager.Builder(context.applicationContext)
-            .activity(activity)
-            .configuration(awesomeConfiguration)
-            .notify(object : LocationListener {
-                override fun onLocationChanged(location: Location?) {
-                    _liveLocation.postValue(location)
-                    Log.d(
-                        this@LocationHelper::class.java.simpleName,
-                        "Location changed: ${location.toString()}"
-                    )
-                }
+        mLocationRequest = LocationRequest()
+        mLocationRequest.interval = trackingInterval?.div(2) ?: 0
+        mLocationRequest.fastestInterval = trackingInterval ?: 0
+        mLocationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
-                override fun onPermissionGranted(alreadyHadPermission: Boolean) {
-                }
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
 
-                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
-                    Log.d(
-                        this@LocationHelper::class.java.simpleName,
-                        "Status changed: $provider $status "
-                    )
-                }
-
-                override fun onProviderEnabled(provider: String?) {
-                    Log.d(
-                        this@LocationHelper::class.java.simpleName,
-                        "provider enabled: $provider "
-                    )
-                }
-
-                override fun onProviderDisabled(provider: String?) {
-                    Log.d(
-                        this@LocationHelper::class.java.simpleName,
-                        "provider disabled $provider "
-                    )
-                }
-
-                override fun onProcessTypeChanged(processType: Int) {
-                    Log.d(
-                        this@LocationHelper::class.java.simpleName,
-                        "processChanged: $processType "
-                    )
-                }
-
-                override fun onLocationFailed(type: Int) {
-                    _liveLocation.postValue(null)
-                    Log.d(this@LocationHelper::class.java.simpleName, "Location failed: $type ")
-                }
-            })
-            .build()
+        mLocationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                onLocationUpdated.invoke(locationResult.lastLocation)
+            }
+        }
     }
 
-    fun start() {
-        if (locationManager?.isAnyDialogShowing == false)
-            locationManager?.get()
+    fun startTracking() {
+        requestLocationUpdates()
     }
 
     fun stop() {
-        locationManager?.cancel()
+        removeLocationUpdates()
+    }
+
+    private fun requestLocationUpdates() {
+        Log.i(TAG, "Requesting location updates")
+        try {
+            mFusedLocationClient.requestLocationUpdates(
+                mLocationRequest,
+                mLocationCallback, Looper.myLooper()
+            )
+        } catch (unlikely: SecurityException) {
+            Log.e(TAG, "Lost location permission. Could not request updates. $unlikely")
+        }
+    }
+
+    private fun removeLocationUpdates() {
+        Log.i(TAG, "Removing location updates")
+        try {
+            mFusedLocationClient.removeLocationUpdates(mLocationCallback)
+        } catch (unlikely: SecurityException) {
+            Log.e(TAG, "Lost location permission. Could not remove updates. $unlikely")
+        }
+    }
+
+    fun getLastLocation(lastLocation: (Location: Location?) -> Unit) {
+        try {
+            mFusedLocationClient.lastLocation
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful && task.result != null) {
+                        lastLocation.invoke(task.result!!)
+                    } else {
+                        lastLocation.invoke(null)
+                        Log.w(TAG, "Failed to get location.")
+                    }
+                }
+        } catch (unlikely: SecurityException) {
+            Log.e(TAG, "Lost location permission.$unlikely")
+        }
     }
 
     companion object {

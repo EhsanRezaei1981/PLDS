@@ -1,15 +1,22 @@
 package rezaei.mohammad.plds.views.checkin
 
+import android.Manifest
 import android.content.Context
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.yayandroid.locationmanager.LocationManager
+import com.yayandroid.locationmanager.configuration.DefaultProviderConfiguration
+import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfiguration
+import com.yayandroid.locationmanager.configuration.LocationConfiguration
+import com.yayandroid.locationmanager.configuration.PermissionConfiguration
+import com.yayandroid.locationmanager.listener.LocationListener
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -32,7 +39,6 @@ class CheckInFragment : Fragment() {
     private lateinit var viewDataBinding: FragmentCheckInBinding
     private val viewModel: CheckInViewModel by viewModel()
     private val args: CheckInFragmentArgs by navArgs()
-    private lateinit var locationHelper: LocationHelper
     private var gps: Gps? = null
     var checkInService: CheckInService? = null
 
@@ -58,14 +64,18 @@ class CheckInFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         setActivityTitle(getString(R.string.check_in))
         setRecyclerView()
-        updateLocation()
+        initGps()
         if (viewModel.locationList.value?.isNotEmpty() != false)
             checkIn(args.location)
     }
 
     private fun setRecyclerView() {
-        val adapter = LocationAdapter {
-            checkIn(it)
+        val adapter = LocationAdapter { location ->
+            if (location == null) {
+                onNoLocationFound()
+                return@LocationAdapter
+            }
+            checkIn(location)
             viewDataBinding.listLocations.isGone = true
             viewModel._locationList.value = null
         }
@@ -82,17 +92,59 @@ class CheckInFragment : Fragment() {
         findNavController().tryNavigate(action)
     }
 
-    private fun updateLocation() {
-        locationHelper = LocationHelper(requireContext(), requireActivity())
-            .apply {
-                start()
-                liveLocation.observe(viewLifecycleOwner) { location ->
-                    if (location == null)
-                        return@observe
-                    gps = Gps(location.latitude, location.longitude)
+    private fun initGps() {
+        val awesomeConfiguration = LocationConfiguration.Builder()
+            .keepTracking(false)
+            .askForPermission(
+                PermissionConfiguration.Builder()
+                    .rationaleMessage(getString(R.string.accept_loc_permission))
+                    .requiredPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+                    .build()
+            )
+            .useGooglePlayServices(
+                GooglePlayServicesConfiguration.Builder()
+                    .fallbackToDefault(true)
+                    .askForGooglePlayServices(false)
+                    .askForSettingsApi(true)
+                    .failOnSettingsApiSuspended(false)
+                    .ignoreLastKnowLocation(false)
+                    .build()
+            )
+            .useDefaultProviders(
+                DefaultProviderConfiguration.Builder()
+                    .build()
+            )
+            .build()
+        val manager = LocationManager.Builder(requireContext().applicationContext)
+            .fragment(this)
+            .configuration(awesomeConfiguration)
+            .notify(object : LocationListener {
+                override fun onLocationChanged(location: Location?) {
+                    if (location?.latitude != null)
+                        gps = Gps(location.latitude, location.longitude)
                 }
-            }
 
+                override fun onPermissionGranted(alreadyHadPermission: Boolean) {
+                }
+
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+                }
+
+                override fun onProviderEnabled(provider: String?) {
+                }
+
+                override fun onProviderDisabled(provider: String?) {
+                }
+
+                override fun onProcessTypeChanged(processType: Int) {
+                }
+
+                override fun onLocationFailed(type: Int) {
+                }
+            })
+            .build()
+        if (!manager.isAnyDialogShowing)
+            manager.get()
     }
 
     private fun checkIn(locationItem: CheckInResponse.LocationItem? = null) {
@@ -102,7 +154,7 @@ class CheckInFragment : Fragment() {
         if (gps == null || !LocationHelper.isGpsEnable(requireContext())) {
             GlobalScope.launch(Dispatchers.Main) {
                 delay(2000)
-                locationHelper.start()
+                initGps()
                 checkIn(locationItem)
             }
             return
@@ -136,7 +188,6 @@ class CheckInFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        locationHelper.stop()
         viewModel._locationList.value = null
     }
 }

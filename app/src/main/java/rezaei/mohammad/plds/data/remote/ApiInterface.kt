@@ -70,5 +70,7 @@ interface ApiInterface {
     @POST("Tracking/CommonActionHistoryCreate")
     suspend fun submitCommonActionForm(@Body commonActionResult: FormResult.CommonAction): BaseResponse<Unit>?
 
+    @POST("Tracking/Reset")
+    suspend fun resetCheckInOutOperation(@Body resetCheckInRequest: ResetCheckInRequest): BaseResponse<Unit>?
 
 }

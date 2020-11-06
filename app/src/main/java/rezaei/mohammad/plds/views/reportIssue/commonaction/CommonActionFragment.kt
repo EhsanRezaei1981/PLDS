@@ -121,7 +121,9 @@ class CommonActionFragment : Fragment() {
                     container.isVisible = true
                     reasonList = it.response.data
                 }
-                is ApiResult.Error -> view?.snack(it.errorHandling)
+                is ApiResult.Error -> view?.snack(it.errorHandling, onDismissAction = {
+                    findNavController().popBackStack()
+                })
             }
         }
     }
@@ -202,7 +204,6 @@ class CommonActionFragment : Fragment() {
                     .fallbackToDefault(true)
                     .askForGooglePlayServices(false)
                     .askForSettingsApi(true)
-                    .failOnConnectionSuspended(true)
                     .failOnSettingsApiSuspended(false)
                     .ignoreLastKnowLocation(false)
                     .build()

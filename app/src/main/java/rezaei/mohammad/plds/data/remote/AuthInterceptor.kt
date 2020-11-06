@@ -12,11 +12,14 @@ class AuthInterceptor(private val preferenceManager: PreferenceManager) : Interc
         //add token to each request
         builder.header("Authorization", "Bearer ${preferenceManager.authToken}")
 
+        // execute request
+        val newRequest = builder.build()
+        val result = chain.proceed(newRequest)
+
         //save token from requests
-        val token = request.header("jatoken")
+        val token = result.header("JAToken")
         token?.let { preferenceManager.authToken = it }
 
-        val newRequest = builder.build()
-        return chain.proceed(newRequest)
+        return result
     }
 }

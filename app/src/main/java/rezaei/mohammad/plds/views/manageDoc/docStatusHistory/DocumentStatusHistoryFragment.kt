@@ -50,7 +50,10 @@ class DocumentStatusHistoryFragment : Fragment() {
 
     private fun setErrorHandler() {
         viewModel.getDocumentsStatusHistoryError.observe(this.viewLifecycleOwner, EventObserver {
-            viewDataBinding.listDocs.snack(it.errorHandling)
+            viewDataBinding.listDocs.snack(it.errorHandling, onDismissAction = {
+                findNavController().popBackStack()
+            })
+
         })
     }
 

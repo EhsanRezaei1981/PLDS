@@ -78,9 +78,19 @@ class NotificationBuilder(
     }
 
     fun setCheckingOutStatus() {
-        notificationManager.notify(notificationId, getNotification()
-            .setContentText("Checking out...")
-            .also { it.mActions.clear() }.build()
+        notificationManager.notify(
+            notificationId, getNotification()
+                .setContentText("Checking out...")
+                .also { it.mActions.clear() }.build()
+        )
+    }
+
+    fun setCheckOutFailStatus(error: String?) {
+        notificationManager.notify(
+            notificationId, getNotification()
+                .setContentText("Checking out failed")
+                .setSubText(error)
+                .build()
         )
     }
 

@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class CheckInResponseEntity(
-    var trackingInterval: Int?,
+    val trackingInterval: Long?,
     var checkInPart: String?,
     @PrimaryKey
     var locationId: Int?,

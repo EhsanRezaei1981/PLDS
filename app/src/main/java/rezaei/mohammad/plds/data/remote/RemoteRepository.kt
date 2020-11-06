@@ -257,6 +257,17 @@ class RemoteRepository(
             networkError
         }
 
+    override suspend fun resetCheckInOutOperation(resetCheckInRequest: ResetCheckInRequest): ApiResult<BaseResponse<Unit>> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.resetCheckInOutOperation(resetCheckInRequest)
+                )
+            }
+        } catch (e: java.lang.Exception) {
+            networkError
+        }
+
     override suspend fun submitCommonActionForm(commonActionResult: FormResult.CommonAction): ApiResult<BaseResponse<Unit>> =
         try {
             withContext(ioDispatcher) {

@@ -7,26 +7,49 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import rezaei.mohammad.plds.data.model.response.CheckInResponse
 import rezaei.mohammad.plds.databinding.ItemLocationBinding
+import rezaei.mohammad.plds.databinding.ItemLocationFooterBinding
 import rezaei.mohammad.plds.util.BindableAdapter
 
-class LocationAdapter(private val locationClick: (CheckInResponse.LocationItem) -> Unit) :
+class LocationAdapter(private val locationClick: (CheckInResponse.LocationItem?) -> Unit) :
     ListAdapter<CheckInResponse.LocationItem,
-            SubscriptionViewHolder>(SubscriptionDiffCallback()),
+            RecyclerView.ViewHolder>(SubscriptionDiffCallback()),
     BindableAdapter<List<CheckInResponse.LocationItem>> {
+
+    override fun getItemCount(): Int {
+        return currentList.size.plus(1)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position < currentList.size)
+            ITEM_TYPE_LOCATION
+        else
+            ITEM_TYPE_FOOTER
+    }
 
     override fun setData(data: List<CheckInResponse.LocationItem>) {
         submitList(data)
     }
 
-    override fun onBindViewHolder(holder: SubscriptionViewHolder, position: Int) {
-        val document = getItem(position)
-        holder.bind(document)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (getItemViewType(position) == ITEM_TYPE_LOCATION) {
+            val document = getItem(position)
+            (holder as ItemViewHolder).bind(document)
+        }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubscriptionViewHolder {
-        val viewHolder = SubscriptionViewHolder.from(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val viewHolder = if (viewType == ITEM_TYPE_LOCATION)
+            ItemViewHolder.from(parent)
+        else
+            FooterViewHolder.from(parent)
+
         viewHolder.itemView.setOnClickListener {
-            locationClick.invoke(currentList[viewHolder.adapterPosition])
+            locationClick.invoke(
+                if (viewType == ITEM_TYPE_LOCATION)
+                    currentList[viewHolder.adapterPosition]
+                else
+                    null
+            )
         }
         return viewHolder
     }
@@ -50,10 +73,13 @@ class LocationAdapter(private val locationClick: (CheckInResponse.LocationItem) 
             ): Boolean =
                 oldItem == newItem
         }
+
+        const val ITEM_TYPE_LOCATION = 0
+        const val ITEM_TYPE_FOOTER = 1
     }
 }
 
-class SubscriptionViewHolder private constructor(private val binding: ItemLocationBinding) :
+class ItemViewHolder private constructor(private val binding: ItemLocationBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(
         location: CheckInResponse.LocationItem?
@@ -63,10 +89,23 @@ class SubscriptionViewHolder private constructor(private val binding: ItemLocati
     }
 
     companion object {
-        fun from(parent: ViewGroup): SubscriptionViewHolder {
+        fun from(parent: ViewGroup): ItemViewHolder {
             val layoutInflater = LayoutInflater.from(parent.context)
             val binding = ItemLocationBinding.inflate(layoutInflater, parent, false)
-            return SubscriptionViewHolder(binding)
+            return ItemViewHolder(binding)
+        }
+    }
+}
+
+class FooterViewHolder private constructor(private val binding: ItemLocationFooterBinding) :
+    RecyclerView.ViewHolder(binding.root) {
+
+
+    companion object {
+        fun from(parent: ViewGroup): FooterViewHolder {
+            val layoutInflater = LayoutInflater.from(parent.context)
+            val binding = ItemLocationFooterBinding.inflate(layoutInflater, parent, false)
+            return FooterViewHolder(binding)
         }
     }
 }

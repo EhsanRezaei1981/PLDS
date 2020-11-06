@@ -198,7 +198,6 @@ class SubmitFormFragment : Fragment() {
                     .fallbackToDefault(true)
                     .askForGooglePlayServices(false)
                     .askForSettingsApi(true)
-                    .failOnConnectionSuspended(true)
                     .failOnSettingsApiSuspended(false)
                     .ignoreLastKnowLocation(false)
                     .build()

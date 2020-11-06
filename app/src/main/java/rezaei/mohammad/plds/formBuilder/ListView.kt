@@ -135,7 +135,6 @@ open class ListView(
                     .fallbackToDefault(true)
                     .askForGooglePlayServices(false)
                     .askForSettingsApi(true)
-                    .failOnConnectionSuspended(true)
                     .failOnSettingsApiSuspended(false)
                     .ignoreLastKnowLocation(false)
                     .build()

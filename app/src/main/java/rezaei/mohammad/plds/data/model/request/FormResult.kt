@@ -58,9 +58,9 @@ data class Gps(
     var Y: Double? = null,
 
     @field:SerializedName("X")
-    var X: Double? = null
+    var X: Double? = null/*,
 
-/*    @field:SerializedName("RadiusInMetters")
+    @field:SerializedName("RadiusInMetters")
     var radius: Int? = null*/
 )
 

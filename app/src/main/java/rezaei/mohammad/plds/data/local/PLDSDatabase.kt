@@ -27,7 +27,7 @@ import rezaei.mohammad.plds.data.model.response.LoginResponse
 
 @Database(
     entities = [LoginResponse.User::class, Document::class, CheckInResponseEntity::class],
-    version = 3
+    version = 5
 )
 @TypeConverters(Converters::class)
 abstract class PLDSDatabase : RoomDatabase() {

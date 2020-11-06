@@ -11,7 +11,13 @@ class CheckInResponse : BaseResponse<CheckInResponse.Data>() {
     data class TrackingConfig(
 
         @field:SerializedName("TrackingInterval")
-        val trackingInterval: Int? = null
+        val trackingInterval: Long? = null,
+        @field:SerializedName("DistanceInterval")
+        val DistanceInterval: Long? = null,
+        @field:SerializedName("AcceptableAccuracy")
+        val acceptableAccuracy: Float? = null,
+        @field:SerializedName("AcceptableTimePeriod")
+        val acceptableTimePeriod: Long? = null
     )
 
     @Parcelize
@@ -75,7 +81,9 @@ class CheckInResponse : BaseResponse<CheckInResponse.Data>() {
         )
 
         fun fromLocal(checkInResponseEntity: CheckInResponseEntity) {
-            trackingConfig = TrackingConfig(checkInResponseEntity.trackingInterval)
+            trackingConfig = TrackingConfig(
+                checkInResponseEntity.trackingInterval
+            )
             checkInPart = checkInResponseEntity.checkInPart
             locationId = checkInResponseEntity.locationId
             vTLocation = checkInResponseEntity.vTLocation

@@ -1,9 +1,12 @@
 package rezaei.mohammad.plds.views.main
 
+import android.Manifest
+import android.app.ProgressDialog
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.location.Location
 import android.os.Bundle
 import android.os.IBinder
 import android.view.Menu
@@ -16,14 +19,20 @@ import androidx.navigation.findNavController
 import androidx.transition.AutoTransition
 import androidx.transition.TransitionManager
 import com.afollestad.materialdialogs.MaterialDialog
+import com.yayandroid.locationmanager.LocationManager
+import com.yayandroid.locationmanager.configuration.DefaultProviderConfiguration
+import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfiguration
+import com.yayandroid.locationmanager.configuration.LocationConfiguration
+import com.yayandroid.locationmanager.configuration.PermissionConfiguration
+import com.yayandroid.locationmanager.listener.LocationListener
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.local.Environment
+import rezaei.mohammad.plds.data.model.request.Gps
 import rezaei.mohammad.plds.data.model.response.CheckInResponse
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.preference.PreferenceManager
@@ -42,6 +51,12 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
     private val prefs: PreferenceManager by inject()
     private var isBound = false
     var checkInService: CheckInService? = null
+    private var gps: Gps? = null
+    private val progressDialog: ProgressDialog by lazy {
+        ProgressDialog(this).apply {
+            this.setTitle(R.string.looking_for_gps)
+        }
+    }
 
     private val connection = object : ServiceConnection {
         override fun onServiceDisconnected(p0: ComponentName?) {
@@ -68,6 +83,7 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
         setSupportActionBar(toolbar)
         showChangeLog()
         showEnvironment()
+        setOnResetCheckInStatusResult()
 
         findNavController(R.id.nav_host_fragment).addOnDestinationChangedListener { controller, destination, arguments ->
             hideNote()
@@ -82,13 +98,8 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
             //start service
             if (!isBound)
                 Intent(this, CheckInService::class.java).also { intent ->
-                    GlobalScope.launch {
-                        Intent(this@MainActivity, CheckInService::class.java).also { intent ->
-                            if (it != null)
-                                intent.action = CheckInService.RESUME_PREVIOUS_CHECK_IN
-                            startService(intent)
-                        }
-                    }
+                    if (it != null)
+                        intent.action = CheckInService.RESUME_PREVIOUS_CHECK_IN
                     startService(intent)
                 }
         }
@@ -169,10 +180,116 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
                 prefs.nighMode = AppCompatDelegate.MODE_NIGHT_YES
             }
             R.id.action_checkOut -> {
+                showLoading()
                 checkInService?.checkOut()
+            }
+            R.id.action_reser_check_in -> {
+                initGps()
+                MaterialDialog(this).show {
+                    title(R.string.reset_check_in_title)
+                    message(R.string.reset_check_in_message)
+                    noAutoDismiss()
+                    positiveButton(R.string.reset) {
+                        if (gps == null) {
+                            initGps()
+                            this@MainActivity.toolbar.snack(
+                                ErrorHandling(
+                                    true,
+                                    errorMessage = getString(R.string.gps_not_available),
+                                    isSuccessful = false
+                                )
+                            )
+                            return@positiveButton
+                        }
+                        dismiss()
+                        checkInService?.setCheckedOut()
+                        viewModel.resetCheckIn(gps!!)
+                        showLoading()
+                    }
+                    negativeButton(R.string.cancel) {
+                        dismiss()
+                    }
+                }
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setOnResetCheckInStatusResult() {
+        viewModel.resetCheckInResult.observe(this) {
+            (it as? ApiResult.Error)?.let { toolbar.snack(it.errorHandling) }
+            (it as? ApiResult.Success)?.let {
+
+                toolbar.snack(it.response.errorHandling)
+                onCheckedOut()
+            }
+            hideLoading()
+        }
+    }
+
+    private fun showLoading() {
+        if (!progressDialog.isShowing)
+            progressDialog.show()
+    }
+
+    private fun hideLoading() {
+        if (progressDialog.isShowing)
+            progressDialog.dismiss()
+    }
+
+    private fun initGps() {
+        val awesomeConfiguration = LocationConfiguration.Builder()
+            .keepTracking(false)
+            .askForPermission(
+                PermissionConfiguration.Builder()
+                    .rationaleMessage(getString(R.string.accept_loc_permission))
+                    .requiredPermissions(arrayOf(Manifest.permission.ACCESS_FINE_LOCATION))
+                    .build()
+            )
+            .useGooglePlayServices(
+                GooglePlayServicesConfiguration.Builder()
+                    .fallbackToDefault(true)
+                    .askForGooglePlayServices(false)
+                    .askForSettingsApi(true)
+                    .failOnSettingsApiSuspended(false)
+                    .ignoreLastKnowLocation(false)
+                    .build()
+            )
+            .useDefaultProviders(
+                DefaultProviderConfiguration.Builder()
+                    .build()
+            )
+            .build()
+        val manager = LocationManager.Builder(this.applicationContext)
+            .activity(this)
+            .configuration(awesomeConfiguration)
+            .notify(object : LocationListener {
+                override fun onLocationChanged(location: Location?) {
+                    if (location?.latitude != null)
+                        gps = Gps(location.latitude, location.longitude)
+                }
+
+                override fun onPermissionGranted(alreadyHadPermission: Boolean) {
+                }
+
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+                }
+
+                override fun onProviderEnabled(provider: String?) {
+                }
+
+                override fun onProviderDisabled(provider: String?) {
+                }
+
+                override fun onProcessTypeChanged(processType: Int) {
+                }
+
+                override fun onLocationFailed(type: Int) {
+                }
+            })
+            .build()
+        if (!manager.isAnyDialogShowing)
+            manager.get()
     }
 
     private fun enableTransition() {
@@ -216,6 +333,7 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
         supportActionBar?.subtitle = null
         findNavController(R.id.nav_host_fragment)
             .popBackStack(R.id.mainActivityFragment, false)
+        hideLoading()
     }
 
     override fun showLocationList(locationList: List<CheckInResponse.LocationItem>) {
@@ -228,6 +346,7 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
 
     override fun onError(errorHandling: ErrorHandling?) {
         toolbar?.snack(errorHandling)
+        hideLoading()
     }
 
     fun unbindService() {
