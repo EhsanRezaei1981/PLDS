@@ -8,8 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
-import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.layout_environment.*
 import kotlinx.android.synthetic.main.layout_environment.view.*
 import org.koin.android.ext.android.inject
 import rezaei.mohammad.plds.R
@@ -38,7 +36,7 @@ class LoginActivity : AppCompatActivity() {
     private fun setupChangeUrlDialog() {
         var selectEnvironment = prefs.activeEnvironment
         val dialog = MaterialDialog(this).show {
-            title(text = getString(R.string.change_base_url))
+            title(text = getString(R.string.environments))
             customView(R.layout.layout_environment, scrollable = true)
             positiveButton(text = getString(R.string.save_and_restart)) {
                 val view = it.getCustomView() as ViewGroup

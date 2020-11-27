@@ -19,6 +19,12 @@ class ChangeLog(private val pref: PreferenceManager) {
             "Fix change theme bug.",
             "Fix toolbar show title bug."
         )
+        logs[12] = listOf(
+            "Add check-in and check-out process",
+            "Add common action page",
+            "Add document list by location page",
+            "Add manage document page"
+        )
     }
 
     fun getLogFor(versionCode: Int): List<String>? {

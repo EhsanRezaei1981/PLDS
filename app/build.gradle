@@ -14,7 +14,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
-        visro {
+        prosource {
             storeFile file(keystoreProperties['file'])
             storePassword keystoreProperties['storepass']
             keyPassword keystoreProperties['keypass']
@@ -26,8 +26,8 @@ android {
         applicationId "rezaei.mohammad.plds"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 25
-        versionName "1.3.5"
+        versionCode 26
+        versionName '1.3.6'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
@@ -36,20 +36,9 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.visro
-            firebaseAppDistribution {
-                releaseNotes="Some improvment for get location when device is locked"
-                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
-            }
         }
         debug {
             minifyEnabled false
-            applicationIdSuffix '.debug'
-            versionNameSuffix '-DEBUG'
-            firebaseAppDistribution {
-                releaseNotes="Add Solve check in problem menu"
-                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
-            }
         }
     }
 
@@ -64,6 +53,28 @@ android {
     }
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
+    }
+    flavorDimensions 'stage'
+    productFlavors {
+        dev {
+            dimension 'stage'
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            firebaseAppDistribution {
+                releaseNotes="Fix common action mandatory fields bug, Other improvements"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
+        }
+        pro {
+            dimension 'stage'
+            versionCode 13
+            versionName "1.2.2"
+            firebaseAppDistribution {
+                releaseNotes = "User should check out before sign out"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
+            signingConfig signingConfigs.prosource
+        }
     }
 }
 

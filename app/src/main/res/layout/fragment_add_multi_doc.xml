@@ -24,16 +24,16 @@
             android:layout_height="wrap_content"
             tools:context=".views.addMultiDoc.AddMultiDocFragment">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/txtMessage"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnDocumentList"
+                style="@style/Widget.MaterialComponents.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/documents_list"
-                android:textColor="#FF9800"
-                android:textSize="16sp"
-                android:textStyle="bold"
+                android:textAllCaps="false"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -44,7 +44,6 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="8dp"
                 app:endIconClick="@{(view) -> viewmodel.addToList(inputDocRefrence.getEditText().getText().toString())}"
                 app:endIconDrawable="@drawable/ic_add_box"
@@ -55,7 +54,7 @@
                 app:errorText="@{viewmodel.docRefNoErr}"
                 app:layout_constraintEnd_toStartOf="@+id/btnReadQR"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtMessage">
+                app:layout_constraintTop_toBottomOf="@id/btnDocumentList">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -96,6 +95,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:minHeight="0dp"
                 android:checked="@={viewmodel.autoCheckAfterCodeDetect}"
                 android:text="@string/add_automatically_to_list_after_scan"
                 app:layout_constraintStart_toStartOf="@+id/inputDocRefrence"
@@ -105,7 +105,6 @@
                 android:id="@+id/listDocs"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:clipToPadding="true"
                 app:items="@{viewmodel.documentsList}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -150,20 +149,6 @@
                 app:iconPadding="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/listDocs" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnDocumentList"
-                style="@style/Widget.MaterialComponents.Button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/documents_list"
-                android:textAllCaps="false"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/listDocs" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

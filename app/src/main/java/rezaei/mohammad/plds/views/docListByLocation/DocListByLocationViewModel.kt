@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.LocalRepository
 import rezaei.mohammad.plds.data.RemoteRepository
@@ -36,7 +35,7 @@ class DocListByLocationViewModel(
             _dataLoading.value = true
             when (val apiResult =
                 remoteRepository.getDocumentListOnLocation(getDocumentsOnLocationRequest)) {
-                is ApiResult.Success -> _documentList.value = apiResult.response.data
+                is ApiResult.Success -> _documentList.value = apiResult.response.data ?: emptyList()
                 is ApiResult.Error -> _documenttEvent.value = Event(apiResult.errorHandling)
             }
             _dataLoading.value = false

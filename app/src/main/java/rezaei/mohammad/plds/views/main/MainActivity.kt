@@ -25,7 +25,6 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
@@ -39,7 +38,6 @@ import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.service.CheckInService
 import rezaei.mohammad.plds.service.CheckInViewCallbacks
 import rezaei.mohammad.plds.util.ChangeLog
-import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.checkin.CheckInFragment
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment
@@ -54,7 +52,7 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
     private var gps: Gps? = null
     private val progressDialog: ProgressDialog by lazy {
         ProgressDialog(this).apply {
-            this.setTitle(R.string.looking_for_gps)
+            this.setTitle(R.string.loading)
         }
     }
 
@@ -161,9 +159,19 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
                     message(R.string.sign_out_question)
                     positiveButton(R.string.no)
                     negativeButton(R.string.yes) {
-                        viewModel.signOut()
-                        startActivity(Intent(this@MainActivity, LoginActivity::class.java))
-                        finish()
+                        if (checkInService?.isCheckedIn == true) {
+                            this@MainActivity.toolbar.snack(
+                                ErrorHandling(
+                                    true,
+                                    errorMessage = getString(R.string.please_check_out_first),
+                                    isSuccessful = false
+                                )
+                            )
+                        } else {
+                            viewModel.signOut()
+                            startActivity(Intent(this@MainActivity, LoginActivity::class.java))
+                            finish()
+                        }
                     }
                 }
             }
@@ -228,13 +236,19 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
     }
 
     private fun showLoading() {
-        if (!progressDialog.isShowing)
-            progressDialog.show()
+        try {
+            if (!progressDialog.isShowing)
+                progressDialog.show()
+        } catch (e: Exception) {
+        }
     }
 
     private fun hideLoading() {
-        if (progressDialog.isShowing)
-            progressDialog.dismiss()
+        try {
+            if (progressDialog.isShowing)
+                progressDialog.dismiss()
+        } catch (e: Exception) {
+        }
     }
 
     private fun initGps() {

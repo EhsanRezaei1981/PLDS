@@ -67,7 +67,7 @@
     <string name="view">View</string>
     <string name="responded_fields">Responded Fields</string>
     <string name="report_issue_in_general">Common Action</string>
-    <string name="report_issue_per_document">Report Issue Per Document</string>
+    <string name="report_issue_per_document">Report Issue</string>
     <string name="check_out">Check Out</string>
     <string name="looking_for_gps">Looking For Location…</string>
     <string name="doc_list_on_location">List Of Documents</string>
@@ -75,6 +75,10 @@
     <string name="reset_check_in_title">Reset Check In/Out Status</string>
     <string name="reset_check_in_message">If You Have Issue With Check In Or Check Out, Press Reset Button.\n\nNote: By Doing This Action Your Currently Check In Status Will Be Lose!</string>
     <string name="reset">Reset</string>
-    <string name="cancel">cancel</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_document_found">No Document Found</string>
+    <string name="loading">Loading…</string>
+    <string name="environments">Environments</string>
+    <string name="please_check_out_first">Please Check Out First</string>
 
 </resources>

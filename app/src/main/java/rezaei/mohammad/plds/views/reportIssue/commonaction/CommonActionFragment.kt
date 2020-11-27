@@ -20,7 +20,6 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
-import kotlinx.android.synthetic.main.fragment_common_action.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.ApiResult
@@ -35,8 +34,6 @@ import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
-import rezaei.mohammad.plds.util.snack
-import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.main.MainActivity
 
 class CommonActionFragment : Fragment() {
@@ -83,6 +80,9 @@ class CommonActionFragment : Fragment() {
                     txtFormError.text = ""
                 }
             }
+            if (!elementParser.isItemsValid())
+                return@EventObserver
+
             val formResult = FormResult.CommonAction()
             elementParser.getResult(formResult)
             val chosenReason = reasonList?.find { it.commonActionId == formResult.commonActionId }
