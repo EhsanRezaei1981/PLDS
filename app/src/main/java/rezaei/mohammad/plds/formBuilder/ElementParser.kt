@@ -1,15 +1,21 @@
 package rezaei.mohammad.plds.formBuilder
 
 import android.content.Intent
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.transition.TransitionManager
+import kotlinx.android.synthetic.main.view_title_text.view.*
+import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.request.FormResult
-import rezaei.mohammad.plds.data.model.request.Result
+import rezaei.mohammad.plds.data.model.request.Successful
+import rezaei.mohammad.plds.data.model.request.Unsuccessful
 import rezaei.mohammad.plds.data.model.response.CourtResponse
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.data.model.response.SheriffResponse
@@ -32,8 +38,11 @@ class ElementParser(
 
         elementList?.forEach {
             when (it.dataType) {
+                "Text" -> {
+                    createText(it)
+                }
                 "String" -> {
-                    createString(it)
+                    createTextInput(it)
                 }
                 "Date" -> {
                     createDate(it)
@@ -59,7 +68,11 @@ class ElementParser(
         return listValidation.all { it }
     }
 
-    fun getResult(formResult: FormResult): FormResult {
+    fun getResult(
+        formResult: FormResult,
+        documentStatusQueryId: Int? = null,
+        vt: String? = null
+    ): FormResult {
         val result = mutableListOf<ElementResult?>()
         for (x in 0..containerView.childCount) {
             val element = containerView.getChildAt(x)
@@ -80,20 +93,28 @@ class ElementParser(
         when (formResult) {
             is FormResult.DocumentProgress -> when (formResult.responseType) {
                 "Unsuccessful" -> {
-                    formResult.unsuccessful = Result(result)
+                    formResult.unsuccessful = Unsuccessful(
+                        elements = result,
+                        documentStatusQueryId = documentStatusQueryId,
+                        vT = vt
+                    )
                 }
                 "Successful" -> {
-                    formResult.successful = Result(result)
+                    formResult.successful = Successful(
+                        elements = result,
+                        documentStatusId = documentStatusQueryId,
+                        vT = vt
+                    )
                 }
                 else -> {
                     formResult.reportIssue = result[1].also {
                         (it as ElementResult.IssueResult).date =
                             (result[0] as ElementResult.StringResult).reply
+                        it.documentStatusQueryId = documentStatusQueryId
+                        it.vT = vt
                     }
                 }
             }
-            is FormResult.RespondedFields -> (formResult as? FormResult.RespondedFields)?.elements =
-                result
             is FormResult.CommonAction -> {
                 formResult.date = (result[0] as ElementResult.StringResult).reply
                 formResult.commonActionId = (result[1] as ElementResult.ListResult).listItem?.id
@@ -126,7 +147,20 @@ class ElementParser(
         }
     }
 
-    private fun createString(structure: FormResponse.DataItem) {
+    private fun createText(structure: FormResponse.DataItem) {
+        if (structure.localText == null)
+            return
+        val localText = structure.localText
+        val component = LayoutInflater.from(fragment.requireContext())
+            .inflate(R.layout.view_title_text, containerView, false) as LinearLayoutCompat
+        component.id = component.hashCode()
+        component.txt_title.text = localText?.text
+        component.btn_edit.isVisible = localText?.isEditable ?: false
+        component.btn_edit.setOnClickListener { localText?.onEditClick?.invoke() }
+        containerView.addView(component)
+    }
+
+    private fun createTextInput(structure: FormResponse.DataItem) {
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT

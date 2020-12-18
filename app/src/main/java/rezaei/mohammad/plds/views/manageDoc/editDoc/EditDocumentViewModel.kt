@@ -29,18 +29,38 @@ class EditDocumentViewModel(
     private val _submitFormEvent = MutableLiveData<Event<ApiResult<BaseResponse<Unit>>>>()
     val submitFormEvent: LiveData<Event<ApiResult<BaseResponse<Unit>>>> = _submitFormEvent
 
-    fun getRespondedFields(documentStatusId: Int, vt: String, readOnly: Boolean, type: String) {
+    fun getRespondedFields(
+        documentStatusId: Int,
+        vt: String,
+        readOnly: Boolean,
+        type: String,
+        documentStatusQueryId: Int?
+    ) {
         viewModelScope.launch {
             _dataLoading.value = true
             val result = if (readOnly)
                 remoteRepository.getRespondedFields(
                     RespondedFieldsRequest(documentStatusId, vt, type)
                 )
-            else
-                remoteRepository.getStatusSuccesses(
-                    RespondedFieldsRequest(documentStatusId, vt, type, true)
-                )
-
+            else {
+                when (type) {
+                    "UnSuccess" -> remoteRepository.getRespondedFields(
+                        RespondedFieldsRequest(documentStatusId, vt, type)
+                    )
+                    "Query" -> remoteRepository.getStatusQueries(
+                        RespondedFieldsRequest(
+                            documentStatusId,
+                            vt,
+                            type,
+                            true,
+                            documentStatusQueryId
+                        )
+                    )
+                    else -> remoteRepository.getStatusSuccesses(
+                        RespondedFieldsRequest(documentStatusId, vt, type, true)
+                    )
+                }
+            }
             _fieldsResult.value = result
             _dataLoading.value = false
         }
@@ -50,7 +70,7 @@ class EditDocumentViewModel(
         _submitEvent.value = Event(Unit)
     }
 
-    fun submitForm(formResult: FormResult.RespondedFields) {
+    fun submitForm(formResult: FormResult.DocumentProgress) {
         viewModelScope.launch {
             _dataLoading.value = true
             val result = remoteRepository.updateRespondedFields(formResult)

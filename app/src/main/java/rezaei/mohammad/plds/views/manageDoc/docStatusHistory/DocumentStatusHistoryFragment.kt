@@ -70,8 +70,11 @@ class DocumentStatusHistoryFragment : Fragment() {
         val action =
             DocumentStatusHistoryFragmentDirections.actionDocumentStatusHistoryFragmentToEditDocumentFragment(
                 doc.documentStatusId!!,
-                doc.vT!!, args.documentBaseInfo, readOnly, doc.gPSIsNeeded == 1,
-                if (doc.isSuccess == 1) "Success" else "Query"
+                doc.vT!!,
+                args.documentBaseInfo,
+                readOnly,
+                doc.gPSIsNeeded == 1,
+                if (doc.isSuccess == 1) "Success" else "UnSuccess"
             )
         findNavController().tryNavigate(action)
     }

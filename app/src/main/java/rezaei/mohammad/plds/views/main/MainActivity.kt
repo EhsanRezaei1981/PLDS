@@ -25,6 +25,7 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
+import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.BuildConfig
@@ -38,6 +39,7 @@ import rezaei.mohammad.plds.data.preference.PreferenceManager
 import rezaei.mohammad.plds.service.CheckInService
 import rezaei.mohammad.plds.service.CheckInViewCallbacks
 import rezaei.mohammad.plds.util.ChangeLog
+import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.checkin.CheckInFragment
 import rezaei.mohammad.plds.views.login.LoginActivity
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoFragment

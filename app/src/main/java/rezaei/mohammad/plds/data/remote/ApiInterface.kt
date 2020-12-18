@@ -46,11 +46,14 @@ interface ApiInterface {
     @POST("Tracking/GetStatusSuccesses")
     suspend fun getStatusSuccesses(@Body respondedFieldsRequest: RespondedFieldsRequest): FormResponse?
 
+    @POST("Tracking/GetStatusQueries")
+    suspend fun getStatusQueries(@Body respondedFieldsRequest: RespondedFieldsRequest): FormResponse?
+
     @POST("Tracking/GetFileByMainLegalInfo")
     suspend fun getFileByMainLegalInfo(@Body getFileRequest: GetFileRequest): GetFileResponse?
 
     @POST("Tracking/UpdateRespondedFields")
-    suspend fun updateRespondedFields(@Body updateRespondedFieldsRequest: FormResult.RespondedFields): BaseResponse<Unit>?
+    suspend fun updateRespondedFields(@Body updateRespondedFieldsRequest: FormResult.DocumentProgress): BaseResponse<Unit>?
 
     @POST("Tracking/CheckIn")
     suspend fun checkIn(@Body checkInRequest: CheckInRequest): CheckInResponse?

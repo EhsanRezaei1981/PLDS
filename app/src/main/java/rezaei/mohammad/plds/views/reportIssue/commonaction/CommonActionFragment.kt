@@ -20,6 +20,7 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
+import kotlinx.android.synthetic.main.fragment_common_action.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.ApiResult
@@ -34,6 +35,8 @@ import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
+import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.main.MainActivity
 
 class CommonActionFragment : Fragment() {
@@ -112,14 +115,20 @@ class CommonActionFragment : Fragment() {
         viewModel.reasonList.observe(viewLifecycleOwner) {
             when (it) {
                 is ApiResult.Success -> {
-                    drawForm(prepareFields(it.response.data?.map { item ->
-                        FormResponse.ListItem(
-                            description = item.description,
-                            listId = item.commonActionId
-                        )
-                    }!!))
-                    container.isVisible = true
-                    reasonList = it.response.data
+                    it.response.data?.let {
+                        drawForm(prepareFields(it.map { item ->
+                            FormResponse.ListItem(
+                                description = item.description,
+                                listId = item.commonActionId
+                            )
+                        }))
+                        container.isVisible = true
+                        reasonList = it
+                    } ?: kotlin.run {
+                        view?.snack(it.response.errorHandling, onDismissAction = {
+                            findNavController().popBackStack()
+                        })
+                    }
                 }
                 is ApiResult.Error -> view?.snack(it.errorHandling, onDismissAction = {
                     findNavController().popBackStack()

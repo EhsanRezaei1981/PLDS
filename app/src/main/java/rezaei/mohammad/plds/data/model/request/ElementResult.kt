@@ -50,6 +50,10 @@ sealed class ElementResult {
         val selectedIssueDescription: String? = null,
         @field:SerializedName("CustomAction")
         val customAction: CustomAction? = null,
+        @field:SerializedName("VT")
+        var vT: String? = null,
+        @field:SerializedName("DocumentStatusQueryId")
+        var documentStatusQueryId: Int? = null,
         @Transient
         val gps: Gps? = null
     ) : ElementResult()

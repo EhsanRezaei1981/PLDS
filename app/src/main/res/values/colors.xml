@@ -16,4 +16,6 @@
 
     <color name="colorPurple">#BA68C8</color>
 
+    <color name="colorInactive">#1A000000</color>
+
 </resources>

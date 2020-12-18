@@ -14,5 +14,8 @@ data class RespondedFieldsRequest(
     val type: String? = null,
 
     @field:SerializedName("ValueMustBeChecked")
-    val valueMustBeChecked: Boolean? = null
+    val valueMustBeChecked: Boolean? = null,
+
+    @field:SerializedName("DocumentStatusQueryId")
+    val documentStatusQueryId: Int? = null
 )

@@ -12,6 +12,7 @@ import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
 import kotlinx.android.synthetic.main.fragment_report_issue.*
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.ApiResult
@@ -27,11 +28,13 @@ import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
+import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.main.MainActivity
 
 class ReportIssuePerDocFragment : Fragment() {
 
     private val perDocViewModel: ReportIssuePerDocViewModel by viewModel()
+    private val globalViewModel: GlobalViewModel by sharedViewModel()
     private lateinit var viewDataBinding: FragmentReportIssueBinding
     private lateinit var elementParser: ElementParser
 
@@ -50,8 +53,12 @@ class ReportIssuePerDocFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setActivityTitle(getString(R.string.report_issue))
-        addMoreDocFragment()
+        if (arguments?.containsKey("FormResponse") == true)
+            perDocViewModel.getCommonIssues(globalViewModel.docRefNo.value)
+        else
+            addMoreDocFragment()
     }
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -94,6 +101,11 @@ class ReportIssuePerDocFragment : Fragment() {
             (it as? ApiResult.Success)?.let { result ->
                 viewDataBinding.layoutContainer.removeAllViews()
                 if (result.response.data?.isNotEmpty() == true) {
+                    val argument = arguments?.getParcelable<FormResponse.DataItem>("FormResponse")
+                    val dateValue = argument?.date
+                    val reasonId = argument?.commonIssue?.commonIssueId
+                    val reasonValue = argument?.commonIssue?.commonIssue
+                    val reasonComment = argument?.commonIssue?.commentValue
                     elementParser = ElementParser(
                         this,
                         listOf(
@@ -101,13 +113,19 @@ class ReportIssuePerDocFragment : Fragment() {
                             FormResponse.DataItem(
                                 1,
                                 "Date",
-                                "Date"
+                                "Date",
+                                value = FormResponse.Value(reply = dateValue)
                                 //create reason spinner
                             ), FormResponse.DataItem(
                                 1,
                                 "Reason",
                                 "List",
-                                result.response.data.map {
+                                value = FormResponse.Value(
+                                    listSelectedId = reasonId,
+                                    listSelectedText = reasonValue,
+                                    listComment = reasonComment
+                                ),
+                                list = result.response.data.map {
                                     FormResponse.ListItem(
                                         it.description,
                                         "Issue",
@@ -132,18 +150,32 @@ class ReportIssuePerDocFragment : Fragment() {
         perDocViewModel.submitEvent.observe(this.viewLifecycleOwner, EventObserver {
             if (elementParser.isItemsValid()) {
                 MainScope().launch {
-                    val formResult = FormResult.DocumentProgress().apply {
-                        val documents = mutableListOf<DocumentsInfoItem>()
-                        //ad document ref nos to response
-                        perDocViewModel.getDocumentList().forEach {
-                            documents.add(DocumentsInfoItem(it.docRefNo))
+                    if (arguments?.containsKey("FormResponse") == false) {
+                        val formResult = FormResult.DocumentProgress().apply {
+                            val documents = mutableListOf<DocumentsInfoItem>()
+                            //ad document ref nos to response
+                            perDocViewModel.getDocumentList().forEach {
+                                documents.add(DocumentsInfoItem(it.docRefNo))
+                            }
+                            this.documentsInfo = documents
+                            //set type
+                            this.responseType = "ReportIssue"
                         }
-                        this.documentsInfo = documents
-                        //set type
-                        this.responseType = "ReportIssue"
+                        val result = elementParser.getResult(formResult)
+                        perDocViewModel.submitForm(result as FormResult.DocumentProgress)
+                    } else {
+                        val formResult = FormResult.DocumentProgress().apply {
+                            this.lastUpdateDateTime = requireArguments().getString("lastUpdateTime")
+                            //set type
+                            this.responseType = "ReportIssue"
+                        }
+                        val result = elementParser.getResult(
+                            formResult,
+                            documentStatusQueryId = requireArguments().getInt("DocumentStatusQueryId"),
+                            vt = requireArguments().getString("VT")
+                        )
+                        perDocViewModel.updateRespondedField(result as FormResult.DocumentProgress)
                     }
-                    val result = elementParser.getResult(formResult)
-                    perDocViewModel.submitForm(result as FormResult.DocumentProgress)
                 }
             }
         })

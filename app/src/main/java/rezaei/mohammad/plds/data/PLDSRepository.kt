@@ -19,8 +19,9 @@ interface RemoteRepository {
     suspend fun getDocumentStatusHistory(documentStatusHistoryRequest: DocumentBaseInfoResponse.Data): ApiResult<DocumentStatusHistoryResponse>
     suspend fun getRespondedFields(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse>
     suspend fun getStatusSuccesses(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse>
+    suspend fun getStatusQueries(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse>
     suspend fun getFileByMainLegalInfo(getFileRequest: GetFileRequest): ApiResult<GetFileResponse>
-    suspend fun updateRespondedFields(updateRespondedFieldsRequest: FormResult.RespondedFields): ApiResult<BaseResponse<Unit>>
+    suspend fun updateRespondedFields(updateRespondedFieldsRequest: FormResult.DocumentProgress): ApiResult<BaseResponse<Unit>>
     suspend fun checkIn(checkInRequest: CheckInRequest): ApiResult<CheckInResponse>
     suspend fun checkOut(checkOutRequest: CheckOutRequest): ApiResult<BaseResponse<Unit>>
     suspend fun userTracking(userTrackRequest: UserTrackRequest): ApiResult<BaseResponse<Unit>>

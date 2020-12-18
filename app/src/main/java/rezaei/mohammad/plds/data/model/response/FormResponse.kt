@@ -2,10 +2,12 @@ package rezaei.mohammad.plds.data.model.response
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
+    @Parcelize
     data class DataItem(
 
         @field:SerializedName("IsMandatory")
@@ -39,9 +41,21 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val statusQuery: List<DataItem>? = null,
 
         @field:SerializedName("Date")
-        val date: String? = null
-    )
+        val date: String? = null,
 
+        @field:SerializedName("DocumentStatusQueryId")
+        val documentStatusQueryId: Int? = null,
+
+        @field:SerializedName("LastUpdateDateTime")
+        val lastUpdateDateTime: String? = null
+
+    ) : Parcelable {
+        @IgnoredOnParcel
+        @Transient
+        var localText: LocalText? = null
+    }
+
+    @Parcelize
     data class CommonIssue(
 
         @field:SerializedName("CommentValue")
@@ -52,8 +66,9 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
         @field:SerializedName("CommonIssueId")
         val commonIssueId: Int? = null
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class ListItem(
 
         @field:SerializedName("Description")
@@ -76,20 +91,23 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
         @field:SerializedName("IgnoredStatusQueryJson")
         val ignoredStatusQueryJson: List<IgnoredStatusQueryJsonItem>? = null
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class IgnoredStatusQueryJsonItem(
 
         @field:SerializedName("StatusQueryId")
         val statusQueryId: Int? = null
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class DataTypeSetting(
 
         @field:SerializedName("File")
         val file: File? = null
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class File(
 
         @field:SerializedName("MinSize")
@@ -103,8 +121,9 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
         @field:SerializedName("MaxSize")
         val maxSize: String? = null
-    )
+    ) : Parcelable
 
+    @Parcelize
     data class Value(
 
         @field:SerializedName("Extension")
@@ -133,5 +152,11 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
         @field:SerializedName("Comment")
         val listComment: String? = null
+    ) : Parcelable
+
+    data class LocalText(
+        val text: String?,
+        val isEditable: Boolean,
+        val onEditClick: (() -> Unit)? = null
     )
 }

@@ -39,12 +39,14 @@ class ReportIssuePerDocViewModel(
         setupDataExist()
     }
 
-    fun getCommonIssues() {
+    fun getCommonIssues(docRefNo: String? = null) {
         viewModelScope.launch {
-            if (localRepository.getAllDocument(DocumentType.ReportIssue).isNotEmpty()) {
+            if (localRepository.getAllDocument(DocumentType.ReportIssue)
+                    .isNotEmpty() || docRefNo.isNullOrEmpty().not()
+            ) {
                 _dataLoading.value = true
                 val result = remoteRepository.getCommonIssues(
-                    DocumentsInfoItem(getDocumentList().firstOrNull()?.docRefNo)
+                    DocumentsInfoItem(docRefNo ?: getDocumentList().firstOrNull()?.docRefNo)
                 )
                 _commonIssues.value = result
                 _dataLoading.value = false
@@ -70,6 +72,15 @@ class ReportIssuePerDocViewModel(
         viewModelScope.launch {
             _dataLoading.value = true
             val result = remoteRepository.sendDynamicFieldResponse(formResult)
+            _submitFormEvent.value = Event(result)
+            _dataLoading.value = false
+        }
+    }
+
+    fun updateRespondedField(formResult: FormResult.DocumentProgress) {
+        viewModelScope.launch {
+            _dataLoading.value = true
+            val result = remoteRepository.updateRespondedFields(formResult)
             _submitFormEvent.value = Event(result)
             _dataLoading.value = false
         }

@@ -77,7 +77,7 @@ class SubscriptionViewHolder private constructor(private val binding: ItemDocume
             binding.btnModify.isGone = true
             binding.btnView.isGone = true
         } else {
-            binding.btnModify.isGone = document?.isSuccess != 1
+            binding.btnModify.isGone = document?.isSuccess == null
             binding.btnView.isGone = document?.isSuccess == null
         }
     }

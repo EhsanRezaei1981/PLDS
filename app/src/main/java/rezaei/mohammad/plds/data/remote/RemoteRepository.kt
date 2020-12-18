@@ -145,6 +145,7 @@ class RemoteRepository(
                 )
             }
         } catch (e: Exception) {
+            e.printStackTrace()
             networkError
         }
 
@@ -174,6 +175,19 @@ class RemoteRepository(
             networkError
         }
 
+    override suspend fun getStatusQueries(respondedFieldsRequest: RespondedFieldsRequest): ApiResult<FormResponse> =
+        try {
+            withContext(ioDispatcher) {
+                return@withContext parseResult(
+                    apiInterface.getStatusQueries(
+                        respondedFieldsRequest
+                    )
+                )
+            }
+        } catch (e: Exception) {
+            networkError
+        }
+
     override suspend fun getFileByMainLegalInfo(getFileRequest: GetFileRequest): ApiResult<GetFileResponse> =
         try {
             withContext(ioDispatcher) {
@@ -183,7 +197,7 @@ class RemoteRepository(
             networkError
         }
 
-    override suspend fun updateRespondedFields(updateRespondedFieldsRequest: FormResult.RespondedFields): ApiResult<BaseResponse<Unit>> =
+    override suspend fun updateRespondedFields(updateRespondedFieldsRequest: FormResult.DocumentProgress): ApiResult<BaseResponse<Unit>> =
         try {
             withContext(ioDispatcher) {
                 return@withContext parseResult(

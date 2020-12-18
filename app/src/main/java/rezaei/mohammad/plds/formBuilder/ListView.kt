@@ -337,7 +337,7 @@ open class ListView(
                     selectedItem?.listId,
                     selectedItem?.description,
                     null,
-                    if (selectedGps != null)
+                    gps = if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
                             selectedGps?.second

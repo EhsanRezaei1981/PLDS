@@ -6,9 +6,11 @@ import android.content.Intent
 import android.location.Location
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -60,7 +62,7 @@ class EditDocumentFragment : Fragment() {
                 this.lifecycleOwner = this@EditDocumentFragment.viewLifecycleOwner
             }
 
-        if (args.readOnly) {
+        if (args.readOnly || args.type == "UnSuccess") {
             viewDataBinding.rootView.removeView(viewDataBinding.btnSubmit)
             viewDataBinding.txtCardTitle.text = getString(R.string.responded_fields)
         }
@@ -75,7 +77,13 @@ class EditDocumentFragment : Fragment() {
             setupSubmitFormEvent()
         }
         if (viewModel.fieldsResult.value == null)
-            viewModel.getRespondedFields(args.DocumentStatusId, args.VT, args.readOnly, args.type)
+            viewModel.getRespondedFields(
+                args.DocumentStatusId,
+                args.VT,
+                args.readOnly,
+                args.type,
+                arguments?.getInt("DocumentStatusQueryId")
+            )
 
         if (!args.readOnly && args.gpsNeeded && selectedGps == null)
             initGps()
@@ -86,13 +94,11 @@ class EditDocumentFragment : Fragment() {
             when (it) {
                 is ApiResult.Success -> {
                     drawForm(
-                        if (args.type == "Query")
-                            if (it.response.data?.get(0)?.commonIssue == null)
-                                it.response.data?.get(0)?.statusQuery
-                            else
-                                prepareCommonIssueFields(it.response.data)
+                        if (args.type == "UnSuccess")
+                            prepareCommonIssueFields(it.response.data)
                         else
-                            it.response.data
+                            it.response.data,
+                        args.readOnly
                     )
                 }
                 is ApiResult.Error -> viewDataBinding.root.snack(it.errorHandling)
@@ -100,37 +106,90 @@ class EditDocumentFragment : Fragment() {
         })
     }
 
-    private fun prepareCommonIssueFields(data: List<FormResponse.DataItem>): List<FormResponse.DataItem>? {
+    private fun prepareCommonIssueFields(data: List<FormResponse.DataItem>?): List<FormResponse.DataItem>? {
         val result = mutableListOf<FormResponse.DataItem>()
-        data.forEach { Item ->
-            result.add(
-                FormResponse.DataItem(
-                    isMandatory = 0,
-                    dataType = "Date",
-                    label = "Date",
-                    value = FormResponse.Value
-                        (
-                        reply = Item.date
+        data?.forEachIndexed { index, item ->
+            if (item.commonIssue != null) {
+                // Add group title
+                result.add(
+                    FormResponse.DataItem(
+                        dataType = "Text"
+                    ).also {
+                        it.localText = FormResponse.LocalText(
+                            "${index.plus(1)}.Report Issue",
+                            args.readOnly.not()
+                        ) {
+                            redirectForEdit(true, item)
+                        }
+                    }
+                )
+                result.add(
+                    FormResponse.DataItem(
+                        isMandatory = 0,
+                        dataType = "Date",
+                        label = "Date",
+                        value = FormResponse.Value(reply = item.date)
                     )
                 )
-            )
-            result.add(
-                FormResponse.DataItem(
-                    isMandatory = 0,
-                    dataType = "String",
-                    label = "Reason",
-                    value = FormResponse.Value
-                        (
-                        reply = """${Item.commonIssue?.commonIssue} ${Item.commonIssue?.commentValue?.let { ", $it" } ?: ""}"""
-
+                result.add(
+                    FormResponse.DataItem(
+                        isMandatory = 0,
+                        dataType = "String",
+                        label = "Reason",
+                        value = FormResponse.Value(
+                            reply = """${item.commonIssue.commonIssue} 
+                            |${item.commonIssue.commentValue?.let { ", $it" } ?: ""}""".trimMargin()
+                        )
                     )
                 )
-            )
+            } else if (item.statusQuery != null) {
+                // Add group title
+                result.add(
+                    FormResponse.DataItem(
+                        dataType = "Text"
+                    ).also {
+                        it.localText = FormResponse.LocalText(
+                            "${index.plus(1)}.Query Result",
+                            args.readOnly.not()
+                        ) {
+                            redirectForEdit(false, item)
+                        }
+                    }
+                )
+                item.statusQuery.forEach {
+                    result.add(it)
+                }
+            }
         }
         return result
     }
 
-    private fun drawForm(data: List<FormResponse.DataItem>?) {
+    private fun redirectForEdit(isReportIssue: Boolean, formResponse: FormResponse.DataItem) {
+        if (isReportIssue) {
+            findNavController().navigate(
+                R.id.reportIssuePerDocFragment,
+                bundleOf(
+                    "FormResponse" to formResponse,
+                    "DocumentStatusQueryId" to formResponse.documentStatusQueryId,
+                    "VT" to formResponse.vT,
+                    "lastUpdateTime" to formResponse.lastUpdateDateTime
+                )
+            )
+        } else {
+            findNavController().navigate(R.id.editDocumentFragment, Bundle().apply {
+                putInt("DocumentStatusId", args.DocumentStatusId)
+                putString("VT", formResponse.vT)
+                putParcelable("documentBaseInfo", args.documentBaseInfo as Parcelable)
+                putBoolean("readOnly", args.readOnly)
+                putBoolean("gpsNeeded", args.gpsNeeded)
+                putString("type", "Query")
+                putInt("DocumentStatusQueryId", formResponse.documentStatusQueryId ?: -1)
+                putString("lastUpdateTime", formResponse.lastUpdateDateTime)
+            })
+        }
+    }
+
+    private fun drawForm(data: List<FormResponse.DataItem>?, readOnly: Boolean) {
         elementParser = ElementParser(
             this,
             data, viewDataBinding.layoutContainer, object :
@@ -166,7 +225,7 @@ class EditDocumentFragment : Fragment() {
                             )
                     )
                 }
-            }, args.readOnly
+            }, readOnly || args.type == "UnSuccess"
         )
     }
 
@@ -184,16 +243,28 @@ class EditDocumentFragment : Fragment() {
             }
             if (elementParser.isItemsValid()) {
                 MainScope().launch {
-                    val formResult = FormResult.RespondedFields().also {
-                        it.documentStatusId = args.DocumentStatusId
-                        it.vT = args.VT
+                    val formResult = FormResult.DocumentProgress().apply {
+                        if (args.type == "Success") {
+                            this.responseType = "Successful"
+                        } else {
+                            this.responseType = "Unsuccessful"
+                        }
+
+                        this.lastUpdateDateTime = arguments?.getString("lastUpdateTime")
                     }
-                    val result = elementParser.getResult(formResult)
+                    val result = elementParser.getResult(
+                        formResult = formResult,
+                        documentStatusQueryId = if (args.type != "Success")
+                            arguments?.getInt("DocumentStatusQueryId")
+                        else
+                            args.DocumentStatusId,
+                        vt = args.VT
+                    )
 
                     if (args.gpsNeeded)
                         formResult.gps = Gps(selectedGps?.first, selectedGps?.second)
 
-                    viewModel.submitForm(result as FormResult.RespondedFields)
+                    viewModel.submitForm(result as FormResult.DocumentProgress)
                 }
             }
         })

@@ -39,6 +39,7 @@ class CheckInFragment : Fragment() {
     private lateinit var viewDataBinding: FragmentCheckInBinding
     private val viewModel: CheckInViewModel by viewModel()
     private val args: CheckInFragmentArgs by navArgs()
+    private var gpsManager: LocationManager? = null
     private var gps: Gps? = null
     var checkInService: CheckInService? = null
 
@@ -115,7 +116,7 @@ class CheckInFragment : Fragment() {
                     .build()
             )
             .build()
-        val manager = LocationManager.Builder(requireContext().applicationContext)
+        gpsManager = LocationManager.Builder(requireContext().applicationContext)
             .fragment(this)
             .configuration(awesomeConfiguration)
             .notify(object : LocationListener {
@@ -143,8 +144,12 @@ class CheckInFragment : Fragment() {
                 }
             })
             .build()
-        if (!manager.isAnyDialogShowing)
-            manager.get()
+        refreshGps()
+    }
+
+    private fun refreshGps() {
+        if (gpsManager?.isAnyDialogShowing == false && isAdded)
+            gpsManager?.get()
     }
 
     private fun checkIn(locationItem: CheckInResponse.LocationItem? = null) {
@@ -154,7 +159,7 @@ class CheckInFragment : Fragment() {
         if (gps == null || !LocationHelper.isGpsEnable(requireContext())) {
             GlobalScope.launch(Dispatchers.Main) {
                 delay(2000)
-                initGps()
+                refreshGps()
                 checkIn(locationItem)
             }
             return

@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import com.afollestad.materialdialogs.customview.getCustomView
+import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.layout_environment.*
 import kotlinx.android.synthetic.main.layout_environment.view.*
 import org.koin.android.ext.android.inject
 import rezaei.mohammad.plds.R
