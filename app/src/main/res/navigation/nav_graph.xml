@@ -148,6 +148,10 @@
         <argument
             android:name="type"
             app:argType="string" />
+        <argument
+            android:name="lastUpdateTime"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <dialog
         tools:layout="@layout/fragment_image_viewer"

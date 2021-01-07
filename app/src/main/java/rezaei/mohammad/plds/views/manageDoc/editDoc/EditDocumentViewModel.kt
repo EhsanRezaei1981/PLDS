@@ -34,7 +34,8 @@ class EditDocumentViewModel(
         vt: String,
         readOnly: Boolean,
         type: String,
-        documentStatusQueryId: Int?
+        documentStatusQueryId: Int?,
+        previousVt: String?
     ) {
         viewModelScope.launch {
             _dataLoading.value = true
@@ -50,7 +51,7 @@ class EditDocumentViewModel(
                     "Query" -> remoteRepository.getStatusQueries(
                         RespondedFieldsRequest(
                             documentStatusId,
-                            vt,
+                            previousVt,
                             type,
                             true,
                             documentStatusQueryId

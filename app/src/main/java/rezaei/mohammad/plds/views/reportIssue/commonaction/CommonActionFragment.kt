@@ -103,7 +103,8 @@ class CommonActionFragment : Fragment() {
             when (it) {
                 is ApiResult.Success -> {
                     view?.snack(it.response.errorHandling, onDismissAction = {
-                        requireActivity().onBackPressed()
+                        if (isAdded)
+                            requireActivity().onBackPressed()
                     })
                 }
                 is ApiResult.Error -> view?.snack(it.errorHandling)
@@ -126,12 +127,14 @@ class CommonActionFragment : Fragment() {
                         reasonList = it
                     } ?: kotlin.run {
                         view?.snack(it.response.errorHandling, onDismissAction = {
-                            findNavController().popBackStack()
+                            if (isAdded)
+                                findNavController().popBackStack()
                         })
                     }
                 }
                 is ApiResult.Error -> view?.snack(it.errorHandling, onDismissAction = {
-                    findNavController().popBackStack()
+                    if (isAdded)
+                        findNavController().popBackStack()
                 })
             }
         }

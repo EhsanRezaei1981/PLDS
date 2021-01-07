@@ -186,7 +186,10 @@ class ReportIssuePerDocFragment : Fragment() {
             (it as? ApiResult.Success)?.let { error ->
                 btnSubmit.snack(
                     error.response.errorHandling,
-                    onDismissAction = { findNavController().popBackStack() })
+                    onDismissAction = {
+                        if (isAdded)
+                            findNavController().popBackStack()
+                    })
                 perDocViewModel.removeAllDocuments()
             }
             (it as? ApiResult.Error)?.let { error -> btnSubmit.snack(error.errorHandling) }

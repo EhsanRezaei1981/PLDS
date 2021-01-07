@@ -82,7 +82,8 @@ class EditDocumentFragment : Fragment() {
                 args.VT,
                 args.readOnly,
                 args.type,
-                arguments?.getInt("DocumentStatusQueryId")
+                arguments?.getInt("DocumentStatusQueryId"),
+                arguments?.getString("previousVT")
             )
 
         if (!args.readOnly && args.gpsNeeded && selectedGps == null)
@@ -179,6 +180,7 @@ class EditDocumentFragment : Fragment() {
             findNavController().navigate(R.id.editDocumentFragment, Bundle().apply {
                 putInt("DocumentStatusId", args.DocumentStatusId)
                 putString("VT", formResponse.vT)
+                putString("previousVT", args.VT)
                 putParcelable("documentBaseInfo", args.documentBaseInfo as Parcelable)
                 putBoolean("readOnly", args.readOnly)
                 putBoolean("gpsNeeded", args.gpsNeeded)
@@ -341,5 +343,4 @@ class EditDocumentFragment : Fragment() {
             cameraResult.value = data
         }
     }
-
 }

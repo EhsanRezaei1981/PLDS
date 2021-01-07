@@ -51,7 +51,8 @@ class DocumentStatusHistoryFragment : Fragment() {
     private fun setErrorHandler() {
         viewModel.getDocumentsStatusHistoryError.observe(this.viewLifecycleOwner, EventObserver {
             viewDataBinding.listDocs.snack(it.errorHandling, onDismissAction = {
-                findNavController().popBackStack()
+                if (isAdded)
+                    findNavController().popBackStack()
             })
 
         })
@@ -74,7 +75,8 @@ class DocumentStatusHistoryFragment : Fragment() {
                 args.documentBaseInfo,
                 readOnly,
                 doc.gPSIsNeeded == 1,
-                if (doc.isSuccess == 1) "Success" else "UnSuccess"
+                if (doc.isSuccess == 1) "Success" else "UnSuccess",
+                doc.lastUpdateDateTime
             )
         findNavController().tryNavigate(action)
     }

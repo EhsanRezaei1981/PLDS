@@ -73,12 +73,12 @@ class SubscriptionViewHolder private constructor(private val binding: ItemDocume
                     .getColor(binding.btnView.context.resources, R.color.colorSuccessful, null)
             )
 
-        if (document?.stage == "Start" || document?.stage == "End") {
+        if (document?.stage == "Start" || document?.stage == "End" || document?.statusId == null) {
             binding.btnModify.isGone = true
             binding.btnView.isGone = true
         } else {
-            binding.btnModify.isGone = document?.isSuccess == null
-            binding.btnView.isGone = document?.isSuccess == null
+            binding.btnModify.isGone = document.isSuccess == null
+            binding.btnView.isGone = document.isSuccess == null
         }
     }
 

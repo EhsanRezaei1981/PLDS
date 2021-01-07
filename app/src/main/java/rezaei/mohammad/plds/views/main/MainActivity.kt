@@ -339,12 +339,12 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
         }
     }
 
-    override fun onCheckedIn(checkedInLocation: CheckInResponse.Data) {
+    override fun onCheckedIn(checkedInLocation: CheckInResponse.Data) = runOnUiThread {
         checkCheckedIn()
         getCheckInFragment()?.onCheckedIn(checkedInLocation)
     }
 
-    override fun onCheckedOut() {
+    override fun onCheckedOut() = runOnUiThread {
         toolbar?.menu?.findItem(R.id.action_checkOut)?.isVisible = false
         supportActionBar?.subtitle = null
         findNavController(R.id.nav_host_fragment)
@@ -352,15 +352,16 @@ class MainActivity : AppCompatActivity(), CheckInViewCallbacks {
         hideLoading()
     }
 
-    override fun showLocationList(locationList: List<CheckInResponse.LocationItem>) {
-        getCheckInFragment()?.showLocationList(locationList)
-    }
+    override fun showLocationList(locationList: List<CheckInResponse.LocationItem>) =
+        runOnUiThread {
+            getCheckInFragment()?.showLocationList(locationList)
+        }
 
-    override fun onNoLocationFound() {
+    override fun onNoLocationFound() = runOnUiThread {
         getCheckInFragment()?.onNoLocationFound()
     }
 
-    override fun onError(errorHandling: ErrorHandling?) {
+    override fun onError(errorHandling: ErrorHandling?) = runOnUiThread {
         toolbar?.snack(errorHandling)
         hideLoading()
     }
