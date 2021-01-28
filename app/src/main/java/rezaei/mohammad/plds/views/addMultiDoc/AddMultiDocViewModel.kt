@@ -43,7 +43,6 @@ class AddMultiDocViewModel(
         _removeDocumentsList.value = mutableListOf()
         autoCheckAfterCodeDetect.value = true
         setupAutoCheck()
-        loadDocumentList()
     }
 
     fun loadDocumentList() {

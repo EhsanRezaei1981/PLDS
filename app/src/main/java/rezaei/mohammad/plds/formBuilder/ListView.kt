@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.LinearLayout
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -16,7 +17,7 @@ import com.yayandroid.locationmanager.configuration.GooglePlayServicesConfigurat
 import com.yayandroid.locationmanager.configuration.LocationConfiguration
 import com.yayandroid.locationmanager.configuration.PermissionConfiguration
 import com.yayandroid.locationmanager.listener.LocationListener
-import kotlinx.android.synthetic.main.list_view.view.*
+import kotlinx.android.synthetic.main.view_list.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.CourtResponse
@@ -28,7 +29,8 @@ import java.lang.ref.WeakReference
 open class ListView(
     context: Fragment,
     private val structure: FormResponse.DataItem,
-    private val onListItemSelectedCallback: OnListItemSelectedCallback?
+    private val onListItemSelectedCallback: OnListItemSelectedCallback?,
+    readOnly: Boolean = false
 ) : LinearLayout(context.requireContext()), FormView {
 
     private val fragment = WeakReference(context)
@@ -40,8 +42,20 @@ open class ListView(
     private var selectedSheriff: SheriffResponse.Sheriff? = null
     private var selectedGps: Pair<Double, Double>? = null
 
+    var isReadOnly: Boolean = false
+        set(value) {
+            spnItems.isEnabled = !value
+            spnCustomAction.isEnabled = !value
+            inputComment.isEnabled = !value
+            inputComment.isFocusable = !value
+            inputComment.isFocusableInTouchMode = !value
+            field = value
+        }
+
     init {
-        View.inflate(context.requireContext(), R.layout.list_view, this)
+        isSaveEnabled = true
+        View.inflate(context.requireContext(), R.layout.view_list, this)
+        isReadOnly = readOnly
         setStructure()
     }
 
@@ -63,6 +77,15 @@ open class ListView(
             override fun onNothingSelected(parent: MaterialSpinner) {
             }
         }
+
+        structure.value?.let { value ->
+            spnItems.selection = structure.list
+                ?.indexOfFirst { it.listId == value.listSelectedId ?: 0 } ?: 0
+            if (value.listComment?.isNotEmpty() == true) {
+                inputComment.isVisible = true
+                inputComment.editText?.setText(structure.value.listComment)
+            }
+        }
     }
 
     private fun setItems() {
@@ -71,7 +94,7 @@ open class ListView(
             it.description
         })
 
-        val adapter = ArrayAdapter<String>(context, R.layout.spinner_item, items)
+        val adapter = ArrayAdapter<String>(context, R.layout.item_spinner, items)
         spnItems.adapter = adapter
     }
 
@@ -83,14 +106,14 @@ open class ListView(
         if (selectedItem?.commentIsNeeded == 1) {
             inputComment.visibility = View.VISIBLE
         }
-        if (selectedItem?.gPSIsNeeded == 1) {
+        if (selectedItem?.gPSIsNeeded == 1 && !isReadOnly) {
             initGps()
         }
-        if (selectedItem?.customActionCode?.contains("ChangeCourt") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeCourt") == true && !isReadOnly) {
             onListItemSelectedCallback?.courtListNeeded(courtList)
             initCourtList()
         }
-        if (selectedItem?.customActionCode?.contains("ChangeSheriff") == true) {
+        if (selectedItem?.customActionCode?.contains("ChangeSheriff") == true && !isReadOnly) {
             onListItemSelectedCallback?.sheriffListNeeded(sheriffList)
             initSheriffList()
         }
@@ -112,7 +135,6 @@ open class ListView(
                     .fallbackToDefault(true)
                     .askForGooglePlayServices(false)
                     .askForSettingsApi(true)
-                    .failOnConnectionSuspended(true)
                     .failOnSettingsApiSuspended(false)
                     .ignoreLastKnowLocation(false)
                     .build()
@@ -283,7 +305,7 @@ open class ListView(
 
     override val result: ElementResult?
         get() {
-            var result: ElementResult = if (selectedItem?.customActionCode != "Issue")
+            return if (selectedItem?.customActionCode != "Issue")
                 ElementResult.ListResult(
                     elementId,
                     ListItem(
@@ -300,6 +322,8 @@ open class ListView(
                                 )
                             ) else null
                     ),
+                    structure.value?.vTMTId,
+                    structure.value?.mTId,
                     if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
@@ -313,13 +337,12 @@ open class ListView(
                     selectedItem?.listId,
                     selectedItem?.description,
                     null,
-                    if (selectedGps != null)
+                    gps = if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
                             selectedGps?.second
                         ) else null
                 )
-            return result
         }
 
 }

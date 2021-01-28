@@ -4,34 +4,49 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
-import kotlinx.android.synthetic.main.string_view.view.*
+import kotlinx.android.synthetic.main.view_string.view.*
 import rezaei.mohammad.plds.data.model.response.FormResponse
 
 import java.util.*
 
-class DatePicker(context: Context?, structure: FormResponse.DataItem) :
+class DatePicker(
+    context: Context?,
+    structure: FormResponse.DataItem,
+    readOnly: Boolean = false
+) :
     TextInputView(context, structure), DatePickerDialog.OnDateSetListener {
 
     init {
-        initDatePicker()
+        isSaveEnabled = true
+        isReadOnly = readOnly
+        initDatePicker(structure)
         disableEditable()
     }
 
     @SuppressLint("SetTextI18n")
-    private fun initDatePicker() {
+    private fun initDatePicker(structure: FormResponse.DataItem) {
+        val year: Int
+        val month: Int
+        val dayOfMonth: Int
+
+        val selectedDate = structure.value?.reply?.split("/", "-")
         val date = Calendar.getInstance()
+        year = selectedDate?.get(0)?.toInt() ?: date.get(Calendar.YEAR)
+        month = selectedDate?.get(1)?.toInt()?.minus(1) ?: date.get(Calendar.MONTH)
+        dayOfMonth = selectedDate?.get(2)?.toInt() ?: date.get(Calendar.DAY_OF_MONTH)
+
+
         inputText.editText?.setOnClickListener {
             DatePickerDialog(
                 context, this,
-                date.get(Calendar.YEAR),
-                date.get(Calendar.MONTH),
-                date.get(Calendar.DAY_OF_MONTH)
+                year,
+                month,
+                dayOfMonth
             ).show()
         }
+
         inputText.editText?.setText(
-            "${date.get(Calendar.YEAR)}/" +
-                    "${date.get(Calendar.MONTH).plus(1).to2Digit()}/" +
-                    date.get(Calendar.DAY_OF_MONTH).to2Digit()
+            "${year}/" + "${month.plus(1).to2Digit()}/" + dayOfMonth.to2Digit()
         )
     }
 

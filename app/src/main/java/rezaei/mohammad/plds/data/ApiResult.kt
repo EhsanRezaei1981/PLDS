@@ -22,11 +22,11 @@ import rezaei.mohammad.plds.data.model.response.ErrorHandling
  * A generic class that holds a value with its loading status.
  * @param <T>
  */
-sealed class Result<out R> {
+sealed class ApiResult<out R> {
 
-    data class Success<out T>(val response: T) : Result<T>()
-    data class Error(val errorHandling: ErrorHandling?) : Result<Nothing>()
-    object Loading : Result<Nothing>()
+    data class Success<out T>(val response: T) : ApiResult<T>()
+    data class Error(val errorHandling: ErrorHandling?) : ApiResult<Nothing>()
+    object Loading : ApiResult<Nothing>()
 
     override fun toString(): String {
         return when (this) {
@@ -38,7 +38,7 @@ sealed class Result<out R> {
 }
 
 /**
- * `true` if [Result] is of type [Success] & holds non-null [Success.data].
+ * `true` if [ApiResult] is of type [Success] & holds non-null [Success.data].
  */
-val Result<*>.succeeded
-    get() = this is Result.Success && response != null
+val ApiResult<*>.succeeded
+    get() = this is ApiResult.Success && response != null

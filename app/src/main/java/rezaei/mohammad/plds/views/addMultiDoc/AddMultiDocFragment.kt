@@ -9,7 +9,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
-import kotlinx.android.synthetic.main.add_multi_doc_fragment.*
+import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -17,13 +17,14 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
-import rezaei.mohammad.plds.databinding.AddMultiDocFragmentBinding
+import rezaei.mohammad.plds.databinding.FragmentAddMultiDocBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceFragmentDirections
 import rezaei.mohammad.plds.views.main.GlobalViewModel
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragment
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueFragmentDirections
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocFragment
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocFragmentDirections
 
 class AddMultiDocFragment : Fragment() {
 
@@ -43,7 +44,7 @@ class AddMultiDocFragment : Fragment() {
             DocumentType.valueOf(arguments?.getString(DOC_TYPE)!!)
         )
     }
-    private lateinit var viewDataBinding: AddMultiDocFragmentBinding
+    private lateinit var viewDataBinding: FragmentAddMultiDocBinding
     private lateinit var documentAdapter: DocumentAdapter
     // live data of document list for parent fragments access
     lateinit var documentList: LiveData<MutableList<Document>>
@@ -52,8 +53,8 @@ class AddMultiDocFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.add_multi_doc_fragment, container, false)
-        viewDataBinding = AddMultiDocFragmentBinding.bind(root).apply {
+        val root = inflater.inflate(R.layout.fragment_add_multi_doc, container, false)
+        viewDataBinding = FragmentAddMultiDocBinding.bind(root).apply {
             this.viewmodel = this@AddMultiDocFragment.viewModel
         }
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
@@ -70,15 +71,16 @@ class AddMultiDocFragment : Fragment() {
         setupItemRemover()
         duplicateItemMessage()
         setupRecyclerScroll()
+        viewModel.loadDocumentList()
     }
 
     private fun navigateToQrScanner() {
         val action =
-            if (parentFragment is ReportIssueFragment)
-                ReportIssueFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
+            if (parentFragment is ReportIssuePerDocFragment)
+                ReportIssuePerDocFragmentDirections.actionReportIssueFragmentToQrReaderFragment()
             else
                 GetDocReferenceFragmentDirections.actionGetDocReferenceFragmentToQrReaderFragment()
-        findNavController().navigate(action)
+        findNavController().tryNavigate(action)
     }
 
     private fun setupRecyclerView() {
@@ -96,7 +98,7 @@ class AddMultiDocFragment : Fragment() {
     }
 
     private fun setupItemRemover() {
-        viewModel.documentRemoveEvent.observe(this, EventObserver {
+        viewModel.documentRemoveEvent.observe(this.viewLifecycleOwner, EventObserver {
             listDocs?.snack(
                 message = ErrorHandling(errorMessage = getString(R.string.item_removed)),
                 actionText = getString(R.string.undo),
@@ -105,7 +107,7 @@ class AddMultiDocFragment : Fragment() {
                 duration = 3000
             )
         })
-        viewModel.allDocumentsRemoveEvent.observe(this, EventObserver {
+        viewModel.allDocumentsRemoveEvent.observe(this.viewLifecycleOwner, EventObserver {
             listDocs?.snack(
                 ErrorHandling(errorMessage = getString(R.string.all_items_deleted)),
                 getString(R.string.undo),
@@ -117,13 +119,13 @@ class AddMultiDocFragment : Fragment() {
     }
 
     private fun duplicateItemMessage() {
-        viewModel.duplicateDocumentEvent.observe(this, EventObserver {
+        viewModel.duplicateDocumentEvent.observe(this.viewLifecycleOwner, EventObserver {
             viewDataBinding.listDocs.snack(ErrorHandling(errorMessage = getString(R.string.doc_exist)))
         })
     }
 
     private fun setupRecyclerScroll() {
-        viewModel.documentsList.observe(this, Observer {
+        viewModel.documentsList.observe(this.viewLifecycleOwner, Observer {
             listDocs?.post {
                 listDocs?.smoothScrollToPosition(0)
             }

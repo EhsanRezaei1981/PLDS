@@ -23,7 +23,7 @@ interface ApiInterface {
     suspend fun getDynamicFieldsSuccessful(@Body getDynamicFieldsRequest: GetDynamicFieldsRequest): FormResponse?
 
     @POST("Tracking/DocumentStatusCreateResponse")
-    suspend fun sendDynamicFieldResponse(@Body formResult: FormResult): BaseResponse<Unit>?
+    suspend fun sendDynamicFieldResponse(@Body formResult: FormResult.DocumentProgress): BaseResponse<Unit>?
 
     @POST("Tracking/GetCourts")
     suspend fun getCourts(@Body unit: Unit): CourtResponse?
@@ -33,5 +33,47 @@ interface ApiInterface {
 
     @POST("Tracking/RetrieveCommonIssues")
     suspend fun getCommonIssues(@Body commonIssueRequest: DocumentsInfoItem): CommonIssuesResponse?
+
+    @POST("Tracking/GetDocumentBaseInfo")
+    suspend fun getDocumentBaseInfo(@Body documentStatusRequest: DocumentStatusRequest): DocumentBaseInfoResponse?
+
+    @POST("Tracking/GetDocumentStatusHistory")
+    suspend fun getDocumentStatusHistory(@Body documentStatusHistoryRequest: DocumentBaseInfoResponse.Data): DocumentStatusHistoryResponse?
+
+    @POST("Tracking/GetRespondedFields")
+    suspend fun getRespondedFields(@Body respondedFieldsRequest: RespondedFieldsRequest): FormResponse?
+
+    @POST("Tracking/GetStatusSuccesses")
+    suspend fun getStatusSuccesses(@Body respondedFieldsRequest: RespondedFieldsRequest): FormResponse?
+
+    @POST("Tracking/GetStatusQueries")
+    suspend fun getStatusQueries(@Body respondedFieldsRequest: RespondedFieldsRequest): FormResponse?
+
+    @POST("Tracking/GetFileByMainLegalInfo")
+    suspend fun getFileByMainLegalInfo(@Body getFileRequest: GetFileRequest): GetFileResponse?
+
+    @POST("Tracking/UpdateRespondedFields")
+    suspend fun updateRespondedFields(@Body updateRespondedFieldsRequest: FormResult.DocumentProgress): BaseResponse<Unit>?
+
+    @POST("Tracking/CheckIn")
+    suspend fun checkIn(@Body checkInRequest: CheckInRequest): CheckInResponse?
+
+    @POST("Tracking/CheckOut")
+    suspend fun checkOut(@Body checkOutRequest: CheckOutRequest): BaseResponse<Unit>?
+
+    @POST("Tracking/UserTracking")
+    suspend fun userTracking(@Body userTrackRequest: UserTrackRequest): BaseResponse<Unit>?
+
+    @POST("Tracking/RetrieveDocumentsByLocation")
+    suspend fun getDocumentListOnLocation(@Body getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest): DocumentOnLocationResponse?
+
+    @POST("Tracking/CommonActionRetrieve")
+    suspend fun getCommonActionReasons(@Body commonActionReasonsRequest: CommonActionReasonsRequest): CommonActionReasonsResponse?
+
+    @POST("Tracking/CommonActionHistoryCreate")
+    suspend fun submitCommonActionForm(@Body commonActionResult: FormResult.CommonAction): BaseResponse<Unit>?
+
+    @POST("Tracking/Reset")
+    suspend fun resetCheckInOutOperation(@Body resetCheckInRequest: ResetCheckInRequest): BaseResponse<Unit>?
 
 }

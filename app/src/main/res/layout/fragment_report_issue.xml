@@ -7,7 +7,7 @@
 
         <variable
             name="viewmodel"
-            type="rezaei.mohammad.plds.views.reportIssue.ReportIssueViewModel" />
+            type="rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocViewModel" />
 
         <import type="android.view.View" />
     </data>
@@ -19,7 +19,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:context=".views.reportIssue.ReportIssueFragment">
+            tools:context=".views.reportIssue.perdocument.ReportIssuePerDocFragment">
 
             <FrameLayout
                 android:id="@+id/multiAddDoc"
@@ -76,7 +76,7 @@
                         android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
                         android:layout_marginBottom="8dp"
-                        android:enabled="@{viewmodel.dataExist ? true : false}"
+                        android:enabled="@{viewmodel.dataExist}"
                         android:onClick="@{() -> viewmodel.submitForm()}"
                         android:text="@string/submit"
                         android:textAllCaps="false"

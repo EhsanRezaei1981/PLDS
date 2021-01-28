@@ -20,12 +20,20 @@ import rezaei.mohammad.plds.data.remote.RefreshTokenAuthenticator
 import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.util.ChangeLog
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocViewModel
+import rezaei.mohammad.plds.views.checkin.CheckInViewModel
+import rezaei.mohammad.plds.views.docListByLocation.DocListByLocationViewModel
 import rezaei.mohammad.plds.views.docProgress.DocProgressViewModel
 import rezaei.mohammad.plds.views.getDocReference.GetDocReferenceViewModel
 import rezaei.mohammad.plds.views.login.LoginViewModel
 import rezaei.mohammad.plds.views.loginInfo.LoginInfoViewModel
 import rezaei.mohammad.plds.views.main.GlobalViewModel
-import rezaei.mohammad.plds.views.reportIssue.ReportIssueViewModel
+import rezaei.mohammad.plds.views.manageDoc.ManageDocumentViewModel
+import rezaei.mohammad.plds.views.manageDoc.docStatusHistory.DocumentStatusHistoryViewModel
+import rezaei.mohammad.plds.views.manageDoc.editDoc.EditDocumentViewModel
+import rezaei.mohammad.plds.views.manageDoc.imageViewer.ImageViewerViewModel
+import rezaei.mohammad.plds.views.manualfunctionality.ManualFunctionalityViewModel
+import rezaei.mohammad.plds.views.reportIssue.commonaction.CommonActionViewModel
+import rezaei.mohammad.plds.views.reportIssue.perdocument.ReportIssuePerDocViewModel
 import rezaei.mohammad.plds.views.submitForm.SubmitFormViewModel
 import java.util.concurrent.TimeUnit
 
@@ -80,7 +88,7 @@ object Module {
 
         viewModel { LoginViewModel(get(), get(), get()) }
 
-        viewModel { GlobalViewModel(get(), get()) }
+        viewModel { GlobalViewModel(get(), get(), get()) }
 
         viewModel { GetDocReferenceViewModel(get(), get()) }
 
@@ -96,8 +104,40 @@ object Module {
 
         viewModel { SubmitFormViewModel(get(), get()) }
 
-        viewModel { ReportIssueViewModel(get(), get()) }
+        viewModel {
+            ReportIssuePerDocViewModel(
+                get(),
+                get()
+            )
+        }
 
         viewModel { LoginInfoViewModel(get()) }
+
+        viewModel { (docRefNo: MutableLiveData<String>) ->
+            ManageDocumentViewModel(
+                get(),
+                docRefNo
+            )
+        }
+
+        viewModel { CommonActionViewModel(get() as RemoteRepository) }
+
+        viewModel { DocumentStatusHistoryViewModel(get()) }
+
+        viewModel { EditDocumentViewModel(get() as RemoteRepository) }
+
+        viewModel { ImageViewerViewModel(get() as RemoteRepository) }
+
+        viewModel { ManualFunctionalityViewModel(get() as RemoteRepository) }
+
+        viewModel { CheckInViewModel() }
+
+        viewModel {
+            DocListByLocationViewModel(
+                get() as RemoteRepository,
+                get() as LocalRepository
+            )
+        }
+
     }
 }

@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.response.LoginResponse
 import rezaei.mohammad.plds.data.preference.PreferenceManager
@@ -30,13 +30,13 @@ class LoginViewModel(
     private val _passwordErr = MutableLiveData<Int>()
     val passwordErr: LiveData<Int> = _passwordErr
 
-    private val _loginResultEvent = MutableLiveData<Event<Result<LoginResponse>>>()
-    val loginResultEvent: LiveData<Event<Result<LoginResponse>>> = _loginResultEvent
+    private val _loginResultEvent = MutableLiveData<Event<ApiResult<LoginResponse>>>()
+    val loginResultEvent: LiveData<Event<ApiResult<LoginResponse>>> = _loginResultEvent
 
     init {
         //login automatically after first one
         if (preferenceManager.authToken != null)
-            _loginResultEvent.value = Event(Result.Success(LoginResponse()))
+            _loginResultEvent.value = Event(ApiResult.Success(LoginResponse()))
     }
 
 
@@ -47,7 +47,7 @@ class LoginViewModel(
             viewModelScope.launch {
                 val result = remoteRepository.login(username.value!!, password.value!!)
                 _loginResultEvent.value = Event(result)
-                (result as? Result.Success)?.let { saveUser(it.response) }
+                (result as? ApiResult.Success)?.let { saveUser(it.response) }
                 _isLoading.value = false
             }
         }

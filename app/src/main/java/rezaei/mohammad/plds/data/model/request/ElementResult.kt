@@ -4,18 +4,26 @@ import com.google.gson.annotations.SerializedName
 
 sealed class ElementResult {
 
-    class FileResult(
+    data class FileResult(
         @field:SerializedName("Id")
         val id: Int? = null,
         @field:SerializedName("File")
-        val choosenFile: ChoosenFile? = null
+        val chosenFile: ChosenFile? = null,
+        @field:SerializedName("VTMTId")
+        val vTMTId: String? = null,
+        @field:SerializedName("MTId")
+        val mTId: Int? = null
     ) : ElementResult()
 
-    class ListResult(
+    data class ListResult(
         @field:SerializedName("Id")
         val id: Int? = null,
         @field:SerializedName("Item")
         val listItem: ListItem? = null,
+        @field:SerializedName("VTMTId")
+        val vTMTId: String? = null,
+        @field:SerializedName("MTId")
+        val mTId: Int? = null,
         @Transient
         val gps: Gps? = null
     ) : ElementResult()
@@ -24,10 +32,14 @@ sealed class ElementResult {
         @field:SerializedName("Id")
         val id: Int? = null,
         @field:SerializedName("Reply")
-        val reply: String? = null
+        val reply: String? = null,
+        @field:SerializedName("VTMTId")
+        val vTMTId: String? = null,
+        @field:SerializedName("MTId")
+        val mTId: Int? = null
     ) : ElementResult()
 
-    class IssueResult(
+    data class IssueResult(
         @field:SerializedName("Comment")
         val comment: String? = null,
         @field:SerializedName("Date")
@@ -38,14 +50,17 @@ sealed class ElementResult {
         val selectedIssueDescription: String? = null,
         @field:SerializedName("CustomAction")
         val customAction: CustomAction? = null,
+        @field:SerializedName("VT")
+        var vT: String? = null,
+        @field:SerializedName("DocumentStatusQueryId")
+        var documentStatusQueryId: Int? = null,
         @Transient
         val gps: Gps? = null
     ) : ElementResult()
 
-
 }
 
-data class ChoosenFile(
+data class ChosenFile(
     @field:SerializedName("Extension")
     val extension: String? = null,
 
@@ -56,7 +71,10 @@ data class ChoosenFile(
     val size: Int? = null,
 
     @field:SerializedName("Filename")
-    val filename: String? = null
+    val filename: String? = null,
+
+    @field:SerializedName("FileId")
+    val fileId: Int? = null
 )
 
 data class ListItem(
@@ -92,4 +110,13 @@ data class Data(
 
     @field:SerializedName("SheriffAreaName")
     val sheriffAreaName: String? = null
+)
+
+data class Item(
+
+    @field:SerializedName("Text")
+    val text: String? = null,
+
+    @field:SerializedName("Id")
+    val id: String? = null
 )

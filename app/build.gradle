@@ -4,7 +4,8 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs.kotlin"
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'io.fabric'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.appdistribution'
 
 // Load keystore
 def keystorePropertiesFile = rootProject.file("local.properties")
@@ -13,7 +14,7 @@ keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
-        visro {
+        prosource {
             storeFile file(keystoreProperties['file'])
             storePassword keystoreProperties['storepass']
             keyPassword keystoreProperties['keypass']
@@ -25,8 +26,8 @@ android {
         applicationId "rezaei.mohammad.plds"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 7
-        versionName "1.1.4"
+        versionCode 31
+        versionName '1.3.11'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
@@ -35,12 +36,9 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.visro
         }
         debug {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-//            signingConfig signingConfigs.visro
         }
     }
 
@@ -56,6 +54,29 @@ android {
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_1_8
     }
+    flavorDimensions 'stage'
+    productFlavors {
+        dev {
+            dimension 'stage'
+            applicationIdSuffix '.debug'
+            versionNameSuffix '-DEBUG'
+            firebaseAppDistribution {
+                releaseNotes="Add condition for show modify view buttons"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
+            signingConfig signingConfigs.prosource
+        }
+        pro {
+            dimension 'stage'
+            versionCode 14
+            versionName "1.2.3"
+            firebaseAppDistribution {
+                releaseNotes = "User should check out before sign out"
+                testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
+            }
+            signingConfig signingConfigs.prosource
+        }
+    }
 }
 
 androidExtensions {
@@ -66,28 +87,28 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
+    implementation 'androidx.core:core-ktx:1.3.1'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion"
     implementation "androidx.lifecycle:lifecycle-extensions:$archLifecycleVersion"
-    implementation 'com.google.android.material:material:1.2.0-alpha05'
+    implementation 'com.google.android.material:material:1.3.0-alpha02'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.2.0'
-    implementation 'com.google.firebase:firebase-core:17.2.3'
-    implementation 'com.google.firebase:firebase-analytics:17.2.3'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
+    implementation 'com.google.firebase:firebase-core:17.4.4'
+    implementation 'com.google.firebase:firebase-analytics:17.5.0'
+    implementation 'com.google.firebase:firebase-crashlytics:17.1.1'
     kapt "androidx.lifecycle:lifecycle-compiler:$archLifecycleVersion"
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$archLifecycleVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
-    implementation 'com.google.code.gson:gson:2.8.5'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.7.2'
     implementation "org.koin:koin-androidx-scope:$koin_version"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
     implementation "org.koin:koin-androidx-ext:$koin_version"
-    implementation "androidx.preference:preference-ktx:1.1.0"
+    implementation "androidx.preference:preference-ktx:1.1.1"
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     implementation "androidx.room:room-runtime:$roomVersion"
@@ -98,11 +119,14 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:files:3.1.1'
     implementation 'com.afollestad.material-dialogs:input:3.1.1'
     implementation 'com.github.MohammadRezaei92:MaterialSpinner:search'
-    implementation 'com.yayandroid:LocationManager:2.0.4'
+    implementation 'com.yayandroid:LocationManager:2.4.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.android.support:multidex:2.0.1'
+    implementation 'com.github.bumptech.glide:glide:4.11.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
 
 
 

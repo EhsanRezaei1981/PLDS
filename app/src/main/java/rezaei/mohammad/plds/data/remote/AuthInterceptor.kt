@@ -6,17 +6,17 @@ import rezaei.mohammad.plds.data.preference.PreferenceManager
 
 class AuthInterceptor(private val preferenceManager: PreferenceManager) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
-        val builder = request.newBuilder()
-
-        //add token to each request
-        builder.header("Authorization", "Bearer ${preferenceManager.authToken}")
+        val request = chain.request().newBuilder().addHeader(
+            "Authorization",
+            "Bearer ${preferenceManager.authToken}"
+        )
+        // execute request
+        val response = chain.proceed(request.build())
 
         //save token from requests
-        val token = request.header("jatoken")
+        val token = response.header("JAToken")
         token?.let { preferenceManager.authToken = it }
 
-        val newRequest = builder.build()
-        return chain.proceed(newRequest)
+        return response
     }
 }

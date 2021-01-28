@@ -14,5 +14,8 @@ data class LoginRequest(
     private val systemKey: String? = "PLDS",
 
     @field:SerializedName("Password")
-    val password: String? = null
+    val password: String? = null,
+
+    @field:SerializedName("DeviceInfo")
+    val deviceInfo: String? = null
 )

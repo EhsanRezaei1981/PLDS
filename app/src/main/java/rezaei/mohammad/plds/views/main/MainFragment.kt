@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_main.*
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rezaei.mohammad.plds.BuildConfig
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.util.setActivityTitle
+import rezaei.mohammad.plds.util.tryNavigate
 
 class MainFragment : Fragment() {
+
+    private val globalViewModel: GlobalViewModel by sharedViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,26 +31,67 @@ class MainFragment : Fragment() {
             navigateToGetDocRef()
         }
 
-        btnReportIssue.setOnClickListener {
-            navigateToReportIssue()
+        btnReportIssueGeneral.setOnClickListener {
+            navigateToCommonAction()
+        }
+
+        btnReportIssueDocument.setOnClickListener {
+            navigateToReportIssuePerDocument()
+        }
+
+        btnManageDocument.setOnClickListener {
+            navigateToManageDoc()
         }
 
         setVersionName()
     }
 
     private fun navigateToGetDocRef() {
-        val action = MainFragmentDirections.actionMainActivityFragmentToGetDocReferenceFragment()
-        findNavController().navigate(action)
+        val action = if (isCheckedIn())
+            MainFragmentDirections.actionMainActivityFragmentToGetDocReferenceFragment()
+        else
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
+                null,
+                chekinPartName = "UpdateDocumentProgress"
+            )
+        findNavController().tryNavigate(action)
     }
 
-    private fun navigateToReportIssue() {
-        val action = MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
-        findNavController().navigate(action)
+    private fun navigateToReportIssuePerDocument() {
+        val action = if (isCheckedIn())
+            MainFragmentDirections.actionMainActivityFragmentToReportIssueFragment()
+        else
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
+                null,
+                chekinPartName = "ReportIssuePerDocument"
+            )
+        findNavController().tryNavigate(action)
     }
+
+    private fun navigateToCommonAction() {
+        val action = if (isCheckedIn())
+            MainFragmentDirections.actionMainActivityFragmentToReportIssueInGeneralFragment()
+        else
+            MainFragmentDirections.actionMainActivityFragmentToCheckInFragment(
+                null,
+                chekinPartName = "ReportIssueInGeneral"
+            )
+        findNavController().tryNavigate(action)
+    }
+
+    private fun navigateToManageDoc() {
+        val action = MainFragmentDirections.actionMainActivityFragmentToManageDocumentFragment()
+        findNavController().tryNavigate(action)
+    }
+
+    private fun isCheckedIn(): Boolean {
+        val checkInService = (requireActivity() as MainActivity).checkInService
+        return checkInService != null && checkInService.isCheckedIn
+    }
+
 
     private fun setVersionName() {
         txtVersion.text = "v${BuildConfig.VERSION_NAME}"
     }
-
 
 }

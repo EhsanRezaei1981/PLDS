@@ -1,11 +1,11 @@
-package rezaei.mohammad.plds.views.reportIssue
+package rezaei.mohammad.plds.views.reportIssue.perdocument
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
@@ -15,7 +15,7 @@ import rezaei.mohammad.plds.data.model.response.CommonIssuesResponse
 import rezaei.mohammad.plds.data.remote.RemoteRepository
 import rezaei.mohammad.plds.util.Event
 
-class ReportIssueViewModel(
+class ReportIssuePerDocViewModel(
     private val localRepository: LocalRepository,
     private val remoteRepository: RemoteRepository
 ) : ViewModel() {
@@ -29,22 +29,24 @@ class ReportIssueViewModel(
     private val _submitEvent = MutableLiveData<Event<Unit>>()
     val submitEvent: MutableLiveData<Event<Unit>> = _submitEvent
 
-    private val _submitFormEvent = MutableLiveData<Event<Result<BaseResponse<Unit>>>>()
-    val submitFormEvent: LiveData<Event<Result<BaseResponse<Unit>>>> = _submitFormEvent
+    private val _submitFormEvent = MutableLiveData<Event<ApiResult<BaseResponse<Unit>>>>()
+    val submitFormEvent: LiveData<Event<ApiResult<BaseResponse<Unit>>>> = _submitFormEvent
 
-    private val _commonIssues = MutableLiveData<Result<CommonIssuesResponse>>()
-    val commonIssues: LiveData<Result<CommonIssuesResponse>> = _commonIssues
+    private val _commonIssues = MutableLiveData<ApiResult<CommonIssuesResponse>>()
+    val commonIssues: LiveData<ApiResult<CommonIssuesResponse>> = _commonIssues
 
     init {
         setupDataExist()
     }
 
-    fun getCommonIssues() {
+    fun getCommonIssues(docRefNo: String? = null) {
         viewModelScope.launch {
-            if (localRepository.getAllDocument(DocumentType.ReportIssue).isNotEmpty()) {
+            if (localRepository.getAllDocument(DocumentType.ReportIssue)
+                    .isNotEmpty() || docRefNo.isNullOrEmpty().not()
+            ) {
                 _dataLoading.value = true
                 val result = remoteRepository.getCommonIssues(
-                    DocumentsInfoItem(getDocumentList().firstOrNull()?.docRefNo)
+                    DocumentsInfoItem(docRefNo ?: getDocumentList().firstOrNull()?.docRefNo)
                 )
                 _commonIssues.value = result
                 _dataLoading.value = false
@@ -66,7 +68,7 @@ class ReportIssueViewModel(
         _submitEvent.value = Event(Unit)
     }
 
-    fun submitForm(formResult: FormResult) {
+    fun submitForm(formResult: FormResult.DocumentProgress) {
         viewModelScope.launch {
             _dataLoading.value = true
             val result = remoteRepository.sendDynamicFieldResponse(formResult)
@@ -75,9 +77,18 @@ class ReportIssueViewModel(
         }
     }
 
+    fun updateRespondedField(formResult: FormResult.DocumentProgress) {
+        viewModelScope.launch {
+            _dataLoading.value = true
+            val result = remoteRepository.updateRespondedFields(formResult)
+            _submitFormEvent.value = Event(result)
+            _dataLoading.value = false
+        }
+    }
+
     private fun setupDataExist() {
         _commonIssues.observeForever {
-            dataExist.value = ((it as? Result.Success)?.response?.data?.isNotEmpty() == true)
+            dataExist.value = ((it as? ApiResult.Success)?.response?.data?.isNotEmpty() == true)
         }
     }
 }

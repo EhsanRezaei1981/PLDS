@@ -26,7 +26,8 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:setBitmap="@{viemodel.user.avatar}"
-            tools:src="@tools:sample/avatars" />
+            android:src="@drawable/user"
+            app:srcCompat="@drawable/user" />
 
         <TextView
             android:id="@+id/txtUserName"

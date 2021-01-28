@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
@@ -20,8 +20,8 @@ class GetDocReferenceViewModel(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
-    private val _documentStatusEvent = MutableLiveData<Event<Result<DocumentStatusResponse>>>()
-    val documentStatusEvent: LiveData<Event<Result<DocumentStatusResponse>>> =
+    private val _documentStatusEvent = MutableLiveData<Event<ApiResult<DocumentStatusResponse>>>()
+    val documentStatusEvent: LiveData<Event<ApiResult<DocumentStatusResponse>>> =
         _documentStatusEvent
 
 

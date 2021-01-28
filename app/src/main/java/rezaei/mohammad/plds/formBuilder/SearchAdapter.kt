@@ -7,7 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.Filter
 import android.widget.Filterable
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.spinner_item_2.view.*
+import kotlinx.android.synthetic.main.item_2_line.view.*
 import rezaei.mohammad.plds.R
 
 class SearchAdapter(private val mainItems: List<Pair<String, String?>>) :
@@ -21,7 +21,7 @@ class SearchAdapter(private val mainItems: List<Pair<String, String?>>) :
     }
 
     override fun getItem(position: Int): Any? {
-        return newItemList[position]
+        return newItemList[position].first
     }
 
     override fun getItemId(position: Int): Long {
@@ -35,7 +35,7 @@ class SearchAdapter(private val mainItems: List<Pair<String, String?>>) :
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View? {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.spinner_item_2, parent, false) as LinearLayout
+            .inflate(R.layout.item_2_line, parent, false) as LinearLayout
         view.mainText.text = newItemList[position].first
         newItemList[position].second?.let {
             view.subText.visibility = View.VISIBLE

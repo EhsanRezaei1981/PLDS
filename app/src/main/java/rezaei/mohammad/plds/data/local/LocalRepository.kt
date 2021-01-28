@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import rezaei.mohammad.plds.data.LocalRepository
+import rezaei.mohammad.plds.data.model.local.CheckInResponseEntity
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.LoginResponse
@@ -60,4 +61,29 @@ class LocalRepository(
             pldsDao.deleteAllDocs(documents)
         }
     }
+
+    override suspend fun insertCheckInResponse(checkInResponseEntity: CheckInResponseEntity) =
+        withContext(ioDispatcher) {
+            try {
+                pldsDao.deleteAllCheckInResponse()
+                pldsDao.insertCheckInResponse(checkInResponseEntity)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+    override suspend fun getCheckInResponse(): CheckInResponseEntity? =
+        withContext(ioDispatcher) {
+            pldsDao.getCheckInResponse()
+        }
+
+    override suspend fun deleteCheckInResponse(checkInResponseEntity: CheckInResponseEntity) =
+        withContext(ioDispatcher) {
+            pldsDao.deleteCheckInResponse(checkInResponseEntity)
+        }
+
+    override suspend fun deleteAllCheckInResponse() =
+        withContext(ioDispatcher) {
+            pldsDao.deleteAllCheckInResponse()
+        }
 }

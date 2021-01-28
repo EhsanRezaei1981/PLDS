@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragmen_login.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.databinding.FragmenLoginBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
@@ -45,8 +45,8 @@ class LoginFragment : Fragment() {
 
     private fun setupForLoginResponse() {
         viewModel.loginResultEvent.observe(this, EventObserver {
-            (it as? Result.Success)?.let { loginSuccess() }
-            (it as? Result.Error)?.let { error -> btnLogin.snack(error.errorHandling) }
+            (it as? ApiResult.Success)?.let { loginSuccess() }
+            (it as? ApiResult.Error)?.let { error -> btnLogin.snack(error.errorHandling) }
         })
     }
 

@@ -135,10 +135,10 @@ class PreferenceManager(context: Context) {
 
     var nighMode: Int
         get() {
-            return pref.getInt("NIGHT_MODE",AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
+            return pref.getInt("NIGHT_MODE", AppCompatDelegate.MODE_NIGHT_UNSPECIFIED)
         }
         set(value) {
-            pref.edit { putInt("NIGHT_MODE",value) }
+            pref.edit { putInt("NIGHT_MODE", value) }
         }
 
 }

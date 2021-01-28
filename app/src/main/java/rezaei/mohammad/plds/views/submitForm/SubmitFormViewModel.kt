@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.local.LocalRepository
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.FormResult
@@ -23,17 +23,17 @@ class SubmitFormViewModel(
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
 
-    private val _getCourtsEvent = MutableLiveData<Event<Result<CourtResponse>>>()
-    val getCourtsEvent: LiveData<Event<Result<CourtResponse>>> = _getCourtsEvent
+    private val _getCourtsEvent = MutableLiveData<Event<ApiResult<CourtResponse>>>()
+    val getCourtsEvent: LiveData<Event<ApiResult<CourtResponse>>> = _getCourtsEvent
 
-    private val _getSheriffsEvent = MutableLiveData<Event<Result<SheriffResponse>>>()
-    val getSheriffsEvent: LiveData<Event<Result<SheriffResponse>>> = _getSheriffsEvent
+    private val _getSheriffsEvent = MutableLiveData<Event<ApiResult<SheriffResponse>>>()
+    val getSheriffsEvent: LiveData<Event<ApiResult<SheriffResponse>>> = _getSheriffsEvent
 
     private val _submitEvent = MutableLiveData<Event<Unit>>()
     val submitEvent: LiveData<Event<Unit>> = _submitEvent
 
-    private val _submitFormEvent = MutableLiveData<Event<Result<BaseResponse<Unit>>>>()
-    val submitFormEvent: LiveData<Event<Result<BaseResponse<Unit>>>> = _submitFormEvent
+    private val _submitFormEvent = MutableLiveData<Event<ApiResult<BaseResponse<Unit>>>>()
+    val submitFormEvent: LiveData<Event<ApiResult<BaseResponse<Unit>>>> = _submitFormEvent
 
     private val _isMultiDoc = MutableLiveData<Boolean>()
     val isMultiDoc: LiveData<Boolean> = _isMultiDoc
@@ -63,7 +63,7 @@ class SubmitFormViewModel(
     suspend fun getDocumentList() =
         localRepository.getAllDocument(DocumentType.CheckProgress)
 
-    fun submitForm(formResult: FormResult) {
+    fun submitForm(formResult: FormResult.DocumentProgress) {
         viewModelScope.launch {
             _dataLoading.value = true
             val result = remoteRepository.sendDynamicFieldResponse(formResult)

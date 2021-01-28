@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import rezaei.mohammad.plds.data.Result
+import rezaei.mohammad.plds.data.ApiResult
 import rezaei.mohammad.plds.data.model.request.GetDynamicFieldsRequest
 import rezaei.mohammad.plds.data.model.response.DocumentStatusResponse
 import rezaei.mohammad.plds.data.model.response.FormResponse
@@ -22,14 +22,16 @@ class DocProgressViewModel(
     private val _onBackPressEvent = MutableLiveData<Event<Unit>>()
     val onBackPressEvent: LiveData<Event<Unit>> = _onBackPressEvent
 
-    private val _onYesPressEvent = MutableLiveData<Event<Result<FormResponse>>>()
-    val onYesPressEvent: LiveData<Event<Result<FormResponse>>> = _onYesPressEvent
+    private val _onYesPressEvent = MutableLiveData<Event<ApiResult<FormResponse>>>()
+    val onYesPressEvent: LiveData<Event<ApiResult<FormResponse>>> = _onYesPressEvent
 
-    private val _onNoPressEvent = MutableLiveData<Event<Result<FormResponse>>>()
-    val onNoPressEvent: LiveData<Event<Result<FormResponse>>> = _onNoPressEvent
+    private val _onNoPressEvent = MutableLiveData<Event<ApiResult<FormResponse>>>()
+    val onNoPressEvent: LiveData<Event<ApiResult<FormResponse>>> = _onNoPressEvent
 
     private val _dataLoading = MutableLiveData<Boolean>()
     val dataLoading: LiveData<Boolean> = _dataLoading
+
+    val yesNoButtonsIsVisible = MutableLiveData<Boolean>()
 
     fun start(documentStatus: DocumentStatusResponse.Data) {
         _documentStatus.value = documentStatus
@@ -50,6 +52,7 @@ class DocProgressViewModel(
             )
             _onNoPressEvent.value = Event(result)
             _dataLoading.value = false
+            yesNoButtonsIsVisible.value = true
         }
     }
 
@@ -64,6 +67,7 @@ class DocProgressViewModel(
             )
             _onYesPressEvent.value = Event(result)
             _dataLoading.value = false
+            yesNoButtonsIsVisible.value = true
         }
     }
 }

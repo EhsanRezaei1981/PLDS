@@ -1,6 +1,7 @@
 package rezaei.mohammad.plds.data.local
 
 import androidx.room.*
+import rezaei.mohammad.plds.data.model.local.CheckInResponseEntity
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.response.LoginResponse
@@ -28,5 +29,17 @@ interface PLDSDao {
 
     @Delete
     suspend fun deleteAllDocs(documents: List<Document>)
+
+    @Insert
+    suspend fun insertCheckInResponse(checkInResponseEntity: CheckInResponseEntity)
+
+    @Query("SELECT * FROM checkinresponseentity LIMIT 1")
+    suspend fun getCheckInResponse(): CheckInResponseEntity?
+
+    @Delete
+    suspend fun deleteCheckInResponse(checkInResponseEntity: CheckInResponseEntity)
+
+    @Query("DELETE FROM checkinresponseentity")
+    suspend fun deleteAllCheckInResponse()
 
 }
