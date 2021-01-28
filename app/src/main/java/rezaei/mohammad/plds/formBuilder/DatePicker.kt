@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Context
 import android.widget.DatePicker
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.android.synthetic.main.view_string.view.*
 import rezaei.mohammad.plds.data.model.response.FormResponse
 
@@ -35,6 +36,8 @@ class DatePicker(
         month = selectedDate?.get(1)?.toInt()?.minus(1) ?: date.get(Calendar.MONTH)
         dayOfMonth = selectedDate?.get(2)?.toInt() ?: date.get(Calendar.DAY_OF_MONTH)
 
+        if (!isReadOnly)
+            inputText.endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
 
         inputText.editText?.setOnClickListener {
             DatePickerDialog(
