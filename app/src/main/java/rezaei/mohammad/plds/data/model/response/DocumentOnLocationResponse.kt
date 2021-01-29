@@ -21,7 +21,14 @@ class DocumentOnLocationResponse : BaseResponse<List<DocumentOnLocationResponse.
         val documentReferenceNo: String? = null,
 
         @field:SerializedName("DaysPassed")
-        val daysPassed: String? = null
+        val daysPassed: String? = null,
+
+        @field:SerializedName("Plaintiff")
+        val plaintiff: String? = null,
+
+        @field:SerializedName("CaseNo")
+        val caseNo: String? = ""
+
     )
 }
 
