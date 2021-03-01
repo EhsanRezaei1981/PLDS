@@ -64,6 +64,9 @@
         <action
             android:id="@+id/action_reportIssuePerDocFragment_to_docListByLocationFragment"
             app:destination="@id/docListByLocationFragment" />
+        <action
+            android:id="@+id/action_reportIssuePerDocFragment_to_imageViewerFragment"
+            app:destination="@id/imageViewerFragment" />
     </fragment>
     <fragment
         android:id="@+id/qrReaderFragment"

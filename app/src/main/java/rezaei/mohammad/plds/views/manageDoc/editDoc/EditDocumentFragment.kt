@@ -37,7 +37,6 @@ import rezaei.mohammad.plds.data.model.response.SheriffResponse
 import rezaei.mohammad.plds.databinding.FragmentEditDocumentBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
-import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.util.tryNavigate
@@ -48,7 +47,7 @@ class EditDocumentFragment : Fragment() {
     private lateinit var viewDataBinding: FragmentEditDocumentBinding
     private val args: EditDocumentFragmentArgs by navArgs()
     private lateinit var elementParser: ElementParser
-    private lateinit var cameraResult: MutableLiveData<Intent>
+    private lateinit var imageResult: MutableLiveData<Intent>
     private var selectedGps: Pair<Double, Double>? = null
 
 
@@ -202,8 +201,8 @@ class EditDocumentFragment : Fragment() {
                     }
                 }
 
-                override fun onPhotoTaken(result: MutableLiveData<Intent>) {
-                    cameraResult = result
+                override fun onImageSelected(result: MutableLiveData<Intent>) {
+                    imageResult = result
                 }
 
                 override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
@@ -339,8 +338,8 @@ class EditDocumentFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == FileView.cameraRequest) {
-            cameraResult.value = data
+        if (resultCode == Activity.RESULT_OK) {
+            imageResult.value = data
         }
     }
 }

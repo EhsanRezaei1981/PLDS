@@ -1,11 +1,14 @@
 package rezaei.mohammad.plds.views.reportIssue.perdocument
 
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_add_multi_doc.*
@@ -20,13 +23,17 @@ import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest
+import rezaei.mohammad.plds.data.model.response.CourtResponse
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.FormResponse
+import rezaei.mohammad.plds.data.model.response.SheriffResponse
 import rezaei.mohammad.plds.databinding.FragmentReportIssueBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
+import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.util.tryNavigate
 import rezaei.mohammad.plds.views.addMultiDoc.AddMultiDocFragment
 import rezaei.mohammad.plds.views.main.GlobalViewModel
 import rezaei.mohammad.plds.views.main.MainActivity
@@ -35,6 +42,7 @@ class ReportIssuePerDocFragment : Fragment() {
 
     private val perDocViewModel: ReportIssuePerDocViewModel by viewModel()
     private val globalViewModel: GlobalViewModel by sharedViewModel()
+    private lateinit var imageResult: MutableLiveData<Intent>
     private lateinit var viewDataBinding: FragmentReportIssueBinding
     private lateinit var elementParser: ElementParser
 
@@ -133,10 +141,52 @@ class ReportIssuePerDocFragment : Fragment() {
                                         it.listId,
                                         it.gPSIsNeeded
                                     )
-                                })
+                                }),
+                            FormResponse.DataItem(
+                                isMandatory = 0,
+                                dataType = "File",
+                                label = "Image",
+                                dataTypeSetting = FormResponse.DataTypeSetting(
+                                    FormResponse.File(
+                                        cameraIsNeeded = true,
+                                        isFileBrowserNeeded = true
+                                    )
+                                )
+                            )
                         ),
                         viewDataBinding.layoutContainer,
-                        null
+                        object :
+                            ElementsActivityRequestCallback {
+                            override fun requestPermission(permission: String) {
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    requestPermissions(arrayOf(permission), 123)
+                                }
+                            }
+
+                            override fun onImageSelected(result: MutableLiveData<Intent>) {
+                                imageResult = result
+                            }
+
+                            override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
+                            }
+
+                            override fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>) {
+                            }
+
+                            override fun onPreviewImageClicked(
+                                fileId: Int?,
+                                fileVT: String?,
+                                base64: String?
+                            ) {
+                                findNavController().tryNavigate(
+                                    ReportIssuePerDocFragmentDirections
+                                        .actionReportIssuePerDocFragmentToImageViewerFragment(
+                                            base64 = base64,
+                                            getFileRequest = null
+                                        )
+                                )
+                            }
+                        }
                     )
                 } else {
                     btnSubmit.snack(ErrorHandling(errorMessage = getString(R.string.no_data_for_docs)))

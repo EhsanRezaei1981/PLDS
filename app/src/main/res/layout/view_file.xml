@@ -19,7 +19,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:orientation="horizontal">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTakePicture"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="0dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
+            android:textAllCaps="false"
+            android:visibility="gone"
+            app:icon="@drawable/ic_camera"
+            app:iconGravity="textStart"
+            app:iconPadding="8dp"
+            tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBrowseFile"
@@ -33,7 +49,9 @@
             android:text="@string/browse_file"
             android:textAllCaps="false"
             app:iconGravity="textStart"
-            app:iconPadding="8dp" />
+            android:visibility="gone"
+            app:iconPadding="8dp"
+            tools:visibility="visible" />
 
         <TextView
             android:id="@+id/txtFileExtensions"
@@ -43,6 +61,13 @@
             android:textColor="?android:textColorSecondary"
             android:textSize="14sp"
             tools:text="jpg,png" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="8dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnViewImage"
@@ -50,8 +75,9 @@
             android:layout_height="wrap_content"
             android:minWidth="56dp"
             android:visibility="gone"
+            android:text="@string/show_image"
+            android:textAllCaps="false"
             app:icon="@drawable/ic_image_preview"
-            app:iconPadding="0dp"
             tools:visibility="visible" />
 
         <com.google.android.material.button.MaterialButton
@@ -67,6 +93,7 @@
             app:iconPadding="0dp"
             app:iconTint="@color/colorFail"
             tools:visibility="visible" />
+
     </LinearLayout>
 
     <TextView

@@ -35,7 +35,6 @@ import rezaei.mohammad.plds.data.model.response.SheriffResponse
 import rezaei.mohammad.plds.databinding.FragmentSubmitFormBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
-import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
@@ -50,7 +49,7 @@ class SubmitFormFragment : Fragment() {
     private val args: SubmitFormFragmentArgs by navArgs()
 
     private lateinit var elementParser: ElementParser
-    private lateinit var cameraResult: MutableLiveData<Intent>
+    private lateinit var imageResult: MutableLiveData<Intent>
     private lateinit var courtList: MutableLiveData<List<CourtResponse.Court>>
     private lateinit var sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>
     private var selectedGps: Pair<Double, Double>? = null
@@ -88,8 +87,8 @@ class SubmitFormFragment : Fragment() {
                     }
                 }
 
-                override fun onPhotoTaken(result: MutableLiveData<Intent>) {
-                    cameraResult = result
+                override fun onImageSelected(result: MutableLiveData<Intent>) {
+                    imageResult = result
                 }
 
                 override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
@@ -178,8 +177,8 @@ class SubmitFormFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == FileView.cameraRequest) {
-            cameraResult.value = data
+        if (resultCode == Activity.RESULT_OK) {
+            imageResult.value = data
         }
     }
 

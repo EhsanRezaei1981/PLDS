@@ -10,9 +10,9 @@ import android.provider.MediaStore
 import android.util.Base64
 import android.view.View
 import android.widget.LinearLayout
-import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -23,6 +23,7 @@ import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChosenFile
 import rezaei.mohammad.plds.data.model.request.ElementResult
 import rezaei.mohammad.plds.data.model.response.FormResponse
+import rezaei.mohammad.plds.util.PathUtil
 import java.io.File
 import java.io.IOException
 import java.lang.ref.WeakReference
@@ -46,6 +47,7 @@ class FileView(
     var isReadOnly: Boolean = false
         set(value) {
             btnBrowseFile.isGone = value
+            btnTakePicture.isGone = value
             btnDeleteImage.isGone = value
             field = value
         }
@@ -68,14 +70,18 @@ class FileView(
 
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
-            btnBrowseFile.text = ""
-            btnBrowseFile.icon = ContextCompat.getDrawable(context, R.drawable.ic_camera)
-            btnBrowseFile.setOnClickListener { takePictureClick.invoke() }
-            setupOnActivityResult()
-        } else {
-            txtFileExtensions.text = structure.dataTypeSetting?.file?.extensions
+            btnTakePicture.isVisible = isReadOnly.not()
+            btnTakePicture.setOnClickListener { takePictureClick.invoke() }
+        } else
+            btnTakePicture.isVisible = false
+        if (structure.dataTypeSetting?.file?.isFileBrowserNeeded == true) {
+            btnBrowseFile.isVisible = isReadOnly.not()
+            txtFileExtensions.text = structure.dataTypeSetting.file.extensions
+            txtFileExtensions.isVisible = isReadOnly.not()
             btnBrowseFile.setOnClickListener { filePickerClick.invoke() }
-        }
+        } else
+            btnBrowseFile.isVisible = false
+        setupOnActivityResult()
     }
 
     private fun showImageExistLayouts() {
@@ -99,17 +105,36 @@ class FileView(
     }
 
     private val filePickerClick = {
+        fileRequestsCallback.onImageSelected(onActivityResult)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.requireActivity()
                     .checkSelfPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
             ) {
-                MaterialDialog(context.requireContext()).show {
-                    fileChooser { dialog, file ->
-                        selectedFile = file
-                        showImageExistLayouts()
-                        validate()
-                    }
+                val intent = Intent(Intent.ACTION_GET_CONTENT)
+                val intentType = StringBuilder()
+                val defaultIntentType = "$MIME_TYPE_IMAGE|$MIME_TYPE_PDF"
+                structure.dataTypeSetting?.file?.extensions?.split(",")?.forEach {
+                    if (
+                        it.equals("jpg", true) ||
+                        it.equals("png", true) ||
+                        it.equals("gif", true)
+                    )
+                        if (intentType.contains(MIME_TYPE_IMAGE).not()) {
+                            intentType.append(MIME_TYPE_IMAGE)
+                            intentType.append("|")
+                        }
+
+                    if (it.equals("pdf", true))
+                        if (intentType.contains(MIME_TYPE_PDF).not()) {
+                            intentType.append(MIME_TYPE_PDF)
+                            intentType.append("|")
+                        }
                 }
+                intentType.removeSuffix("|")
+                intent.type = if (intentType.isNullOrEmpty()
+                        .not()
+                ) intentType.toString() else defaultIntentType
+                context.startActivityForResult(intent, PICKFILE_REQUEST_CODE)
             } else {
                 fileRequestsCallback.requestPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
             }
@@ -126,7 +151,7 @@ class FileView(
     }
 
     private val takePictureClick = {
-        fileRequestsCallback.onPhotoTaken(onActivityResult)
+        fileRequestsCallback.onImageSelected(onActivityResult)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (context.requireActivity()
                     .checkSelfPermission(android.Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
@@ -227,19 +252,26 @@ class FileView(
 
     private fun setupOnActivityResult() {
         fragment.get()?.let { activity ->
-            onActivityResult.observe(activity, Observer<Intent> {
+            onActivityResult.observe(activity, Observer<Intent> { intent ->
                 /*takenPhoto = ImageCompressor.compressImage(
                     File(currentPhotoPath),
                     structure.dataTypeSetting?.file?.maxSize?.toLong() ?: 0
                 )*/
-                takenPhoto = File(currentPhotoPath).readBytes()
+                currentPhotoPath?.let {
+                    takenPhoto = File(it).readBytes()
+                    selectedFile = null
+                }
+                intent?.data?.let {
+                    selectedFile = File(PathUtil.getPath(context, it))
+                    takenPhoto = null
+                }
                 showImageExistLayouts()
                 validate()
             })
         }
     }
 
-    lateinit var currentPhotoPath: String
+    private var currentPhotoPath: String? = null
 
     @SuppressLint("SimpleDateFormat")
     @Throws(IOException::class)
@@ -259,13 +291,16 @@ class FileView(
 
     companion object {
         val cameraRequest = 2364
+        const val PICKFILE_REQUEST_CODE = 4123
+        const val MIME_TYPE_IMAGE = "image/*"
+        const val MIME_TYPE_PDF = "application/pdf"
     }
 
 }
 
 interface FileRequestsCallback {
     fun requestPermission(permission: String)
-    fun onPhotoTaken(result: MutableLiveData<Intent>)
+    fun onImageSelected(result: MutableLiveData<Intent>)
     fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?)
 }
 

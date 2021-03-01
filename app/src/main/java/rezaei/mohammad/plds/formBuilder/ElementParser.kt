@@ -216,8 +216,8 @@ class ElementParser(
                 elementsActivityRequestCallback?.requestPermission(permission)
             }
 
-            override fun onPhotoTaken(result: MutableLiveData<Intent>) {
-                elementsActivityRequestCallback?.onPhotoTaken(result)
+            override fun onImageSelected(result: MutableLiveData<Intent>) {
+                elementsActivityRequestCallback?.onImageSelected(result)
             }
 
             override fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?) {
@@ -232,7 +232,7 @@ class ElementParser(
 
 interface ElementsActivityRequestCallback {
     fun requestPermission(permission: String)
-    fun onPhotoTaken(result: MutableLiveData<Intent>)
+    fun onImageSelected(result: MutableLiveData<Intent>)
     fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>)
     fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>)
     fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?)

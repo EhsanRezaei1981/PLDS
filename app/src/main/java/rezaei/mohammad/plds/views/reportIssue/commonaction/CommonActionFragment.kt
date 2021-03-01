@@ -33,7 +33,6 @@ import rezaei.mohammad.plds.data.model.response.SheriffResponse
 import rezaei.mohammad.plds.databinding.FragmentCommonActionBinding
 import rezaei.mohammad.plds.formBuilder.ElementParser
 import rezaei.mohammad.plds.formBuilder.ElementsActivityRequestCallback
-import rezaei.mohammad.plds.formBuilder.FileView
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.snack
 import rezaei.mohammad.plds.util.tryNavigate
@@ -44,7 +43,7 @@ class CommonActionFragment : Fragment() {
     private val viewModel: CommonActionViewModel by viewModel()
     private lateinit var viewDataBinding: FragmentCommonActionBinding
     private lateinit var elementParser: ElementParser
-    private lateinit var cameraResult: MutableLiveData<Intent>
+    private lateinit var imageResult: MutableLiveData<Intent>
     private var reasonList: List<CommonActionReasonsResponse.Data>? = null
     private var selectedGps: Pair<Double, Double>? = null
 
@@ -158,7 +157,7 @@ class CommonActionFragment : Fragment() {
                 dataType = "File",
                 label = "Image",
                 dataTypeSetting = FormResponse.DataTypeSetting(
-                    FormResponse.File(cameraIsNeeded = true)
+                    FormResponse.File(cameraIsNeeded = true, isFileBrowserNeeded = true)
                 )
             ),
             FormResponse.DataItem(
@@ -179,8 +178,8 @@ class CommonActionFragment : Fragment() {
                     }
                 }
 
-                override fun onPhotoTaken(result: MutableLiveData<Intent>) {
-                    cameraResult = result
+                override fun onImageSelected(result: MutableLiveData<Intent>) {
+                    imageResult = result
                 }
 
                 override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
@@ -257,8 +256,8 @@ class CommonActionFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == FileView.cameraRequest) {
-            cameraResult.value = data
+        if (resultCode == Activity.RESULT_OK) {
+            imageResult.value = data
         }
     }
 
