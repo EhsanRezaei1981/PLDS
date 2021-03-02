@@ -104,7 +104,10 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
     data class DataTypeSetting(
 
         @field:SerializedName("File")
-        val file: File? = null
+        val file: File? = null,
+
+        @field:SerializedName("TodayDateNeeded")
+        val todayDateNeeded: Boolean = false
     ) : Parcelable
 
     @Parcelize

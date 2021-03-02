@@ -48,9 +48,10 @@ class DatePicker(
             ).show()
         }
 
-        inputText.editText?.setText(
-            "${year}/" + "${month.plus(1).to2Digit()}/" + dayOfMonth.to2Digit()
-        )
+        if (structure.dataTypeSetting?.todayDateNeeded == true)
+            inputText.editText?.setText(
+                "${year}/" + "${month.plus(1).to2Digit()}/" + dayOfMonth.to2Digit()
+            )
     }
 
     private fun disableEditable() {
