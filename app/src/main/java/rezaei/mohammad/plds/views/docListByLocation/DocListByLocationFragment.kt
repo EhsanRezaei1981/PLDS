@@ -5,17 +5,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.databinding.FragmentDocListByLocationBinding
 import rezaei.mohammad.plds.util.EventObserver
 import rezaei.mohammad.plds.util.setActivityTitle
 import rezaei.mohammad.plds.util.snack
+import rezaei.mohammad.plds.views.main.GlobalViewModel
 
 class DocListByLocationFragment : Fragment() {
 
     private val viewModel: DocListByLocationViewModel by viewModel()
+    private val globalViewModel: GlobalViewModel by sharedViewModel()
     private lateinit var viewDataBinding: FragmentDocListByLocationBinding
     private val args: DocListByLocationFragmentArgs by navArgs()
 
@@ -48,6 +52,14 @@ class DocListByLocationFragment : Fragment() {
     private fun setEventObserver() {
         viewModel.documentEvent.observe(viewLifecycleOwner, EventObserver {
             view?.snack(it)
+        })
+
+        viewModel.openManageDocEvent.observe(viewLifecycleOwner, EventObserver {
+            globalViewModel.docRefNo.value = it
+            findNavController().navigate(
+                DocListByLocationFragmentDirections
+                    .actionDocListByLocationFragmentToManageDocumentFragment()
+            )
         })
     }
 

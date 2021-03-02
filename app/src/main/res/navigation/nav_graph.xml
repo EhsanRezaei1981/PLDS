@@ -234,5 +234,8 @@
         <argument
             android:name="location"
             app:argType="rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest" />
+        <action
+            android:id="@+id/action_docListByLocationFragment_to_manageDocumentFragment"
+            app:destination="@id/manageDocumentFragment" />
     </fragment>
 </navigation>

@@ -30,6 +30,9 @@ class DocListByLocationViewModel(
     private val _documenttEvent = MutableLiveData<Event<ErrorHandling?>>()
     val documentEvent: LiveData<Event<ErrorHandling?>> = _documenttEvent
 
+    private val _openManageDocEvent = MutableLiveData<Event<String>>()
+    val openManageDocEvent: LiveData<Event<String>> = _openManageDocEvent
+
 
     fun getDocuments(getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest) {
         viewModelScope.launch {
@@ -95,5 +98,9 @@ class DocListByLocationViewModel(
                     )
                 )
         }
+    }
+
+    fun openManageDocumentPage(docRefNo: String) {
+        _openManageDocEvent.value = Event(docRefNo)
     }
 }

@@ -37,6 +37,23 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="DC 12563" />
 
+            <ImageButton
+                android:id="@+id/btnOpenManageDocument"
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginStart="16dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:onClick="@{(view) -> viewmodel.openManageDocumentPage(document.documentReferenceNo)}"
+                android:padding="4dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="@id/txtDocNo"
+                app:layout_constraintStart_toEndOf="@id/txtDocNo"
+                app:layout_constraintTop_toTopOf="@id/txtDocNo"
+                app:srcCompat="@drawable/ic_manage_doc"
+                app:tint="@color/colorAccent" />
+
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtClient"
                 android:layout_width="wrap_content"
