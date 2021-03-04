@@ -26,8 +26,8 @@ android {
         applicationId "rezaei.mohammad.plds"
         minSdkVersion 19
         targetSdkVersion 29
-        versionCode 32
-        versionName '1.3.12'
+        versionCode 44
+        versionName '1.3.24'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         multiDexEnabled true
@@ -61,7 +61,7 @@ android {
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             firebaseAppDistribution {
-                releaseNotes="Add clear button for date picker"
+                releaseNotes="Open document history directly insted of manage document"
                 testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"
             }
             signingConfig signingConfigs.prosource
