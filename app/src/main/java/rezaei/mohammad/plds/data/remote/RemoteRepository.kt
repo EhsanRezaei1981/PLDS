@@ -37,7 +37,7 @@ class RemoteRepository(
                         url = pref.getActiveEnvironment().first.trimEnd(
                             '/',
                             '\\'
-                        ) + "/WebCore/Account/Authenticate"
+                        ) + "/JWebCore/Account/Authenticate"
                     )
                 )
             }

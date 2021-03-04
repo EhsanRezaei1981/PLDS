@@ -25,6 +25,12 @@ class ChangeLog(private val pref: PreferenceManager) {
             "Add document list by location page",
             "Add manage document page"
         )
+        logs[16] = listOf(
+            "Taking photos added",
+            "Selecting photos taken added",
+            "CaseNo & Plaintiff on the list of documents added",
+            "Image in report issue added"
+        )
     }
 
     fun getLogFor(versionCode: Int): List<String>? {

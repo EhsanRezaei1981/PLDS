@@ -1,0 +1,12 @@
+## This file must *NOT* be checked into Version Control Systems,
+# as it contains information specific to your local configuration.
+#
+# Location of the SDK. This is only used by Gradle.
+# For customization when using a Version Control System, please read the
+# header note.
+#Thu Jan 28 09:06:05 CAT 2021
+sdk.dir=C\:\\Users\\Ehsan.Rezaei\\AppData\\Local\\Android\\Sdk
+keypass=prosource2020
+alias=prosource
+file=D:\\Projects\\Solutions\\PLDS\\PLDS_SmartphoneApp\\prosourceKey.jks
+storepass=prosource2020
