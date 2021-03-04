@@ -10,7 +10,9 @@ import rezaei.mohammad.plds.data.LocalRepository
 import rezaei.mohammad.plds.data.RemoteRepository
 import rezaei.mohammad.plds.data.model.local.Document
 import rezaei.mohammad.plds.data.model.local.DocumentType
+import rezaei.mohammad.plds.data.model.request.DocumentStatusRequest
 import rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest
+import rezaei.mohammad.plds.data.model.response.DocumentBaseInfoResponse
 import rezaei.mohammad.plds.data.model.response.DocumentOnLocationResponse
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.util.Event
@@ -30,8 +32,8 @@ class DocListByLocationViewModel(
     private val _documenttEvent = MutableLiveData<Event<ErrorHandling?>>()
     val documentEvent: LiveData<Event<ErrorHandling?>> = _documenttEvent
 
-    private val _openManageDocEvent = MutableLiveData<Event<String>>()
-    val openManageDocEvent: LiveData<Event<String>> = _openManageDocEvent
+    private val _openManageDocEvent = MutableLiveData<Event<DocumentBaseInfoResponse.Data>>()
+    val openManageDocEvent: LiveData<Event<DocumentBaseInfoResponse.Data>> = _openManageDocEvent
 
 
     fun getDocuments(getDocumentsOnLocationRequest: GetDocumentsOnLocationRequest) {
@@ -100,7 +102,18 @@ class DocListByLocationViewModel(
         }
     }
 
+    private fun getDocumentBaseInfo(docRefNo: String) {
+        viewModelScope.launch {
+            _dataLoading.value = true
+            when (val apiResult =
+                remoteRepository.getDocumentBaseInfo(DocumentStatusRequest(docRefNo))) {
+                is ApiResult.Success -> _openManageDocEvent.value = Event(apiResult.response.data!!)
+                is ApiResult.Error -> _documenttEvent.value = Event(apiResult.errorHandling)
+            }
+        }
+    }
+
     fun openManageDocumentPage(docRefNo: String) {
-        _openManageDocEvent.value = Event(docRefNo)
+        getDocumentBaseInfo(docRefNo)
     }
 }

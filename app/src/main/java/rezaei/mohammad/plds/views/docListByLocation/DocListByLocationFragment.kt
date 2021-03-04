@@ -55,10 +55,9 @@ class DocListByLocationFragment : Fragment() {
         })
 
         viewModel.openManageDocEvent.observe(viewLifecycleOwner, EventObserver {
-            globalViewModel.docRefNo.value = it
             findNavController().navigate(
                 DocListByLocationFragmentDirections
-                    .actionDocListByLocationFragmentToManageDocumentFragment()
+                    .actionDocListByLocationFragmentToDocumentStatusHistoryFragment(it)
             )
         })
     }
