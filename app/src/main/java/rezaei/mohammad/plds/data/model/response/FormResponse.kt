@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
+import rezaei.mohammad.plds.data.model.request.ChosenFile
 
 @Parcelize
 class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
@@ -65,7 +66,10 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val commonIssue: String? = null,
 
         @field:SerializedName("CommonIssueId")
-        val commonIssueId: Int? = null
+        val commonIssueId: Int? = null,
+
+        @field:SerializedName("File")
+        var chosenFile: ChosenFile? = null
     ) : Parcelable
 
     @Parcelize

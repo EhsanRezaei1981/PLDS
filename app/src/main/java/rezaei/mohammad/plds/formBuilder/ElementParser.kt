@@ -110,6 +110,7 @@ class ElementParser(
                     formResult.reportIssue = result[1].also {
                         (it as ElementResult.IssueResult).date =
                             (result[0] as ElementResult.StringResult).reply
+                        it.chosenFile = (result[2] as ElementResult.FileResult).chosenFile
                         it.documentStatusQueryId = documentStatusQueryId
                         it.vT = vt
                     }

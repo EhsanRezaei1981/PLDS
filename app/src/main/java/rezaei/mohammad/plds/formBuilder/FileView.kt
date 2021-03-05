@@ -16,8 +16,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.files.fileChooser
 import kotlinx.android.synthetic.main.view_file.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.ChosenFile
@@ -137,14 +135,6 @@ class FileView(
                 context.startActivityForResult(intent, PICKFILE_REQUEST_CODE)
             } else {
                 fileRequestsCallback.requestPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-            }
-        } else {
-            MaterialDialog(context.requireContext()).show {
-                fileChooser { dialog, file ->
-                    selectedFile = file
-                    showImageExistLayouts()
-                    validate()
-                }
             }
         }
 

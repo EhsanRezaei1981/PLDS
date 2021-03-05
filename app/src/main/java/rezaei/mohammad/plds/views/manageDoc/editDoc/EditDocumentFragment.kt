@@ -142,6 +142,25 @@ class EditDocumentFragment : Fragment() {
                         )
                     )
                 )
+                if (item.commonIssue.chosenFile != null)
+                    result.add(
+                        FormResponse.DataItem(
+                            isMandatory = 0,
+                            dataType = "File",
+                            label = "Image",
+                            value = FormResponse.Value(
+                                extension = item.commonIssue.chosenFile?.extension,
+                                fileId = item.commonIssue.chosenFile?.fileId,
+                                VTFileId = item.commonIssue.chosenFile?.VTFileId
+                            ),
+                            dataTypeSetting = FormResponse.DataTypeSetting(
+                                FormResponse.File(
+                                    cameraIsNeeded = true,
+                                    isFileBrowserNeeded = true
+                                )
+                            )
+                        )
+                    )
             } else if (item.statusQuery != null) {
                 // Add group title
                 result.add(
@@ -170,9 +189,15 @@ class EditDocumentFragment : Fragment() {
                 R.id.reportIssuePerDocFragment,
                 bundleOf(
                     "FormResponse" to formResponse,
-                    "DocumentStatusQueryId" to formResponse.documentStatusQueryId,
-                    "VT" to formResponse.vT,
-                    "lastUpdateTime" to formResponse.lastUpdateDateTime
+                    "FileRequest" to GetFileRequest(
+                        args.documentBaseInfo.vTDocumentId,
+                        args.documentBaseInfo.documentId,
+                        vTFileId = null,
+                        fileId = null,
+                        vTServiceId = args.documentBaseInfo.vTServiceId,
+                        serviceId = args.documentBaseInfo.serviceId
+
+                    )
                 )
             )
         } else {

@@ -1,6 +1,8 @@
 package rezaei.mohammad.plds.data.model.request
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.parcel.Parcelize
 
 sealed class ElementResult {
 
@@ -54,12 +56,15 @@ sealed class ElementResult {
         var vT: String? = null,
         @field:SerializedName("DocumentStatusQueryId")
         var documentStatusQueryId: Int? = null,
+        @field:SerializedName("File")
+        var chosenFile: ChosenFile? = null,
         @Transient
         val gps: Gps? = null
     ) : ElementResult()
 
 }
 
+@Parcelize
 data class ChosenFile(
     @field:SerializedName("Extension")
     val extension: String? = null,
@@ -74,8 +79,11 @@ data class ChosenFile(
     val filename: String? = null,
 
     @field:SerializedName("FileId")
-    val fileId: Int? = null
-)
+    val fileId: Int? = null,
+
+    @field:SerializedName("VTFileId")
+    val VTFileId: String? = null
+) : Parcelable
 
 data class ListItem(
 

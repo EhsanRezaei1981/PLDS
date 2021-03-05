@@ -1,5 +1,6 @@
 package rezaei.mohammad.plds.views.reportIssue.perdocument
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import rezaei.mohammad.plds.data.model.local.DocumentType
 import rezaei.mohammad.plds.data.model.request.DocumentsInfoItem
 import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.request.GetDocumentsOnLocationRequest
+import rezaei.mohammad.plds.data.model.request.GetFileRequest
 import rezaei.mohammad.plds.data.model.response.CourtResponse
 import rezaei.mohammad.plds.data.model.response.ErrorHandling
 import rezaei.mohammad.plds.data.model.response.FormResponse
@@ -110,10 +112,12 @@ class ReportIssuePerDocFragment : Fragment() {
                 viewDataBinding.layoutContainer.removeAllViews()
                 if (result.response.data?.isNotEmpty() == true) {
                     val argument = arguments?.getParcelable<FormResponse.DataItem>("FormResponse")
+                    val fileRequest = arguments?.getParcelable<GetFileRequest>("FileRequest")
                     val dateValue = argument?.date
                     val reasonId = argument?.commonIssue?.commonIssueId
                     val reasonValue = argument?.commonIssue?.commonIssue
                     val reasonComment = argument?.commonIssue?.commentValue
+                    val chosenFile = argument?.commonIssue?.chosenFile
                     elementParser = ElementParser(
                         this,
                         listOf(
@@ -146,6 +150,11 @@ class ReportIssuePerDocFragment : Fragment() {
                                 isMandatory = 0,
                                 dataType = "File",
                                 label = "Image",
+                                value = FormResponse.Value(
+                                    extension = chosenFile?.extension,
+                                    fileId = chosenFile?.fileId,
+                                    VTFileId = chosenFile?.VTFileId
+                                ),
                                 dataTypeSetting = FormResponse.DataTypeSetting(
                                     FormResponse.File(
                                         cameraIsNeeded = true,
@@ -182,7 +191,10 @@ class ReportIssuePerDocFragment : Fragment() {
                                     ReportIssuePerDocFragmentDirections
                                         .actionReportIssuePerDocFragmentToImageViewerFragment(
                                             base64 = base64,
-                                            getFileRequest = null
+                                            getFileRequest = fileRequest?.also {
+                                                it.fileId = fileId
+                                                it.vTFileId = fileVT
+                                            }
                                         )
                                 )
                             }
@@ -283,6 +295,13 @@ class ReportIssuePerDocFragment : Fragment() {
                         )
                 )
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            imageResult.value = data
         }
     }
 }

@@ -14,10 +14,10 @@ data class GetFileRequest(
     val documentId: Int? = null,
 
     @field:SerializedName("VTFileId")
-    val vTFileId: String? = null,
+    var vTFileId: String? = null,
 
     @field:SerializedName("FileId")
-    val fileId: Int? = null,
+    var fileId: Int? = null,
 
     @field:SerializedName("VTServiceId")
     val vTServiceId: String? = null,
