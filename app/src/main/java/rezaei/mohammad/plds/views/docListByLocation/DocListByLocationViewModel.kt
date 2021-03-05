@@ -103,13 +103,14 @@ class DocListByLocationViewModel(
     }
 
     private fun getDocumentBaseInfo(docRefNo: String) {
+        _dataLoading.value = true
         viewModelScope.launch {
-            _dataLoading.value = true
             when (val apiResult =
                 remoteRepository.getDocumentBaseInfo(DocumentStatusRequest(docRefNo))) {
                 is ApiResult.Success -> _openManageDocEvent.value = Event(apiResult.response.data!!)
                 is ApiResult.Error -> _documenttEvent.value = Event(apiResult.errorHandling)
             }
+            _dataLoading.value = false
         }
     }
 
