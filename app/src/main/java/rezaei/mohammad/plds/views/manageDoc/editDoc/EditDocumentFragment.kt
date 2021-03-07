@@ -189,6 +189,9 @@ class EditDocumentFragment : Fragment() {
                 R.id.reportIssuePerDocFragment,
                 bundleOf(
                     "FormResponse" to formResponse,
+                    "DocumentStatusQueryId" to formResponse.documentStatusQueryId,
+                    "VT" to formResponse.vT,
+                    "lastUpdateTime" to formResponse.lastUpdateDateTime,
                     "FileRequest" to GetFileRequest(
                         args.documentBaseInfo.vTDocumentId,
                         args.documentBaseInfo.documentId,
