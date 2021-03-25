@@ -26,6 +26,9 @@ class DocumentOnLocationResponse : BaseResponse<List<DocumentOnLocationResponse.
         @field:SerializedName("Plaintiff")
         val plaintiff: String? = null,
 
+        @field:SerializedName("Defendants")
+        val defendants: String? = null,
+
         @field:SerializedName("CaseNo")
         val caseNo: String? = ""
 

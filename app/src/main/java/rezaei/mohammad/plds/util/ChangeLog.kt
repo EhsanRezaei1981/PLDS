@@ -31,6 +31,9 @@ class ChangeLog(private val pref: PreferenceManager) {
             "CaseNo & Plaintiff on the list of documents added",
             "Image in report issue added"
         )
+        logs[17] = listOf(
+                "Fixed the bug in the Report Issue"
+        )
     }
 
     fun getLogFor(versionCode: Int): List<String>? {

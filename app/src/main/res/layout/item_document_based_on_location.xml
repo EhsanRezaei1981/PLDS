@@ -35,7 +35,7 @@
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="DC 12563" />
+                tools:text="DL1764" />
 
             <ImageButton
                 android:id="@+id/btnOpenManageDocument"
@@ -82,6 +82,19 @@
                 tools:text="Plaintiff" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/txtDefendants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="@{document.defendants}"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="16sp"
+                app:drawableStartCompat="@drawable/ic_round_person_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/txtPlaintiff"
+                tools:text="Defendant/s" />
+
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/txtProcess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,7 +104,7 @@
                 android:textColor="?android:textColorPrimary"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/txtPlaintiff"
+                app:layout_constraintTop_toBottomOf="@+id/txtDefendants"
                 tools:text="Process" />
 
             <TextView
