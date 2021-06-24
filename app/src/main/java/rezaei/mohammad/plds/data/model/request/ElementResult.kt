@@ -30,6 +30,10 @@ sealed class ElementResult {
         val gps: Gps? = null
     ) : ElementResult()
 
+    data class DefendantResult(
+        var documentDefendant: DocumentDefendant? = null
+    ): ElementResult()
+
     data class StringResult(
         @field:SerializedName("Id")
         val id: Int? = null,

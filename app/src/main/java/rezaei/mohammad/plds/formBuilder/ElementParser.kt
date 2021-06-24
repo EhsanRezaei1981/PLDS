@@ -12,10 +12,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.transition.TransitionManager
 import kotlinx.android.synthetic.main.view_title_text.view.*
 import rezaei.mohammad.plds.R
-import rezaei.mohammad.plds.data.model.request.ElementResult
-import rezaei.mohammad.plds.data.model.request.FormResult
-import rezaei.mohammad.plds.data.model.request.Successful
-import rezaei.mohammad.plds.data.model.request.Unsuccessful
+import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.CourtResponse
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.data.model.response.SheriffResponse
@@ -100,10 +97,15 @@ class ElementParser(
                     )
                 }
                 "Successful" -> {
+                    // Remove defendant from successful list and add it to defendant object
+                    val defendantResult = result.firstOrNull { it is ElementResult.DefendantResult } as? ElementResult.DefendantResult
+                    result.remove(defendantResult)
+
                     formResult.successful = Successful(
                         elements = result,
                         documentStatusId = documentStatusQueryId,
-                        vT = vt
+                        vT = vt,
+                        documentDefendant = defendantResult?.documentDefendant
                     )
                 }
                 else -> {

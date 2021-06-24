@@ -56,7 +56,9 @@ data class Successful(
     @field:SerializedName("Elements")
     var elements: MutableList<ElementResult?>? = null,
     @field:SerializedName("VT")
-    var vT: String? = null
+    var vT: String? = null,
+    @field:SerializedName("DocumentDefendant")
+    var documentDefendant: DocumentDefendant? = null
 )
 
 data class Gps(
@@ -75,4 +77,11 @@ data class DocumentsInfoItem(
 
     @field:SerializedName("DocumentReferenceNo")
     val documentReferenceNo: String? = null
+)
+
+data class DocumentDefendant(
+    @field:SerializedName("DocumentLegalDefendantId")
+    val documentLegalDefendantId: Int? = null,
+    @field:SerializedName("VT")
+    val vt: String? = null
 )

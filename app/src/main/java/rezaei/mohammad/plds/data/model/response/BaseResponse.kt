@@ -9,4 +9,10 @@ open class BaseResponse<T> {
 
     @field:SerializedName("Data")
     val data: T? = null
+
+    @field:SerializedName("Defendants")
+    val defendants: List<Defendant>? = null
+
+    @field:SerializedName("IsAllSelected")
+    val isAllSelected: Boolean = false
 }

@@ -69,17 +69,46 @@ class SubmitFormFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setActivityTitle(getString(R.string.title_frag_submit_form))
-        args.successful?.let { drawForm(it) }
-        args.unsuccessful?.let { drawForm(it) }
+        args.successful?.let { formResponse ->
+            viewModel.isMultiDoc.observe(viewLifecycleOwner) { isMUltiDoc ->
+                val formElements = formResponse.data?.toMutableList()
+                // Add defendant drop down to form items
+                if (formResponse.defendants?.isNotEmpty() == true && isMUltiDoc == false ) {
+                    val defendantItems = formResponse.defendants?.map {
+                        FormResponse.ListItem(
+                            description = it.patronName,
+                            listId = it.documentLegalDefendantId,
+                            customActionCode = it.vT,
+                        )
+                    }
+                    val selectedItem = formResponse.defendants?.first { it.hasValue == 1 }
+                    formElements?.add(
+                        0,
+                        FormResponse.DataItem(
+                            isMandatory = 0,
+                            dataType = "List",
+                            label = "Defendant",
+                            list = defendantItems,
+                            value = FormResponse.Value(
+                                listSelectedId = selectedItem?.documentLegalDefendantId,
+                                listSelectedText = selectedItem?.patronName
+                            )
+                        )
+                    )
+                }
+                    drawForm(formElements)
+            }
+        }
+        args.unsuccessful?.let { drawForm(it.data) }
         setupCourtsSheriffsLoad()
         setupSubmitEvent()
         setupSubmitFormEvent()
         setupNoteView()
     }
 
-    private fun drawForm(formResponse: FormResponse) {
+    private fun drawForm(formElements: List<FormResponse.DataItem>?) {
         elementParser = ElementParser(this,
-            formResponse.data, viewDataBinding.layoutContainer, object :
+            formElements, viewDataBinding.layoutContainer, object :
                 ElementsActivityRequestCallback {
                 override fun requestPermission(permission: String) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

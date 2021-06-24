@@ -305,8 +305,14 @@ open class ListView(
 
     override val result: ElementResult?
         get() {
-            return if (selectedItem?.customActionCode != "Issue")
-                ElementResult.ListResult(
+            return when {
+                structure.label == "Defendant" -> ElementResult.DefendantResult(
+                    DocumentDefendant(
+                        selectedItem?.listId,
+                        selectedItem?.customActionCode
+                    )
+                )
+                selectedItem?.customActionCode != "Issue" -> ElementResult.ListResult(
                     elementId,
                     ListItem(
                         id = selectedItem?.listId,
@@ -330,8 +336,7 @@ open class ListView(
                             selectedGps?.second
                         ) else null
                 )
-            else
-                ElementResult.IssueResult(
+                else -> ElementResult.IssueResult(
                     inputComment.editText?.text.toString(),
                     null,
                     selectedItem?.listId,
@@ -343,6 +348,7 @@ open class ListView(
                             selectedGps?.second
                         ) else null
                 )
+            }
         }
 
 }
