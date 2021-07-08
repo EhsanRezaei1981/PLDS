@@ -78,7 +78,7 @@ class SubmitFormFragment : Fragment() {
                         FormResponse.ListItem(
                             description = it.patronName,
                             listId = it.documentLegalDefendantId,
-                            customActionCode = it.vT,
+                            customActionCode = it.vT
                         )
                     }
                     val selectedItem = formResponse.defendants?.first { it.hasValue == 1 }
@@ -89,11 +89,11 @@ class SubmitFormFragment : Fragment() {
                             dataType = "List",
                             label = "Defendant",
                             list = defendantItems,
-                            value = FormResponse.Value(
+                            value = listOf(FormResponse.Value(
                                 listSelectedId = selectedItem?.documentLegalDefendantId,
                                 listSelectedText = selectedItem?.patronName
                             )
-                        )
+                        ))
                     )
                 }
                     drawForm(formElements)
@@ -139,6 +139,11 @@ class SubmitFormFragment : Fragment() {
                             )
                     )
                 }
+
+                override fun onListItemSelected(
+                    elementId: Int,
+                    selectedItem: FormResponse.ListItem
+                ) {}
             })
     }
 

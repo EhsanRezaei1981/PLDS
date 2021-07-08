@@ -42,12 +42,19 @@ class FileView(
     private var selectedFile: File? = null
     private var takenPhoto: ByteArray? = null
     private var isClearImageClicked = false
+
     var isReadOnly: Boolean = false
         set(value) {
             btnBrowseFile.isGone = value
             btnTakePicture.isGone = value
             btnDeleteImage.isGone = value
             field = value
+        }
+
+    override var valueIndex: Int = 0
+        set(value) {
+            field = value
+            setStructure()
         }
 
     init {
@@ -61,10 +68,12 @@ class FileView(
     private fun setStructure() {
         txtLabel.text = structure.label
 
-        if (structure.value?.fileId != null || takenPhoto != null || selectedFile != null)
+        if (structure.value?.getOrNull(valueIndex)?.fileId != null || takenPhoto != null || selectedFile != null)
             showImageExistLayouts()
-        else
+        else {
             btnDeleteImage.isGone = true
+            btnViewImage.isGone = true
+        }
 
 
         if (structure.dataTypeSetting?.file?.cameraIsNeeded == true) {
@@ -89,8 +98,8 @@ class FileView(
 
         btnViewImage.setOnClickListener {
             fileRequestsCallback.onPreviewImageClicked(
-                structure.value?.fileId,
-                structure.value?.VTFileId,
+                structure.value?.get(valueIndex)?.fileId,
+                structure.value?.get(valueIndex)?.VTFileId,
                 takenPhoto?.toBase64() ?: selectedFile?.readBytes()?.toBase64()
             )
         }
@@ -231,13 +240,13 @@ class FileView(
                     takenPhoto?.size,
                     System.currentTimeMillis().toString()
                 )
-                structure.value?.fileId != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
-                    fileId = structure.value.fileId
+                structure.value?.get(valueIndex)?.fileId != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                    fileId = structure.value?.get(valueIndex).fileId
                 )
                 else -> ChosenFile()
             },
-            structure.value?.vTMTId,
-            structure.value?.mTId
+            structure.value?.get(valueIndex)?.vTMTId,
+            structure.value?.get(valueIndex)?.mTId
         )
 
     private fun setupOnActivityResult() {

@@ -15,7 +15,7 @@ class BootCompleteReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         Log.d(this::class.java.simpleName, intent.action ?: "")
         if (Intent.ACTION_BOOT_COMPLETED == intent.action) {
-            val localRepository: LocalRepository? by (context.applicationContext as? PLDSapp)
+/*            val localRepository: LocalRepository? by (context.applicationContext as? PLDSapp)
                 ?.inject<rezaei.mohammad.plds.data.local.LocalRepository>()
 
             GlobalScope.launch {
@@ -24,7 +24,7 @@ class BootCompleteReceiver : BroadcastReceiver() {
                         intent.action = CheckInService.RESUME_PREVIOUS_CHECK_IN
                         context.startService(intent)
                     }
-            }
+            }*/
         }
     }
 }

@@ -94,10 +94,10 @@ class CheckInService : Service() {
 
     private fun modifyDataForTest(checkInRequest: CheckInRequest): CheckInRequest {
         return checkInRequest.also {
-            /*it.gPS?.radius = 2450 // 1 location
+//            it.gPS?.radius = 2450 // 1 location
 //            it.gPS?.radius = 50000
             it.gPS?.X = 27.9736844
-            it.gPS?.Y = -26.0821684*/
+            it.gPS?.Y = -26.0821684
         }
 
     }

@@ -126,17 +126,17 @@ class ReportIssuePerDocFragment : Fragment() {
                                 1,
                                 "Date",
                                 "Date",
-                                value = FormResponse.Value(reply = dateValue)
+                                value = listOf(FormResponse.Value(reply = dateValue))
                                 //create reason spinner
                             ), FormResponse.DataItem(
                                 1,
                                 "Reason",
                                 "List",
-                                value = FormResponse.Value(
+                                value = listOf(FormResponse.Value(
                                     listSelectedId = reasonId,
                                     listSelectedText = reasonValue,
                                     listComment = reasonComment
-                                ),
+                                )),
                                 list = result.response.data.map {
                                     FormResponse.ListItem(
                                         it.description,
@@ -150,11 +150,11 @@ class ReportIssuePerDocFragment : Fragment() {
                                 isMandatory = 0,
                                 dataType = "File",
                                 label = "Image",
-                                value = FormResponse.Value(
+                                value = listOf(FormResponse.Value(
                                     extension = chosenFile?.extension,
                                     fileId = chosenFile?.fileId,
                                     VTFileId = chosenFile?.VTFileId
-                                ),
+                                )),
                                 dataTypeSetting = FormResponse.DataTypeSetting(
                                     FormResponse.File(
                                         cameraIsNeeded = true,
@@ -181,6 +181,11 @@ class ReportIssuePerDocFragment : Fragment() {
 
                             override fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>) {
                             }
+
+                            override fun onListItemSelected(
+                                elementId: Int,
+                                selectedItem: FormResponse.ListItem
+                            ) {}
 
                             override fun onPreviewImageClicked(
                                 fileId: Int?,

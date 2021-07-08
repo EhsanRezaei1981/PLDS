@@ -33,7 +33,7 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val vT: String? = null,
 
         @field:SerializedName("Value")
-        val value: Value? = null,
+        val value: List<Value>? = null,
 
         @field:SerializedName("CommonIssue")
         val commonIssue: CommonIssue? = null,
@@ -135,7 +135,6 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
 
     @Parcelize
     data class Value(
-
         @field:SerializedName("Extension")
         val extension: String? = null,
 
@@ -161,7 +160,13 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val listSelectedText: String? = null,
 
         @field:SerializedName("Comment")
-        val listComment: String? = null
+        val listComment: String? = null,
+
+        @field:SerializedName("DocumentLegalDefendantId")
+        val documentLegalDefendantId: Int? = null,
+
+        @field:SerializedName("VTDocumentLegalDefendantId")
+        val vTDocumentLegalDefendantId: String? = null,
     ) : Parcelable
 
     data class LocalText(

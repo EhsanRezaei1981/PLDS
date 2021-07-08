@@ -50,6 +50,9 @@ class EditDocumentFragment : Fragment() {
     private lateinit var imageResult: MutableLiveData<Intent>
     private var selectedGps: Pair<Double, Double>? = null
 
+    private val DefendantListId = 255
+    private val switchItemId = -5
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,11 +96,59 @@ class EditDocumentFragment : Fragment() {
         viewModel.fieldsResult.observe(this.viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResult.Success -> {
+                    val formElements = it.response.data?.toMutableList()
+                    if (it.response.defendants?.isNotEmpty() == true) {
+                        if (it.response.isAllSelected.not()) {
+                            val defendantItems = it.response.defendants.map {
+                                val shouldHideItems =
+                                    mutableListOf<FormResponse.IgnoredStatusQueryJsonItem>()
+                                if (it.documentLegalDefendantId == -1)
+                                    shouldHideItems.add(
+                                        FormResponse.IgnoredStatusQueryJsonItem(
+                                            switchItemId
+                                        )
+                                    )
+
+                                FormResponse.ListItem(
+                                    description = it.patronName,
+                                    listId = it.documentLegalDefendantId,
+                                    customActionCode = it.vT,
+                                    ignoredStatusQueryJson = shouldHideItems
+                                )
+                            }
+                            val selectedItem = it.response.defendants.first { it.hasValue == 1 }
+                            formElements?.add(
+                                0,
+                                FormResponse.DataItem(
+                                    statusQueryId = DefendantListId,
+                                    dataType = "List",
+                                    label = "Defendant",
+                                    list = defendantItems,
+                                    value = listOf(
+                                        FormResponse.Value(
+                                            listSelectedId = selectedItem.documentLegalDefendantId,
+                                            listSelectedText = selectedItem.patronName
+                                        )
+                                    )
+                                )
+                            )
+                            formElements?.add(
+                                1,
+                                FormResponse.DataItem(
+                                    statusQueryId = switchItemId,
+                                    dataType = "Switch",
+                                    label = "New data must be replaced in the legal part",
+                                    date = "This feature is considered in the case that you do not want to change the previous data that has recorded for the main legal part.",
+                                    value = listOf(FormResponse.Value(reply = "true"))
+                                )
+                            )
+                        }
+                    }
                     drawForm(
                         if (args.type == "UnSuccess")
-                            prepareCommonIssueFields(it.response.data)
+                            prepareCommonIssueFields(formElements)
                         else
-                            it.response.data,
+                            formElements,
                         args.readOnly
                     )
                 }
@@ -128,7 +179,7 @@ class EditDocumentFragment : Fragment() {
                         isMandatory = 0,
                         dataType = "Date",
                         label = "Date",
-                        value = FormResponse.Value(reply = item.date)
+                        value = listOf(FormResponse.Value(reply = item.date))
                     )
                 )
                 result.add(
@@ -136,11 +187,11 @@ class EditDocumentFragment : Fragment() {
                         isMandatory = 0,
                         dataType = "String",
                         label = "Reason",
-                        value = FormResponse.Value(
+                        value = listOf(FormResponse.Value(
                             reply = """${item.commonIssue.commonIssue} 
                             |${item.commonIssue.commentValue?.let { ", $it" } ?: ""}""".trimMargin()
                         )
-                    )
+                        ))
                 )
                 if (item.commonIssue.chosenFile != null)
                     result.add(
@@ -148,10 +199,12 @@ class EditDocumentFragment : Fragment() {
                             isMandatory = 0,
                             dataType = "File",
                             label = "Image",
-                            value = FormResponse.Value(
-                                extension = item.commonIssue.chosenFile?.extension,
-                                fileId = item.commonIssue.chosenFile?.fileId,
-                                VTFileId = item.commonIssue.chosenFile?.VTFileId
+                            value = listOf(
+                                FormResponse.Value(
+                                    extension = item.commonIssue.chosenFile?.extension,
+                                    fileId = item.commonIssue.chosenFile?.fileId,
+                                    VTFileId = item.commonIssue.chosenFile?.VTFileId
+                                )
                             ),
                             dataTypeSetting = FormResponse.DataTypeSetting(
                                 FormResponse.File(
@@ -218,7 +271,10 @@ class EditDocumentFragment : Fragment() {
         }
     }
 
-    private fun drawForm(data: List<FormResponse.DataItem>?, readOnly: Boolean) {
+    private fun drawForm(
+        data: List<FormResponse.DataItem>?,
+        readOnly: Boolean
+    ) {
         elementParser = ElementParser(
             this,
             data, viewDataBinding.layoutContainer, object :
@@ -253,6 +309,20 @@ class EditDocumentFragment : Fragment() {
                                 ), base64
                             )
                     )
+                }
+
+                override fun onListItemSelected(
+                    elementId: Int,
+                    selectedItem: FormResponse.ListItem
+                ) {
+                    if (elementId == DefendantListId && this@EditDocumentFragment::elementParser.isInitialized) {
+                        val response = (viewModel.fieldsResult.value as ApiResult.Success).response
+                        val index =
+                            response.data?.get(0)?.value?.indexOfFirst { it.documentLegalDefendantId == selectedItem.listId }
+                                ?: -1
+                        if (elementParser.valueIndex != index)
+                            elementParser.valueIndex = index
+                    }
                 }
             }, readOnly || args.type == "UnSuccess"
         )

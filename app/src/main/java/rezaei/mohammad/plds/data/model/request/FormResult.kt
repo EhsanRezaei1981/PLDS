@@ -83,5 +83,7 @@ data class DocumentDefendant(
     @field:SerializedName("DocumentLegalDefendantId")
     val documentLegalDefendantId: Int? = null,
     @field:SerializedName("VT")
-    val vt: String? = null
+    val vt: String? = null,
+    @field: SerializedName("NewDataMustBeReplacedInLegalPart")
+    var newDataMustBeReplacedInLegalPart: Boolean? = null
 )

@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
     android:descendantFocusability="beforeDescendants"
     android:focusable="true"
     android:focusableInTouchMode="true"
@@ -25,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:visibility="gone"
+        tools:visibility="visible"
         app:searchable="true"
         app:spinnerMode="dialog" />
 
@@ -34,7 +36,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:visibility="gone" />
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/inputComment"
@@ -43,7 +46,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:errorIconDrawable="@null"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"

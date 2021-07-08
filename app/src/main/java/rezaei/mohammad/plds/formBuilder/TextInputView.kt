@@ -25,6 +25,12 @@ open class TextInputView(
             field = value
         }
 
+    override var valueIndex: Int = 0
+        set(value) {
+            field = value
+            setStructure()
+        }
+
     init {
         View.inflate(context, R.layout.view_string, this)
         isReadOnly = readOnly
@@ -33,7 +39,7 @@ open class TextInputView(
 
     private fun setStructure() {
         inputText.hint = structure.label
-        structure.value?.reply?.let {
+        structure.value?.getOrNull(valueIndex)?.reply.let {
             inputText.editText?.setText(it)
         }
     }
@@ -58,7 +64,7 @@ open class TextInputView(
         get() = ElementResult.StringResult(
             structure.statusQueryId,
             inputText.editText?.text.toString(),
-            structure.value?.vTMTId,
-            structure.value?.mTId
+            structure.value?.get(valueIndex)?.vTMTId,
+            structure.value?.get(valueIndex)?.mTId
         )
 }

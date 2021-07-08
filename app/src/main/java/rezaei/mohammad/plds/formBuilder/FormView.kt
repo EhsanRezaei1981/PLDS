@@ -6,4 +6,5 @@ interface FormView {
     fun validate(): Boolean
     val elementId: Int
     val result: ElementResult?
+    var valueIndex: Int
 }

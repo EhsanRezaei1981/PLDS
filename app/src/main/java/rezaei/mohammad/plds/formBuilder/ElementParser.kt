@@ -28,6 +28,11 @@ class ElementParser(
     private val justReadOnly: Boolean = false
 ) {
 
+    var valueIndex: Int = 0
+        set(value) {
+            field = value
+            updateElementsSelectedValue()
+        }
 
     init {
         containerView.removeAllViews()
@@ -50,6 +55,9 @@ class ElementParser(
                 "List" -> {
                     createDropDown(it)
                 }
+                "Switch" -> {
+                    createSwitch(it)
+                }
             }
         }
     }
@@ -63,6 +71,15 @@ class ElementParser(
                     listValidation.add(element.validate())
         }
         return listValidation.all { it }
+    }
+
+    private fun updateElementsSelectedValue() {
+        for (x in 0..containerView.childCount) {
+            val element = containerView.getChildAt(x)
+            if (element is FormView)
+                if (element.valueIndex != valueIndex)
+                    element.valueIndex = valueIndex
+        }
     }
 
     fun getResult(
@@ -84,7 +101,6 @@ class ElementParser(
                         if (it.gps != null)
                             formResult.gps = it.gps
                     }
-
                 }
         }
         when (formResult) {
@@ -98,14 +114,20 @@ class ElementParser(
                 }
                 "Successful" -> {
                     // Remove defendant from successful list and add it to defendant object
-                    val defendantResult = result.firstOrNull { it is ElementResult.DefendantResult } as? ElementResult.DefendantResult
+                    val defendantResult =
+                        result.firstOrNull { it is ElementResult.DefendantResult } as? ElementResult.DefendantResult
+                    result.remove(defendantResult)
+                    val defendantSwitch =
+                        result.firstOrNull { it is ElementResult.BooleanResult } as? ElementResult.BooleanResult
                     result.remove(defendantResult)
 
                     formResult.successful = Successful(
                         elements = result,
                         documentStatusId = documentStatusQueryId,
                         vT = vt,
-                        documentDefendant = defendantResult?.documentDefendant
+                        documentDefendant = defendantResult?.documentDefendant.also {
+                            it?.newDataMustBeReplacedInLegalPart = defendantSwitch?.value
+                        }
                     )
                 }
                 else -> {
@@ -181,8 +203,9 @@ class ElementParser(
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
         val component = ListView(fragment, structure, object : OnListItemSelectedCallback {
-            override fun onItemSelected(ignoreViewIds: List<Int?>?) {
-                hideElement(ignoreViewIds)
+            override fun onItemSelected(selectedItem: FormResponse.ListItem) {
+                hideElement(selectedItem.ignoredStatusQueryJson?.map { it.statusQueryId })
+                elementsActivityRequestCallback?.onListItemSelected(structure.statusQueryId ?: -1, selectedItem)
             }
 
             override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
@@ -195,6 +218,18 @@ class ElementParser(
         }, justReadOnly)
         component.id = component.hashCode()
         component.layoutParams = param
+        containerView.addView(component)
+    }
+
+    private fun createSwitch(structure: FormResponse.DataItem) {
+        val param = ViewGroup.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+        val component = SwitchView(fragment.requireContext(), structure, justReadOnly)
+        component.id = component.hashCode()
+        component.layoutParams = param
+        component.isReadOnly = justReadOnly
         containerView.addView(component)
     }
 
@@ -239,4 +274,5 @@ interface ElementsActivityRequestCallback {
     fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>)
     fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>)
     fun onPreviewImageClicked(fileId: Int?, fileVT: String?, base64: String?)
+    fun onListItemSelected(elementId: Int, selectedItem: FormResponse.ListItem)
 }

@@ -30,7 +30,7 @@ class DatePicker(
         val month: Int
         val dayOfMonth: Int
 
-        val selectedDate = structure.value?.reply?.split("/", "-")
+        val selectedDate = structure.value?.getOrNull(valueIndex)?.reply?.split("/", "-")
         val date = Calendar.getInstance()
         year = selectedDate?.get(0)?.toInt() ?: date.get(Calendar.YEAR)
         month = selectedDate?.get(1)?.toInt()?.minus(1) ?: date.get(Calendar.MONTH)

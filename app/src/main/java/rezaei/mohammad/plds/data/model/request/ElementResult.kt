@@ -66,6 +66,10 @@ sealed class ElementResult {
         val gps: Gps? = null
     ) : ElementResult()
 
+    data class BooleanResult(
+        val value: Boolean
+    ) : ElementResult()
+
 }
 
 @Parcelize

@@ -197,6 +197,11 @@ class CommonActionFragment : Fragment() {
                             )
                     )
                 }
+
+                override fun onListItemSelected(
+                    elementId: Int,
+                    selectedItem: FormResponse.ListItem
+                ) {}
             }
         )
     }

@@ -52,6 +52,13 @@ open class ListView(
             field = value
         }
 
+    override var valueIndex: Int = 0
+        set(value) {
+            field = value
+            if (structure.label != "Defendant")
+                setSelectedValue()
+        }
+
     init {
         isSaveEnabled = true
         View.inflate(context.requireContext(), R.layout.view_list, this)
@@ -70,7 +77,7 @@ open class ListView(
                 id: Long
             ) {
                 selectedItem = structure.list?.get(position)
-                onListItemSelectedCallback?.onItemSelected(selectedItem?.ignoredStatusQueryJson?.map { it.statusQueryId })
+                onListItemSelectedCallback?.onItemSelected(selectedItem!!)
                 initViewForSelectedItem()
             }
 
@@ -78,12 +85,19 @@ open class ListView(
             }
         }
 
-        structure.value?.let { value ->
+        setSelectedValue()
+    }
+
+    private fun setSelectedValue() {
+        structure.value?.getOrNull(valueIndex).let { value ->
             spnItems.selection = structure.list
-                ?.indexOfFirst { it.listId == value.listSelectedId ?: 0 } ?: 0
-            if (value.listComment?.isNotEmpty() == true) {
+                ?.indexOfFirst { it.listId == value?.listSelectedId ?: 0 } ?: 0
+            if (value?.listComment?.isNotEmpty() == true) {
                 inputComment.isVisible = true
-                inputComment.editText?.setText(structure.value.listComment)
+                inputComment.editText?.setText(structure.value?.get(valueIndex)?.listComment)
+            } else {
+                inputComment.isVisible = false
+                inputComment.editText?.text?.clear()
             }
         }
     }
@@ -328,8 +342,8 @@ open class ListView(
                                 )
                             ) else null
                     ),
-                    structure.value?.vTMTId,
-                    structure.value?.mTId,
+                    structure.value?.get(valueIndex)?.vTMTId,
+                    structure.value?.get(valueIndex)?.mTId,
                     if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
@@ -354,7 +368,7 @@ open class ListView(
 }
 
 interface OnListItemSelectedCallback {
-    fun onItemSelected(ignoreViewIds: List<Int?>?)
+    fun onItemSelected(selectedItem: FormResponse.ListItem)
     fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>)
     fun sheriffListNeeded(sheriffList: MutableLiveData<List<SheriffResponse.Sheriff>>)
 }
