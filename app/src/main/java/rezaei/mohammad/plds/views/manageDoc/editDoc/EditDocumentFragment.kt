@@ -132,16 +132,17 @@ class EditDocumentFragment : Fragment() {
                                     )
                                 )
                             )
-                            formElements?.add(
-                                1,
-                                FormResponse.DataItem(
-                                    statusQueryId = switchItemId,
-                                    dataType = "Switch",
-                                    label = "New data must be replaced in the legal part",
-                                    date = "This feature is considered in the case that you do not want to change the previous data that has recorded for the main legal part.",
-                                    value = listOf(FormResponse.Value(reply = "true"))
+                            if (args.readOnly.not())
+                                formElements?.add(
+                                    1,
+                                    FormResponse.DataItem(
+                                        statusQueryId = switchItemId,
+                                        dataType = "Switch",
+                                        label = "New data must be replaced in the legal part",
+                                        date = "This feature is considered in the case that you do not want to change the previous data that has recorded for the main legal part.",
+                                        value = listOf(FormResponse.Value(reply = "true"))
+                                    )
                                 )
-                            )
                         }
                     }
                     drawForm(
