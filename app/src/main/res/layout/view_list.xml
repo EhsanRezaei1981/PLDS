@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:descendantFocusability="beforeDescendants"
+    android:descendantFocusability="blocksDescendants"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:orientation="vertical">
@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:focusableInTouchMode="true"
         app:spinnerMode="dialog" />
 
     <com.tiper.MaterialSpinner
@@ -26,6 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:visibility="gone"
+        android:focusableInTouchMode="true"
         tools:visibility="visible"
         app:searchable="true"
         app:spinnerMode="dialog" />
