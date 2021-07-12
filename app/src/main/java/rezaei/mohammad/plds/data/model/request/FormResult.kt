@@ -57,6 +57,8 @@ data class Successful(
     var elements: MutableList<ElementResult?>? = null,
     @field:SerializedName("VT")
     var vT: String? = null,
+    @field: SerializedName("NewDataMustBeReplacedInLegalPart")
+    var newDataMustBeReplacedInLegalPart: Boolean? = null,
     @field:SerializedName("DocumentDefendant")
     var documentDefendant: DocumentDefendant? = null
 )
@@ -83,7 +85,5 @@ data class DocumentDefendant(
     @field:SerializedName("DocumentLegalDefendantId")
     val documentLegalDefendantId: Int? = null,
     @field:SerializedName("VT")
-    val vt: String? = null,
-    @field: SerializedName("NewDataMustBeReplacedInLegalPart")
-    var newDataMustBeReplacedInLegalPart: Boolean? = null
+    val vt: String? = null
 )

@@ -125,9 +125,8 @@ class ElementParser(
                         elements = result,
                         documentStatusId = documentStatusQueryId,
                         vT = vt,
-                        documentDefendant = defendantResult?.documentDefendant.also {
-                            it?.newDataMustBeReplacedInLegalPart = defendantSwitch?.value
-                        }
+                        newDataMustBeReplacedInLegalPart = defendantSwitch?.value,
+                        documentDefendant = defendantResult?.documentDefendant
                     )
                 }
                 else -> {
