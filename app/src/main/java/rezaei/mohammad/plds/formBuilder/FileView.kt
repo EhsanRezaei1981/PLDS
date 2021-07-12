@@ -240,13 +240,13 @@ class FileView(
                     takenPhoto?.size,
                     System.currentTimeMillis().toString()
                 )
-                structure.value?.get(valueIndex)?.fileId != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
-                    fileId = structure.value?.get(valueIndex).fileId
+                structure.value?.getOrNull(valueIndex)?.fileId != null -> if (isClearImageClicked) ChosenFile() else ChosenFile(
+                    fileId = structure.value[valueIndex].fileId
                 )
                 else -> ChosenFile()
             },
-            structure.value?.get(valueIndex)?.vTMTId,
-            structure.value?.get(valueIndex)?.mTId
+            structure.value?.getOrNull(valueIndex)?.vTMTId,
+            structure.value?.getOrNull(valueIndex)?.mTId
         )
 
     private fun setupOnActivityResult() {

@@ -64,7 +64,7 @@ open class TextInputView(
         get() = ElementResult.StringResult(
             structure.statusQueryId,
             inputText.editText?.text.toString(),
-            structure.value?.get(valueIndex)?.vTMTId,
-            structure.value?.get(valueIndex)?.mTId
+            structure.value?.getOrNull(valueIndex)?.vTMTId,
+            structure.value?.getOrNull(valueIndex)?.mTId
         )
 }

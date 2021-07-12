@@ -342,8 +342,8 @@ open class ListView(
                                 )
                             ) else null
                     ),
-                    structure.value?.get(valueIndex)?.vTMTId,
-                    structure.value?.get(valueIndex)?.mTId,
+                    structure.value?.getOrNull(valueIndex)?.vTMTId,
+                    structure.value?.getOrNull(valueIndex)?.mTId,
                     if (selectedGps != null)
                         Gps(
                             selectedGps?.first,
