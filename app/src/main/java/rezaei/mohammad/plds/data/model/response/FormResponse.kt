@@ -154,16 +154,16 @@ class FormResponse : BaseResponse<List<FormResponse.DataItem>>(), Parcelable {
         val reply: String? = null,
 
         @field:SerializedName("Id")
-        val listSelectedId: Int? = null,
+        var listSelectedId: Int? = null,
 
         @field:SerializedName("Text")
-        val listSelectedText: String? = null,
+        var listSelectedText: String? = null,
 
         @field:SerializedName("Comment")
         val listComment: String? = null,
 
         @field:SerializedName("DocumentLegalDefendantId")
-        val documentLegalDefendantId: Int? = null,
+        var documentLegalDefendantId: Int? = null,
 
         @field:SerializedName("VTDocumentLegalDefendantId")
         val vTDocumentLegalDefendantId: String? = null,

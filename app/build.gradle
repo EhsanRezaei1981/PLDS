@@ -68,8 +68,8 @@ android {
         }
         pro {
             dimension 'stage'
-            versionCode 17
-            versionName "1.2.6"
+            versionCode 18
+            versionName "1.2.7"
             firebaseAppDistribution {
                 releaseNotes = "Set clear date for datepicker field"
                 testers="destroy.747@gmail.com, e.rezaei.1981@gmail.com"

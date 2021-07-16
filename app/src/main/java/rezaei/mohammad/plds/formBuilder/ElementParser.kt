@@ -1,6 +1,8 @@
 package rezaei.mohammad.plds.formBuilder
 
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,18 +16,21 @@ import kotlinx.android.synthetic.main.view_title_text.view.*
 import rezaei.mohammad.plds.R
 import rezaei.mohammad.plds.data.model.request.*
 import rezaei.mohammad.plds.data.model.response.CourtResponse
+import rezaei.mohammad.plds.data.model.response.Defendant
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.data.model.response.SheriffResponse
+import rezaei.mohammad.plds.util.dpToPx
 
 /**
  * Created by Rezaei_M on 3/6/2018.
  */
 class ElementParser(
     private val fragment: Fragment,
-    elementList: List<FormResponse.DataItem>?,
+    private val elementList: List<FormResponse.DataItem>?,
     private val containerView: ViewGroup,
     private val elementsActivityRequestCallback: ElementsActivityRequestCallback?,
-    private val justReadOnly: Boolean = false
+    private val justReadOnly: Boolean = false,
+    private val defendants: List<Defendant>? = null
 ) {
 
     var valueIndex: Int = 0
@@ -37,26 +42,48 @@ class ElementParser(
     init {
         containerView.removeAllViews()
         TransitionManager.beginDelayedTransition(containerView)
+        if (defendants != null)
+            defendants.forEach { defendant ->
+                createItems(defendant)
+                if (containerView.childCount > 0)
+                    createLine()
+            }
+        else
+            createItems()
+    }
 
-        elementList?.forEach {
-            when (it.dataType) {
+    private fun createItems(defendant: Defendant? = null) {
+        if (defendant?.documentLegalDefendantId == -1) return
+        elementList?.forEach { dataItem ->
+            if (elementList.first().label == "Defendant") {
+                if (defendant != null && dataItem.label == "Defendant")
+                    dataItem.value?.getOrNull(0)?.apply {
+                        listSelectedId = defendant.documentLegalDefendantId
+                        listSelectedText = defendant.patronName
+                        documentLegalDefendantId = defendant.documentLegalDefendantId
+                    }
+            }
+            val valueIndex =
+                dataItem.value?.indexOfFirst { it.documentLegalDefendantId == defendant?.documentLegalDefendantId }
+                    ?: -1
+            when (dataItem.dataType) {
                 "Text" -> {
-                    createText(it)
+                    createText(dataItem)
                 }
                 "String" -> {
-                    createTextInput(it)
+                    createTextInput(dataItem, valueIndex)
                 }
                 "Date" -> {
-                    createDate(it)
+                    createDate(dataItem, valueIndex)
                 }
                 "File" -> {
-                    createFile(it)
+                    createFile(dataItem, valueIndex)
                 }
                 "List" -> {
-                    createDropDown(it)
+                    createDropDown(dataItem, valueIndex)
                 }
                 "Switch" -> {
-                    createSwitch(it)
+                    createSwitch(dataItem, valueIndex)
                 }
             }
         }
@@ -171,6 +198,17 @@ class ElementParser(
         }
     }
 
+    private fun createLine() {
+        val lineView = View(fragment.requireContext()).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                fragment.requireContext().dpToPx(1F).toInt()
+            )
+            background = ColorDrawable(Color.DKGRAY)
+        }
+        containerView.addView(lineView)
+    }
+
     private fun createText(structure: FormResponse.DataItem) {
         if (structure.localText == null)
             return
@@ -184,7 +222,8 @@ class ElementParser(
         containerView.addView(component)
     }
 
-    private fun createTextInput(structure: FormResponse.DataItem) {
+    private fun createTextInput(structure: FormResponse.DataItem, valueIndex: Int = 0) {
+        if (justReadOnly && structure.value?.getOrNull(valueIndex)?.reply == null) return
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -193,10 +232,12 @@ class ElementParser(
         component.id = component.hashCode()
         component.layoutParams = param
         component.isReadOnly = justReadOnly
+        component.valueIndex = valueIndex
         containerView.addView(component)
     }
 
-    private fun createDropDown(structure: FormResponse.DataItem) {
+    private fun createDropDown(structure: FormResponse.DataItem, valueIndex: Int = 0) {
+        if (justReadOnly && structure.value?.getOrNull(valueIndex)?.listSelectedId == null) return
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -204,7 +245,10 @@ class ElementParser(
         val component = ListView(fragment, structure, object : OnListItemSelectedCallback {
             override fun onItemSelected(selectedItem: FormResponse.ListItem) {
                 hideElement(selectedItem.ignoredStatusQueryJson?.map { it.statusQueryId })
-                elementsActivityRequestCallback?.onListItemSelected(structure.statusQueryId ?: -1, selectedItem)
+                elementsActivityRequestCallback?.onListItemSelected(
+                    structure.statusQueryId ?: -1,
+                    selectedItem
+                )
             }
 
             override fun courtListNeeded(courtList: MutableLiveData<List<CourtResponse.Court>>) {
@@ -217,10 +261,12 @@ class ElementParser(
         }, justReadOnly)
         component.id = component.hashCode()
         component.layoutParams = param
+        component.valueIndex = valueIndex
         containerView.addView(component)
     }
 
-    private fun createSwitch(structure: FormResponse.DataItem) {
+    private fun createSwitch(structure: FormResponse.DataItem, valueIndex: Int = 0) {
+        if (justReadOnly && structure.value?.getOrNull(valueIndex)?.reply == null) return
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -229,10 +275,12 @@ class ElementParser(
         component.id = component.hashCode()
         component.layoutParams = param
         component.isReadOnly = justReadOnly
+        component.valueIndex = valueIndex
         containerView.addView(component)
     }
 
-    private fun createDate(structure: FormResponse.DataItem) {
+    private fun createDate(structure: FormResponse.DataItem, valueIndex: Int = 0) {
+        if (justReadOnly && structure.value?.getOrNull(valueIndex)?.reply == null) return
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -240,10 +288,12 @@ class ElementParser(
         val component = DatePicker(fragment.requireContext(), structure, justReadOnly)
         component.id = component.hashCode()
         component.layoutParams = param
+        component.valueIndex = valueIndex
         containerView.addView(component)
     }
 
-    private fun createFile(structure: FormResponse.DataItem) {
+    private fun createFile(structure: FormResponse.DataItem, valueIndex: Int = 0) {
+        if (justReadOnly && structure.value?.getOrNull(valueIndex)?.fileId == null) return
         val param = ViewGroup.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
@@ -263,6 +313,7 @@ class ElementParser(
         }, justReadOnly)
         component.id = component.hashCode()
         component.layoutParams = param
+        component.valueIndex = valueIndex
         containerView.addView(component)
     }
 }

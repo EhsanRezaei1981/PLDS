@@ -32,6 +32,7 @@ import rezaei.mohammad.plds.data.model.request.FormResult
 import rezaei.mohammad.plds.data.model.request.GetFileRequest
 import rezaei.mohammad.plds.data.model.request.Gps
 import rezaei.mohammad.plds.data.model.response.CourtResponse
+import rezaei.mohammad.plds.data.model.response.Defendant
 import rezaei.mohammad.plds.data.model.response.FormResponse
 import rezaei.mohammad.plds.data.model.response.SheriffResponse
 import rezaei.mohammad.plds.databinding.FragmentEditDocumentBinding
@@ -93,56 +94,17 @@ class EditDocumentFragment : Fragment() {
     }
 
     private fun setGetFieldsResult() {
+        var defendants: List<Defendant>? = null
         viewModel.fieldsResult.observe(this.viewLifecycleOwner, Observer {
             when (it) {
                 is ApiResult.Success -> {
                     val formElements = it.response.data?.toMutableList()
                     if (it.response.defendants?.isNotEmpty() == true) {
                         if (it.response.isAllSelected.not()) {
-                            val defendantItems = it.response.defendants.map {
-                                val shouldHideItems =
-                                    mutableListOf<FormResponse.IgnoredStatusQueryJsonItem>()
-                                if (it.documentLegalDefendantId == -1)
-                                    shouldHideItems.add(
-                                        FormResponse.IgnoredStatusQueryJsonItem(
-                                            switchItemId
-                                        )
-                                    )
+                            if (args.readOnly)
+                                defendants = it.response.defendants
 
-                                FormResponse.ListItem(
-                                    description = it.patronName,
-                                    listId = it.documentLegalDefendantId,
-                                    customActionCode = it.vT,
-                                    ignoredStatusQueryJson = shouldHideItems
-                                )
-                            }
-                            val selectedItem = it.response.defendants.first { it.hasValue == 1 }
-                            formElements?.add(
-                                0,
-                                FormResponse.DataItem(
-                                    statusQueryId = DefendantListId,
-                                    dataType = "List",
-                                    label = "Defendant",
-                                    list = defendantItems,
-                                    value = listOf(
-                                        FormResponse.Value(
-                                            listSelectedId = selectedItem.documentLegalDefendantId,
-                                            listSelectedText = selectedItem.patronName
-                                        )
-                                    )
-                                )
-                            )
-                            if (args.readOnly.not())
-                                formElements?.add(
-                                    1,
-                                    FormResponse.DataItem(
-                                        statusQueryId = switchItemId,
-                                        dataType = "Switch",
-                                        label = "New data must be replaced in the legal part",
-                                        date = "This feature is considered in the case that you do not want to change the previous data that has recorded for the main legal part.",
-                                        value = listOf(FormResponse.Value(reply = "false"))
-                                    )
-                                )
+                            createDefendantDropdown(formElements, it.response.defendants)
                         }
                     }
                     drawForm(
@@ -150,12 +112,64 @@ class EditDocumentFragment : Fragment() {
                             prepareCommonIssueFields(formElements)
                         else
                             formElements,
-                        args.readOnly
+                        args.readOnly,
+                        defendants
                     )
                 }
                 is ApiResult.Error -> viewDataBinding.root.snack(it.errorHandling)
             }
         })
+    }
+
+    private fun createDefendantDropdown(
+        formElements: MutableList<FormResponse.DataItem>?,
+        defendants: List<Defendant>
+    ) {
+        val defendantItems = defendants.map {
+            val shouldHideItems =
+                mutableListOf<FormResponse.IgnoredStatusQueryJsonItem>()
+            if (it.documentLegalDefendantId == -1)
+                shouldHideItems.add(
+                    FormResponse.IgnoredStatusQueryJsonItem(
+                        switchItemId
+                    )
+                )
+
+            FormResponse.ListItem(
+                description = it.patronName,
+                listId = it.documentLegalDefendantId,
+                customActionCode = it.vT,
+                ignoredStatusQueryJson = shouldHideItems
+            )
+        }
+        val selectedItem = defendants.first { it.hasValue == 1 }
+        formElements?.add(
+            0,
+            FormResponse.DataItem(
+                statusQueryId = DefendantListId,
+                dataType = "List",
+                label = "Defendant",
+                list = defendantItems,
+                value = listOf(
+                    FormResponse.Value(
+                        listSelectedId = selectedItem.documentLegalDefendantId,
+                        listSelectedText = selectedItem.patronName,
+                        documentLegalDefendantId = selectedItem.documentLegalDefendantId
+                    )
+                )
+            )
+        )
+        if (args.readOnly.not())
+            formElements?.add(
+                1,
+                FormResponse.DataItem(
+                    statusQueryId = switchItemId,
+                    dataType = "Switch",
+                    label = "New data must be replaced in the legal part",
+                    date = "This feature is considered in the case that you do not want to change the previous data that has recorded for the main legal part.",
+                    value = listOf(FormResponse.Value(reply = "false"))
+                )
+            )
     }
 
     private fun prepareCommonIssueFields(data: List<FormResponse.DataItem>?): List<FormResponse.DataItem>? {
@@ -274,7 +288,8 @@ class EditDocumentFragment : Fragment() {
 
     private fun drawForm(
         data: List<FormResponse.DataItem>?,
-        readOnly: Boolean
+        readOnly: Boolean,
+        defendants: List<Defendant>? = null
     ) {
         elementParser = ElementParser(
             this,
@@ -325,7 +340,8 @@ class EditDocumentFragment : Fragment() {
                             elementParser.valueIndex = index
                     }
                 }
-            }, readOnly || args.type == "UnSuccess"
+            }, readOnly || args.type == "UnSuccess",
+            defendants = defendants
         )
     }
 
