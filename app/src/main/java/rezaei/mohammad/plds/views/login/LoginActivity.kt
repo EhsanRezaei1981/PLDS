@@ -46,11 +46,13 @@ class LoginActivity : AppCompatActivity() {
                 val inputMainUrl = view.inputBaseUrl
 
                 var inputsInvalid = false
-                if (!Patterns.WEB_URL.matcher(inputLoginUrl.editText?.text.toString()).matches()) {
+                var loginUrl = inputLoginUrl.editText?.text.toString()
+                if (!Patterns.WEB_URL.matcher(loginUrl).matches() && loginUrl.endsWith("/").not()) {
                     inputLoginUrl.error = getString(R.string.not_valid)
                     inputsInvalid = true
                 }
-                if (!Patterns.WEB_URL.matcher(inputMainUrl.editText?.text.toString()).matches()) {
+                var mainUrl = inputLoginUrl.editText?.text.toString()
+                if (!Patterns.WEB_URL.matcher(mainUrl).matches() && mainUrl.endsWith("/").not()) {
                     inputBaseUrl.error = getString(R.string.not_valid)
                     inputsInvalid = true
                 }

@@ -100,7 +100,7 @@ class EditDocumentFragment : Fragment() {
                 is ApiResult.Success -> {
                     val formElements = it.response.data?.toMutableList()
                     if (it.response.defendants?.isNotEmpty() == true) {
-                        if (it.response.isAllSelected.not()) {
+                        if (args.readOnly.not() || it.response.isAllSelected.not()) {
                             if (args.readOnly)
                                 defendants = it.response.defendants
 

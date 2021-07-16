@@ -53,19 +53,20 @@ class ElementParser(
     }
 
     private fun createItems(defendant: Defendant? = null) {
+        var valueIndex = valueIndex
         if (defendant?.documentLegalDefendantId == -1) return
         elementList?.forEach { dataItem ->
-            if (elementList.first().label == "Defendant") {
+            if (defendant != null && elementList.first().label == "Defendant") {
                 if (defendant != null && dataItem.label == "Defendant")
                     dataItem.value?.getOrNull(0)?.apply {
                         listSelectedId = defendant.documentLegalDefendantId
                         listSelectedText = defendant.patronName
                         documentLegalDefendantId = defendant.documentLegalDefendantId
                     }
+                valueIndex =
+                    dataItem.value?.indexOfFirst { it.documentLegalDefendantId == defendant?.documentLegalDefendantId }
+                        ?: -1
             }
-            val valueIndex =
-                dataItem.value?.indexOfFirst { it.documentLegalDefendantId == defendant?.documentLegalDefendantId }
-                    ?: -1
             when (dataItem.dataType) {
                 "Text" -> {
                     createText(dataItem)
