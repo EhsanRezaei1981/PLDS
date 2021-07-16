@@ -98,8 +98,8 @@ class FileView(
 
         btnViewImage.setOnClickListener {
             fileRequestsCallback.onPreviewImageClicked(
-                structure.value?.get(valueIndex)?.fileId,
-                structure.value?.get(valueIndex)?.VTFileId,
+                structure.value?.getOrNull(valueIndex)?.fileId,
+                structure.value?.getOrNull(valueIndex)?.VTFileId,
                 takenPhoto?.toBase64() ?: selectedFile?.readBytes()?.toBase64()
             )
         }
