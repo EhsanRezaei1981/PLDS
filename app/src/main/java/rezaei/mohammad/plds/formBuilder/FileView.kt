@@ -138,9 +138,12 @@ class FileView(
                         }
                 }
                 intentType.removeSuffix("|")
-                intent.type = if (intentType.isNullOrEmpty()
-                        .not()
-                ) intentType.toString() else defaultIntentType
+                intent.type = "*/*"
+                // FIXME: Set content type cause user shouldn't be able to choose any image
+                /*intent.type = if (intentType.isNullOrEmpty().not())
+                    intentType.toString()
+                else
+                    defaultIntentType*/
                 context.startActivityForResult(intent, PICKFILE_REQUEST_CODE)
             } else {
                 fileRequestsCallback.requestPermission(android.Manifest.permission.READ_EXTERNAL_STORAGE)
@@ -191,7 +194,7 @@ class FileView(
 
     override fun validate(): Boolean {
         errors.clear()
-        return if (structure.isMandatory == 0) {
+        return if (structure.isMandatory == 0 && selectedFile == null && takenPhoto == null) {
             true
         } else {
             if (selectedFile == null && takenPhoto == null) {
